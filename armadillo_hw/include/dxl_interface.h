@@ -1,6 +1,5 @@
-//
-// Created by armadillo2 on 02/10/17.
-//
+
+
 
 #ifndef ARMADILLO_HW_ARM_INTERFACE_H
 #define ARMADILLO_HW_ARM_INTERFACE_H
@@ -50,6 +49,10 @@
 #define PROTOCOL_VERSION1               1.0                 // See which protocol version is used in the Dynamixel
 #define PROTOCOL_VERSION2               2.0
 
+/* This library supports the following dxl */
+/* models defined here:                    */
+#define MODEL_XH430_V350 1040
+
 #include <iostream>
 #include <stdint.h>
 #include <dynamixel_sdk/dynamixel_sdk.h>
@@ -95,12 +98,25 @@ private:
     dynamixel::PortHandler *port_handler_;
 
 public:
+    enum PortState
+    {
+
+        PORT_FAIL,
+        BAUDRATE_FAIL,
+        SUCCESS
+
+
+    };
+
     DxlArmInterface();
-    bool openPort(std::string port_name, unsigned int baudrate);
+    ~DxlArmInterface();
+    PortState openPort(std::string port_name, unsigned int baudrate);
     bool ping (DxlMotor & motor);
-    bool setTorque(DxlMotor &motor, bool flag);
+    bool setTorque(const DxlMotor &motor, bool flag);
     bool bulkWrite();
     bool bulkRead();
+    bool reboot(const DxlMotor &motor);
+    bool broadcastPing(std::vector<uint8_t> result_vec);
 
 };
 

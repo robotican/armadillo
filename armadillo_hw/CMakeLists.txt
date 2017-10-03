@@ -133,9 +133,9 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
  add_executable(${PROJECT_NAME}_node
-         src/dxl_arm_interface.cpp
+         src/dxl_interface.cpp
                 src/armadillo_hw.cpp
-         include/dxl_arm_interface.h
+         include/dxl_interface.h
                 include/armadillo_hw.h)
 
 ## Rename C++ executable without prefix
