@@ -136,7 +136,7 @@ include_directories(
          src/dxl_interface.cpp
                 src/armadillo_hw.cpp
          include/dxl_interface.h
-                include/armadillo_hw.h)
+                include/armadillo_hw.h src/armadillo_hw_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

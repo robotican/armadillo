@@ -45,20 +45,28 @@
 #define ADDR_XH_MOVING                  123
 #define ADDR_XH_HARDWARE_ERROR          70
 
-// Protocol version
-#define PROTOCOL_VERSION1               1.0                 // See which protocol version is used in the Dynamixel
+/* This library supports only protocol 2.0, */
+/* motors using protocol 1.0 will not work  */
 #define PROTOCOL_VERSION2               2.0
 
 /* This library supports the following dxl */
-/* models defined here:                    */
+/* models defined here: (for more models,  */
+/* define them here, and edit code to      */
+/* support them accordingly                */
 #define MODEL_XH430_V350 1040
 
 #include <iostream>
 #include <stdint.h>
 #include <dynamixel_sdk/dynamixel_sdk.h>
 
-struct DxlMotor
+struct dxl_motor
 {
+    enum InterfaceType
+    {
+        POS,
+        POS_VEL
+    };
+
     uint8_t id;
     uint16_t model;
     bool torque;
@@ -73,7 +81,7 @@ struct DxlMotor
     double rpm_scale_factor;
     float protocol_ver;
     std::string joint_name;
-    std::string interface;
+    InterfaceType interface_type;
     float torque_constant_a;
     float torque_constant_b;
 };
@@ -81,16 +89,16 @@ struct DxlMotor
 class DxlMath
 {
 public:
-    double static ticksToRads(int32_t ticks, DxlMotor &motor);
-    int32_t static radsToTicks(double rads, DxlMotor &motor);
-    int32_t radsPerSecToTicksPerSec(double rads_per_sec, DxlMotor &motor);
-    double ticksPerSecToRadsPerSec(int32_t ticks_per_sec, DxlMotor &motor);
+    double static ticksToRads(int32_t ticks, dxl_motor &motor);
+    int32_t static radsToTicks(double rads, dxl_motor &motor);
+    int32_t static radsPerSecToTicksPerSec(double rads_per_sec, dxl_motor &motor);
+    double ticksPerSecToRadsPerSec(int32_t ticks_per_sec, dxl_motor &motor);
 
 };
 
 
 
-class DxlArmInterface
+class DxlInterface
 {
 
 private:
@@ -108,14 +116,14 @@ public:
 
     };
 
-    DxlArmInterface();
-    ~DxlArmInterface();
+    DxlInterface();
+    ~DxlInterface();
     PortState openPort(std::string port_name, unsigned int baudrate);
-    bool ping (DxlMotor & motor);
-    bool setTorque(const DxlMotor &motor, bool flag);
+    bool ping (dxl_motor & motor);
+    bool setTorque(const dxl_motor &motor, bool flag);
     bool bulkWrite();
     bool bulkRead();
-    bool reboot(const DxlMotor &motor);
+    bool reboot(const dxl_motor &motor);
     bool broadcastPing(std::vector<uint8_t> result_vec);
 
 };

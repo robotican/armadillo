@@ -2,12 +2,12 @@
 
 #include "dxl_interface.h"
 
-DxlArmInterface::DxlArmInterface()
+DxlInterface::DxlInterface()
 {
 
 }
 
-DxlArmInterface::PortState DxlArmInterface::openPort(std::string port_name, unsigned int baudrate)
+DxlInterface::PortState DxlInterface::openPort(std::string port_name, unsigned int baudrate)
 {
     packet_handler_ = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION2);
     port_handler_ = dynamixel::PortHandler::getPortHandler(port_name.c_str());
@@ -22,7 +22,7 @@ DxlArmInterface::PortState DxlArmInterface::openPort(std::string port_name, unsi
     return BAUDRATE_FAIL;
 }
 
-bool DxlArmInterface::ping(DxlMotor &motor)
+bool DxlInterface::ping(dxl_motor &motor)
 {
     int result = COMM_TX_FAIL;
     uint8_t error =  0;
@@ -38,7 +38,7 @@ bool DxlArmInterface::ping(DxlMotor &motor)
 }
 
 
-bool DxlArmInterface::setTorque(const DxlMotor &motor, bool flag)
+bool DxlInterface::setTorque(const dxl_motor &motor, bool flag)
 {
     uint8_t error = 0;
     int result = COMM_TX_FAIL;
@@ -54,7 +54,7 @@ bool DxlArmInterface::setTorque(const DxlMotor &motor, bool flag)
     return true;
 }
 
-bool DxlArmInterface::reboot(const DxlMotor &motor)
+bool DxlInterface::reboot(const dxl_motor &motor)
 {
 
     // Try reboot
@@ -67,7 +67,7 @@ bool DxlArmInterface::reboot(const DxlMotor &motor)
     return true;
 }
 
-bool DxlArmInterface::broadcastPing(std::vector<uint8_t> result_vec)
+bool DxlInterface::broadcastPing(std::vector<uint8_t> result_vec)
 {
     int result = COMM_TX_FAIL;
     result = packet_handler_->broadcastPing(port_handler_, result_vec);
@@ -76,7 +76,7 @@ bool DxlArmInterface::broadcastPing(std::vector<uint8_t> result_vec)
     return true;
 }
 
-DxlArmInterface::~DxlArmInterface()
+DxlInterface::~DxlInterface()
 {
     port_handler_->closePort();
 }
