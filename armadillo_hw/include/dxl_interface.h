@@ -67,6 +67,14 @@ struct dxl_motor
         POS_VEL
     };
 
+    static InterfaceType stringToInterfaceType(std::string type)
+    {
+        if (type == "Position")
+            return POS;
+        if (type == "PosVel")
+            return POS_VEL;
+    }
+
     uint8_t id;
     uint16_t model;
     bool torque;

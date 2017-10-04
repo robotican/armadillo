@@ -6,7 +6,7 @@
 #define LOOP_INTERVAL 100
 #define THREADS_NUM 2
 
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, "armadillo2_hardware_interface_node");
     ros::NodeHandle nh;
