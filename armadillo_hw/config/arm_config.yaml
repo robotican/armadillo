@@ -1,4 +1,4 @@
-dynamixel_motors: 
+arm_config: 
 [
 	{
 		id: 1, 

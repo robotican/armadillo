@@ -45,6 +45,11 @@
 #define ADDR_XH_MOVING                  123
 #define ADDR_XH_HARDWARE_ERROR          70
 
+#define LEN_PRO_PRESENT_POSITION 4
+#define LEN_PRO_PRESENT_ERROR 1
+#define LEN_PRO_PRESENT_SPEED 4
+#define LEN_PRO_PRESENT_CURRENT 2
+
 /* This library supports only protocol 2.0, */
 /* motors using protocol 1.0 will not work  */
 #define PROTOCOL_VERSION2               2.0
@@ -54,10 +59,24 @@
 /* define them here, and edit code to      */
 /* support them accordingly                */
 #define MODEL_XH430_V350 1040
+#define MODEL_H54_100_S500_R 53768
+#define MODEL_H54_200_S500_R 54024
+#define MODEL_H42_20_S300_R 51200
 
 #include <iostream>
 #include <stdint.h>
+#include <cmath>
 #include <dynamixel_sdk/dynamixel_sdk.h>
+
+struct dxl_spec
+{
+    std::string name;
+    uint16_t model;
+    float torque_const_a;
+    float torque_const_b;
+    int cpr;
+    double rpm_scale_factor;
+};
 
 struct dxl_motor
 {
@@ -74,10 +93,10 @@ struct dxl_motor
         if (type == "PosVel")
             return POS_VEL;
     }
+    dxl_spec spec;
 
     uint8_t id;
-    uint16_t model;
-    bool torque;
+    bool in_torque;
     double position;
     double velocity;
     double current;
@@ -85,22 +104,20 @@ struct dxl_motor
     double command_position;
     double command_velocity;
     uint8_t error;
-    int cpr;
-    double rpm_scale_factor;
+
     float protocol_ver;
     std::string joint_name;
     InterfaceType interface_type;
-    float torque_constant_a;
-    float torque_constant_b;
+
 };
 
 class DxlMath
 {
 public:
-    double static ticksToRads(int32_t ticks, dxl_motor &motor);
-    int32_t static radsToTicks(double rads, dxl_motor &motor);
-    int32_t static radsPerSecToTicksPerSec(double rads_per_sec, dxl_motor &motor);
-    double ticksPerSecToRadsPerSec(int32_t ticks_per_sec, dxl_motor &motor);
+    double static ticksToRads(int32_t ticks, const dxl_motor &motor);
+    int32_t static radsToTicks(double rads, const dxl_motor &motor);
+    int32_t static radsPerSecToTicksPerSec(double rads_per_sec, const dxl_motor &motor);
+    double static ticksPerSecToRadsPerSec(int32_t ticks_per_sec, const dxl_motor &motor);
 
 };
 
@@ -113,15 +130,18 @@ private:
     dynamixel::PacketHandler *packet_handler_;
     dynamixel::PortHandler *port_handler_;
 
+    /* dxl api interperate 0 velocity as the highest velocity. */
+    /* this field prevent it by setting velocity to the last   */
+    /* non-zero value                                          */
+    double pre_rad_per_sec_;
+
 public:
+
     enum PortState
     {
-
         PORT_FAIL,
         BAUDRATE_FAIL,
         SUCCESS
-
-
     };
 
     DxlInterface();
@@ -129,11 +149,14 @@ public:
     PortState openPort(std::string port_name, unsigned int baudrate);
     bool ping (dxl_motor & motor);
     bool setTorque(const dxl_motor &motor, bool flag);
-    bool bulkWrite();
-    bool bulkRead();
+    bool bulkWriteVelocity(std::vector<dxl_motor> & motors);
+    bool bulkWritePosition(std::vector<dxl_motor> & motors);
+    bool readMotorsPos(std::vector<dxl_motor> & motors);
+    bool readMotorsVel(std::vector<dxl_motor> & motors);
+    bool readMotorosLoad(std::vector<dxl_motor> & motors);
+    bool readMotorsError(std::vector<dxl_motor> & motors);
     bool reboot(const dxl_motor &motor);
     bool broadcastPing(std::vector<uint8_t> result_vec);
-
 };
 
 

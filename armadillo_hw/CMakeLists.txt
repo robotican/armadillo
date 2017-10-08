@@ -1,17 +1,33 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(armadillo_hw)
 
-
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
+add_compile_options(-lyaml-cpp)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(YAML_CPP REQUIRED yaml-cpp)
+find_path(YAML_CPP_INCLUDE_DIR
+        NAMES yaml_cpp.h
+        PATHS ${YAML_CPP_INCLUDE_DIRS})
+find_library(YAML_CPP_LIBRARY
+        NAMES YAML_CPP
+        PATHS ${YAML_CPP_LIBRARY_DIRS})
+
+add_definitions(-DPC_SIDE)
+if(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
+ add_definitions(-DHAVE_NEW_YAMLCPP)
+endif(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-                roscpp
-                dynamixel_sdk
-                controller_manager)
+find_package(
+             catkin REQUIRED COMPONENTS
+             roscpp
+             dynamixel_sdk
+             controller_manager)
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -117,7 +133,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
- ${catkin_INCLUDE_DIRS}
+ ${catkin_INCLUDE_DIRS} ${yaml-cpp_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -151,7 +167,7 @@ include_directories(
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(${PROJECT_NAME}_node
-   ${catkin_LIBRARIES}
+   ${catkin_LIBRARIES} yaml-cpp
  )
 
 #############

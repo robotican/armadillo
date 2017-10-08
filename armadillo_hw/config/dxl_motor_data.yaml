@@ -1,0 +1,30 @@
+# DON'T EDIT THIS FILE #
+
+- name: H54-200-S500-R
+  model: 54024
+  cpr: 501900
+  rpm_scale_factor: 0.00199234
+  torque_constant_a: 4.337606 
+  torque_constant_b: -2.69444 
+
+- name: H54-100-S500-R
+  model: 53768
+  cpr: 502000
+  rpm_scale_factor: 0.00199234
+  torque_constant_a: 4.1
+  torque_constant_b: -2.4
+
+- name: H42-20-S300-R
+  model: 51200
+  cpr: 303800
+  rpm_scale_factor: 0.00329218
+  torque_constant_a: 2.8125
+  torque_constant_b: -0.46875
+ 
+- name: XH430-V350-R
+  model: 1040
+  cpr: 4095
+  rpm_scale_factor: 0.229
+  torque_constant_a: 4.568421
+torque_constant_b: 0.13263157
+
