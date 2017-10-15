@@ -1,0 +1,11 @@
+servos: [{id: 1, velocity_mode: false, joint_name: rotation1_joint, use_init_vel: true,interface: posVelInterface ,protocol_version: 2.0, torque: 1, read_pos: true, read_vel: false, read_eff: false, write_pos: true, write_vel: true}, {id: 2, velocity_mode: false, joint_name: shoulder1_joint, use_init_vel: true, interface: posVelInterface ,protocol_version: 2.0, torque: 1, read_pos: true, read_vel: false, read_eff: false, write_pos: true, write_vel: true}, {id: 3, velocity_mode: false, joint_name: shoulder2_joint, use_init_vel: true, interface: posVelInterface ,protocol_version: 2.0, torque: 1, read_pos: true, read_vel: false, read_eff: false, write_pos: true, write_vel: true}, {id: 4, velocity_mode: false, joint_name: rotation2_joint, use_init_vel: true, interface: posVelInterface , protocol_version: 2.0, torque: 1, read_pos: true, read_vel: false, read_eff: false, write_pos: true, write_vel: true}, {id: 5, velocity_mode: false, joint_name: shoulder3_joint, use_init_vel: true, interface: posVelInterface , protocol_version: 2.0, torque: 1, read_pos: true, read_vel: false, read_eff: false, write_pos: true, write_vel: true}, {id: 6, velocity_mode: false, joint_name: wrist_joint, use_init_vel: true, interface: posVelInterface , protocol_version: 2.0, torque: 1, read_pos: true, read_vel: false, read_eff: false, write_pos: true, write_vel: true}, {id: 7, velocity_mode: false, joint_name: left_finger_joint, use_init_vel: true, interface: positionInterface , protocol_version: 1.0, torque: 1, read_pos: true, read_vel: true, read_eff: true, write_pos: true, write_vel: true}, {id: 8, velocity_mode: false, joint_name: right_finger_joint, use_init_vel: true, interface: positionInterface , protocol_version: 1.0, torque: 1, read_pos: true, read_vel: true, read_eff: true, write_pos: true, write_vel: true}] 
+
+device: "/dev/USB2DYNAMIXEL"
+serial_timeout_ms: 10000000
+device_baudrate: 57600
+init_speed_protocol1: 0.4
+init_speed_protocol2: 0.3
+
+arm_joints: [rotation1_joint, shoulder1_joint, shoulder2_joint, rotation2_joint,  shoulder3_joint, wrist_joint]
+gripper_joints: [left_finger_joint, right_finger_joint]
+

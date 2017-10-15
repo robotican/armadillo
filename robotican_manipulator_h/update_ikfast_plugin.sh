@@ -1,0 +1,1 @@
+rosrun moveit_ikfast create_ikfast_moveit_plugin.py robotican_manipulator_h arm robotican_manipulator_h /home/yam/catkin_ws/src/robotican/robotican_manipulator_h/src/robotican_manipulator_h_arm_ikfast_solver.cpp

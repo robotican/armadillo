@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <arg name="gazebo" default="true" />
+
+  <include file="$(find robotican_armadillo)/launch/armadillo.launch">
+  	<arg name="front_camera" value='true'/>
+  	<arg name="rear_camera" value='true'/>
+  	<arg name="lidar" value='true'/>
+  	<arg name="gps" value='true'/>
+	<arg name="urf" value='true'/>
+	<arg name="imu" value='true'/>
+	<arg name="kinect2" value='false'/>
+  	<arg name="kinect2_hz" value="10.0"/>
+	<arg name="kinect2_hd" value="true"/>
+	<arg name="kinect2_qhd" value="false"/>
+	<arg name="kinect2_sd" value="false"/>
+	<arg name="sr300" value='true'/>
+	<arg name="joystick" value='false'/>
+	<arg name="joystick_dev" value='/dev/input/js0'/>
+	<arg name="twist_mux" value='true'/>
+	<arg name="gmapping" value='false'/>
+	<arg name="robotican_gui" value='true'/>
+	  
+	<arg name="gazebo" value='$(arg gazebo)'/>
+	<arg name="world_name" value="worlds/empty.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+	<arg name="x" value="0.0"/>
+	<arg name="y" value="0.0"/>
+	<arg name="z" value="0.0"/>
+	<arg name="R" value="0.0" />
+	<arg name="P" value="0.0" />
+	<arg name="Y" value="0.0" />
+	<arg name="arm" value="true"/>
+
+	<arg name="paused" value="false"/>
+	<arg name="use_sim_time" value="true"/>
+	<arg name="gui" value="true"/>
+	<arg name="headless" value="false"/>
+	<arg name="debug" value="false"/> 
+
+	<arg name="controllers" value='true'/>
+	<arg name="moveit" value='true'/>
+	<arg name="use_depth" value='false'/>
+	<arg name="robot_localization" value='false'/>
+	<arg name="move_base" value='false'/>
+	<arg name="hector_slam" value='false'/>
+	<arg name="amcl" value='false'/>
+	<arg name="have_map_file" value='false'/>
+	<arg name="map_file" value="$(find robotican_common)/maps/UPlat.yaml"/>
+	<arg name="rqt" value='false'/>
+  </include>
+
+</launch>
+

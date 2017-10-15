@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="Manipulator_h_gazebo" description="Manipulator_h_gazebo">
+	<xacro:include filename="$(find robotican_manipulator_h)/models/manipulator_h.xacro" />
+	<xacro:include filename="$(find robotican_manipulator_h)/models/manipulator_h_gazebo_plugins.xacro" />
+
+   <link name="world" />
+
+	
+  <joint name="world_joint" type="fixed">
+    <parent link="world"/>
+    <child link="map"/>
+  </joint>
+
+  
+  <link name="map" />
+    <joint name="map_joint" type="fixed">
+    <parent link="map"/>
+    <child link="arm_link"/>
+  </joint>
+
+	<link name="arm_link">
+    <inertial>
+      <origin xyz="-0.022197 -1.9122E-07 0.044251" rpy="0 0 0" />
+      <mass value="0.16757" />
+      <inertia
+      ixx="0.00062908"
+      ixy="-8.3342E-10"
+      ixz="-0.00014877"
+      iyy="0.0010719"
+      iyz="1.6859E-09"
+      izz="0.0013427" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://robotican_manipulator_h/meshes/arm_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://robotican_manipulator_h/meshes/arm_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+    
+  <joint name="base_arm_joint" type="fixed">
+    <origin xyz="-0.091 0 0.093" rpy="0 0 0" />
+    <parent link="arm_link" />
+    <child link="base_arm_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+	
+  	
+
+     <gazebo> 
+  		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    		<robotSimType>gazebo_ros_control/RoboticanRobotHWSim</robotSimType> 
+      	</plugin> 
+    </gazebo>
+
+	
+	 <gazebo reference="arm_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  
+</robot>

@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: robotican_armadillo
+    relative_path: description/models/armadillo.xacro
+  SRDF:
+    relative_path: moveit/config/armadillo_with_arm.srdf
+  CONFIG:
+    generated_timestamp: 1459850395

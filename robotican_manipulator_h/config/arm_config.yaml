@@ -1,0 +1,7 @@
+servos: [{id: 1,joint_name: rotation1_joint}, {id: 2,joint_name: shoulder1_joint}, {id: 3,joint_name: shoulder2_joint}, {id: 4,joint_name: rotation2_joint}, {id: 5,joint_name: shoulder3_joint}, {id: 6,joint_name: wrist_joint}]
+device: "/dev/ttyUSB1"
+serial_timeout_ms: 1000000000
+baudrate: 57600
+
+
+

@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb",ATTRS{product}=="FT232R USB UART", SYMLINK+="USB2DYNAMIXEL", MODE="0666" , RUN+="/bin/setserial /dev/USB2DYNAMIXEL low_latency"

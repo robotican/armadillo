@@ -19,9 +19,9 @@ DxlInterface::PortState DxlInterface::openPort(std::string port_name, unsigned i
         {
             return SUCCESS;
         }
-        return PORT_FAIL;
+        return BAUDRATE_FAIL;
     }
-    return BAUDRATE_FAIL;
+    return PORT_FAIL;
 }
 
 bool DxlInterface::ping(dxl_motor &motor)
@@ -87,7 +87,7 @@ DxlInterface::~DxlInterface()
 bool DxlInterface::readMotorsPos(std::vector<dxl_motor> &motors)
 {
     dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_PRESENT_POSITION;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -102,7 +102,7 @@ bool DxlInterface::readMotorsPos(std::vector<dxl_motor> &motors)
         //packet_handler_->printTxRxResult(comm_result);
         return false;
 
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_PRESENT_POSITION;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -120,7 +120,7 @@ bool DxlInterface::readMotorsPos(std::vector<dxl_motor> &motors)
 bool DxlInterface::readMotorsVel(std::vector<dxl_motor> &motors)
 {
     dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_PRESENT_SPEED;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -135,7 +135,7 @@ bool DxlInterface::readMotorsVel(std::vector<dxl_motor> &motors)
         //packet_handler_->printTxRxResult(comm_result);
         return false;
 
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_PRESENT_SPEED;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -153,7 +153,7 @@ bool DxlInterface::readMotorsVel(std::vector<dxl_motor> &motors)
 bool DxlInterface::readMotorsError(std::vector<dxl_motor> &motors)
 {
     dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_HARDWARE_ERROR;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -168,7 +168,7 @@ bool DxlInterface::readMotorsError(std::vector<dxl_motor> &motors)
         //packet_handler_->printTxRxResult(comm_result);
         return false;
 
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_HARDWARE_ERROR;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -187,7 +187,7 @@ bool DxlInterface::readMotorsError(std::vector<dxl_motor> &motors)
 bool DxlInterface::readMotorosLoad(std::vector<dxl_motor> &motors)
 {
     dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_PRESENT_CURRENT;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -202,7 +202,7 @@ bool DxlInterface::readMotorosLoad(std::vector<dxl_motor> &motors)
         //packet_handler_->printTxRxResult(comm_result);
         return false;
 
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         uint16_t addr = ADDR_PRO_PRESENT_CURRENT;
         if (motor.spec.model == MODEL_XH430_V350)
@@ -236,7 +236,7 @@ bool DxlInterface::bulkWriteVelocity(std::vector<dxl_motor> &motors)
 {
     dynamixel::GroupBulkWrite bulk_write(port_handler_, packet_handler_);
 
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         bool addparam_success = false;
         uint16_t addr = ADDR_PRO_GOAL_SPEED;
@@ -266,7 +266,7 @@ bool DxlInterface::bulkWritePosition(std::vector<dxl_motor> &motors)
 {
     dynamixel::GroupBulkWrite bulk_write(port_handler_, packet_handler_);
 
-    for (dxl_motor motor : motors)
+    for (dxl_motor &motor : motors)
     {
         bool addparam_success = false;
         uint16_t addr = ADDR_PRO_GOAL_POSITION;

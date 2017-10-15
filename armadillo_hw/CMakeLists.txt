@@ -25,7 +25,9 @@ endif(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
 find_package(
              catkin REQUIRED COMPONENTS
              roscpp
+	     rospy
              dynamixel_sdk
+	     message_generation
              controller_manager)
 
 
@@ -70,11 +72,11 @@ find_package(
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
+add_service_files(
+   FILES
+        EnableTorque.srv
 #   Service2.srv
-# )
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -84,10 +86,10 @@ find_package(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+   DEPENDENCIES
+        armadillo_hw# Or other packages containing msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##

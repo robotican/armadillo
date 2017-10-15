@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "armadillo2_hardware_interface_node");
+    ros::init(argc, argv, "armadillo2_hw_node");
     ros::NodeHandle nh;
 
     ArmadilloHW armadillo_hw(nh);

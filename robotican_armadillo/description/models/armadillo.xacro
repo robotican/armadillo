@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+	<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo_robot" description="ARMadillo Robot">
+	<xacro:property name="M_PI" value="3.1415926535897931" />
+	
+	<!--    BASE      -->
+	<xacro:include filename="$(find robotican_armadillo)/description/models/armadillo_base.xacro" />
+	<!--      END          -->
+	
+	<!--   TORSO     -->
+	<xacro:include filename="$(find robotican_armadillo)/description/models/armadillo_torso.xacro" />
+	<!--      END          -->
+	
+	<!--    ARM     -->
+	<xacro:include filename="$(find robotican_manipulator_h)/models/manipulator_h.xacro" />
+	<!--      END          -->
+	
+	<!--    LOAD JOINTS    -->
+	<joint name="torso_joint" type="prismatic">
+		<origin xyz="-0.1403 0 0.49381" rpy="0 0 0" />
+		<parent link="base_link" />
+		<child link="torso_link" />
+		<axis xyz="0 0 1" />
+		<dynamics damping="1000.0" friction="100000.0"/>
+		<limit effort="1.765196" velocity="0.1" lower="0.00" upper="0.32" />
+	</joint>
+	
+	<joint name="base_arm_joint" type="fixed">
+		<origin xyz="0.033 0 0.03575" rpy="0 0 0" />
+		<parent link="arm_link" />
+		<child link="base_arm_link" />
+		<axis xyz="0 0 0" />
+	</joint>
+	
+	<!--      END          -->
+	
+	
+</robot>

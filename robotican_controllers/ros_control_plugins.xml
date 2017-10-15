@@ -1,0 +1,35 @@
+<library path="lib/librobotican_controllers">
+
+    <class name="gripper_controllers/PosVelGripperController"
+           type="gripper_controllers::PosVelGripperController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+        </description>
+    </class>
+
+    <class name="position_controllers/GripperActionControllerTwo"
+           type="position_controllers::GripperActionControllerTwo"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+        </description>
+    </class>
+    <class name="position_velocity_controllers/JointTrajectoryController"
+           type="pos_vel_controllers::JointTrajectoryController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+        </description>
+    </class>
+    <class name="position_with_effort_controllers/JointTrajectoryController"
+           type="position_with_effort_controllers::JointTrajectoryController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+        </description>
+    </class>
+
+    <class name="diff_drive_with_split_controller/DiffDriveController" type="diff_drive_controller::DiffDriveController" base_class_type="controller_interface::ControllerBase">
+        <description>
+            The DiffDriveController tracks velocity commands. It expects 2 VelocityJointInterface type of hardware interfaces.
+        </description>
+    </class>
+
+</library>

@@ -26,5 +26,5 @@
   cpr: 4095
   rpm_scale_factor: 0.229
   torque_constant_a: 4.568421
-torque_constant_b: 0.13263157
+  torque_constant_b: 0.13263157
 

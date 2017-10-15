@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: robotican_manipulator_h
+    relative_path: models/manipulator_h.xacro
+  SRDF:
+    relative_path: config/robotican_manipulator_h.srdf
+  CONFIG:
+    generated_timestamp: 1471421716

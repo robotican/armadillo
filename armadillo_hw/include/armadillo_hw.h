@@ -11,7 +11,7 @@
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <yaml-cpp/yaml.h>
-#include <fstream>
+#include <armadillo_hw/EnableTorque.h>
 
 #define MAX_PING_RETRIES 5
 #define ARM_CONFIG_PARAM "arm_config"
@@ -23,8 +23,6 @@ void operator >> (const YAML::Node& node, T& i)
 {
     i = node.as<T>();
 }
-
-
 
 struct armadillo_arm
 {

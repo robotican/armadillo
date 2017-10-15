@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<node name="armadillo_hw_node" pkg="armadillo_hw" type="armadillo_hw_node" respawn="false" output="screen" />
+
+	<rosparam file="$(find armadillo_hw)/config/arm_config.yaml" command="load"/>
+	
+</launch>

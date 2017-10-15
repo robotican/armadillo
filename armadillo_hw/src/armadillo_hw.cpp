@@ -16,26 +16,31 @@ ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh)
     setArmTorque(true);
 
     prev_time_ = getTime();
-    ROS_INFO_NAMED("armadillo_hw", "armadillo hardware interface loaded successfully");
+    ROS_INFO("[armadillo_hw]: armadillo hardware interface loaded successfully");
 }
 
 void ArmadilloHW::pingMotors()
 {
-    for (dxl_motor motor : motors_)
+    for (dxl_motor &motor : motors_)
     {
         int error_counter = 0;
+        ROS_INFO("MOTOR SPEC %d, %d", motor.id, motor.spec.model);
         while (!dxl_interface_.ping(motor) && ros::ok())
         {
             error_counter++;
-            ROS_WARN_NAMED("armadillo_hw", "pinging motor %d failed", motor.id);
+            ROS_WARN("[armadillo_hw]: pinging motor %d failed", motor.id);
             if (error_counter > MAX_PING_RETRIES)
             {
-                ROS_ERROR_NAMED("armadillo_hw", "too many ping errors, motor %d is not responding", motor.id);
+                ROS_ERROR("[armadillo_hw]: too many ping errors, motor %d is not responding. \n"
+                                  "check if motor crashed (red blink) and try to restart. \n"
+                                  "also make sure LATENCY_TIMER is set to 1 in dynamixel_sdk, and that the appropriate"
+                                  "rule for dynamixel port is existed with LATENCY_TIMER=1.", motor.id);
                 ros::shutdown();
                 exit(EXIT_FAILURE);
             }
             ros::Rate(5).sleep();
         }
+        ROS_INFO("MOTOR SPEC %d, %d", motor.id, motor.spec.model);
     }
 }
 
@@ -62,16 +67,22 @@ void ArmadilloHW::loadMotorsSpecs()
     }
 
     /* feed motors with model specs */
-    for (int i=0; i < motors_.size(); i++)
+    for (dxl_motor motor : motors_)
     {
-        bool spec_found = models_specs_.find(motors_[i].spec.model) != models_specs_.end();
+        bool spec_found = models_specs_.find(motor.spec.model) != models_specs_.end();
         if (spec_found)
         {
-            motors_[i].spec.cpr = models_specs_[motors_[i].spec.model].cpr;
-            motors_[i].spec.rpm_scale_factor = models_specs_[motors_[i].spec.model].rpm_scale_factor;
-            motors_[i].spec.torque_const_a = models_specs_[motors_[i].spec.model].torque_const_a;
-            motors_[i].spec.torque_const_b = models_specs_[motors_[i].spec.model].torque_const_b;
+            motor.spec.cpr = models_specs_[motor.spec.model].cpr;
+            motor.spec.rpm_scale_factor = models_specs_[motor.spec.model].rpm_scale_factor;
+            motor.spec.torque_const_a = models_specs_[motor.spec.model].torque_const_a;
+            motor.spec.torque_const_b = models_specs_[motor.spec.model].torque_const_b;
         }
+        else
+        {
+            ROS_ERROR("[armadillo_hw]: couldn't locate model specification for motor %d, model %d. "
+                              "make sure dxl_motor_data.yaml contains all the necessary specs", motor.id, motor.spec.model);
+        }
+
     }
 }
 
@@ -84,28 +95,29 @@ void ArmadilloHW::setArmTorque(bool flag)
         if (!dxl_interface_.setTorque(motor, flag))
         {
             success = false;
-            ROS_WARN_NAMED("armadillo_hw", "failed set torque of motor id %d to %s", motor.id, str_flag.c_str());
+            ROS_WARN("[armadillo_hw]: failed set torque of motor id %d to %s", motor.id, str_flag.c_str());
         }
         else
             motor.in_torque = flag;
     }
 
     if (success)
-        ROS_INFO_NAMED("armadillo_hw", "arm torque is %s", str_flag.c_str());
+        ROS_INFO("[armadillo_hw]: arm torque is %s", str_flag.c_str());
 }
 
 void ArmadilloHW::fetchArmParams()
 {
     if (!node_handle_->hasParam(ARM_CONFIG_PARAM))
     {
-        ROS_ERROR_NAMED("armadillo_hw", "%s param is missing on param server. shutting down...", ARM_CONFIG_PARAM);
+        ROS_ERROR("[armadillo_hw]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+                          "and that your launch includes this param file. shutting down...", ARM_CONFIG_PARAM);
         ros::shutdown();
         exit (EXIT_FAILURE);
     }
     node_handle_->getParam(ARM_CONFIG_PARAM, arm_config_);
     if (arm_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
     {
-        ROS_ERROR_NAMED("armadillo_hw", "%s param is invalid (need to be an of type array). shutting down...", ARM_CONFIG_PARAM);
+        ROS_ERROR("[armadillo_hw]: %s param is invalid (need to be an of type array) or missing. make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", ARM_CONFIG_PARAM);
         ros::shutdown();
         exit (EXIT_FAILURE);
     }
@@ -121,36 +133,43 @@ void ArmadilloHW::buildArmMotors()
         /* feed motor with user defined settings */
         if(arm_config_[i].getType() != XmlRpc::XmlRpcValue::TypeStruct)
         {
-            ROS_ERROR_NAMED("armadillo_hw", "arm motor %d param data type is invalid . shutting down...", i);
+            ROS_ERROR("[armadillo_hw]: arm motor id at index %d param data type is invalid or missing. "
+                              "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
 
         struct dxl_motor new_motor;
 
+        //invalid id field
         if(arm_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt)
         {
-            ROS_ERROR_NAMED("armadillo_hw", "arm motor id at index %d: invalid data type. shutting down...", i);
+            ROS_ERROR("[armadillo_hw]: arm motor id at index %d: invalid data type or missing. "
+                              "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
         new_motor.id = static_cast<int>(arm_config_[i]["id"]);
 
+        //invalid joint_name field
         if (arm_config_[i]["joint_name"].getType() != XmlRpc::XmlRpcValue::TypeString)
         {
-            ROS_ERROR_NAMED("armadillo_hw", "arm motor joint_name at index %d: invalid data type. shutting down...", i);
+            ROS_ERROR("[armadillo_hw]: arm motor joint_name at index %d: invalid data type or missing. "
+                              "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
         new_motor.joint_name = static_cast<std::string>(arm_config_[i]["joint_name"]);
 
-        if (arm_config_[i]["interface_type"].getType() != XmlRpc::XmlRpcValue::TypeString)
+        //invalid interface field
+        if (arm_config_[i]["interface"].getType() != XmlRpc::XmlRpcValue::TypeString)
         {
-            ROS_ERROR_NAMED("armadillo_hw", "arm motor interface_type at index %d: invalid data type. shutting down...", i);
+            ROS_ERROR("[armadillo_hw]: arm motor interface_type at index %d: invalid data type or missing. "
+                              "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        std::string string_interface_type = static_cast<std::string>(arm_config_[i]["interface_type"]);
+        std::string string_interface_type = static_cast<std::string>(arm_config_[i]["interface"]);
         new_motor.interface_type = dxl_motor::stringToInterfaceType(string_interface_type);
 
         /* feed motor with dxl defined settings (constant) */
@@ -161,10 +180,10 @@ void ArmadilloHW::buildArmMotors()
 
 void ArmadilloHW::registerArmInterfaces()
 {
-    for(dxl_motor motor : motors_)
+    for(dxl_motor &motor : motors_)
     {
         /* joint state registration */
-        ;
+
         joint_state_handles_.push_back(hardware_interface::JointStateHandle (motor.joint_name,
                                                                              &motor.position,
                                                                              &motor.velocity,
@@ -201,15 +220,16 @@ void ArmadilloHW::openArmPort()
     switch (port_state)
     {
         case DxlInterface::PORT_FAIL:
-            ROS_ERROR_NAMED("armadillo_hw", "open arm port %s failed. shutting down...", arm_port_.c_str());
+            ROS_ERROR("[armadillo_hw]: open arm port %s failed. "
+                              "make sure cable is connected and port has the right permissions. shutting down...", arm_port_.c_str());
             ros::shutdown();
             exit (EXIT_FAILURE);
         case DxlInterface::BAUDRATE_FAIL:
-            ROS_ERROR_NAMED("armadillo_hw", "setting arm baudrate to %d failed. shutting down...", arm_baudrate_);
+            ROS_ERROR("[armadillo_hw]: setting arm baudrate to %d failed. shutting down...", arm_baudrate_);
             ros::shutdown();
             exit (EXIT_FAILURE);
         case DxlInterface::SUCCESS:
-            ROS_INFO_NAMED("armadillo_hw", "arm port opened successfully\nport name: %s\nbaudrate: %d", arm_port_.c_str(), arm_baudrate_);
+            ROS_INFO("[armadillo_hw]: arm port opened successfully \nport name: %s \nbaudrate: %d", arm_port_.c_str(), arm_baudrate_);
     }
 }
 
@@ -223,6 +243,7 @@ ros::Duration ArmadilloHW::getPeriod()
 
 void ArmadilloHW::read()
 {
+    /* read arm */
     dxl_interface_.readMotorosLoad(motors_);
     dxl_interface_.readMotorsError(motors_);
     dxl_interface_.readMotorsVel(motors_);
@@ -231,6 +252,7 @@ void ArmadilloHW::read()
 
 void ArmadilloHW::write()
 {
+    /* write arm */
     dxl_interface_.bulkWriteVelocity(motors_);
     dxl_interface_.bulkWritePosition(motors_);
 }
