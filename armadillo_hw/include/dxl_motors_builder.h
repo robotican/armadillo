@@ -46,17 +46,22 @@ private:
     std::vector<hardware_interface::JointHandle> pos_handles_;
 
     std::map<uint16_t, dxl_spec> models_specs_; /* key - model number, value - dxl spec */
-
     std::string arm_port_;
     int arm_baudrate_;
     DxlInterface dxl_interface_;
     XmlRpc::XmlRpcValue arm_config_;
     std::vector<dxl_motor> motors_;
+    bool first_read_;
+
+
+    bool torqueServiceCB(armadillo_hw::EnableTorque::Request  &req,
+                         armadillo_hw::EnableTorque::Response &res);
+
     void fetchParams();
     void openPort();
     void buildMotors();
     void pingMotors();
-    void setTorque(bool flag);
+    bool setTorque(bool flag);
     void loadSpecs();
 
 };

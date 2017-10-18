@@ -16,6 +16,15 @@ DxlMotorsBuilder::DxlMotorsBuilder(ros::NodeHandle &nh)
     pingMotors();
     loadSpecs();
     setTorque(true);
+
+    for (dxl_motor &motor :  motors_)
+    {
+        ROS_INFO ("done motor id: %d, model: %d, pos: %f, effort: %f, vel: %f",
+                    motor.id, motor.spec.model, motor.position, motor.effort, motor.velocity);
+    }
+
+
+    first_read_ = true;
 }
 
 void DxlMotorsBuilder::read()
@@ -24,12 +33,18 @@ void DxlMotorsBuilder::read()
     dxl_interface_.readMotorsError(motors_);
     dxl_interface_.readMotorsVel(motors_);
     dxl_interface_.readMotorsPos(motors_);
+
+    if (first_read_)
+    {
+        for (dxl_motor &motor : motors_)
+            motor.command_position = motor.position;
+    }
 }
 
 void DxlMotorsBuilder::write()
 {
-    dxl_interface_.bulkWriteVelocity(motors_);
-    dxl_interface_.bulkWritePosition(motors_);
+   dxl_interface_.bulkWriteVelocity(motors_);
+   dxl_interface_.bulkWritePosition(motors_);
 }
 
 void DxlMotorsBuilder::pingMotors()
@@ -37,11 +52,10 @@ void DxlMotorsBuilder::pingMotors()
     for (dxl_motor &motor : motors_)
     {
         int error_counter = 0;
-        ROS_INFO("MOTOR SPEC %d, %d", motor.id, motor.spec.model);
-        while (!dxl_interface_.ping(motor) && ros::ok())
+        while (!dxl_interface_.ping(motor))
         {
             error_counter++;
-            ROS_WARN("[dxl_motors]: pinging motor %d failed", motor.id);
+            ROS_WARN("[dxl_motors]: pinging motor id: %d spec: %d failed", motor.id, motor.spec.model);
             if (error_counter > MAX_PING_RETRIES)
             {
                 ROS_ERROR("[dxl_motors]: too many ping errors, motor %d is not responding. \n"
@@ -53,7 +67,6 @@ void DxlMotorsBuilder::pingMotors()
             }
             ros::Rate(5).sleep();
         }
-        ROS_INFO("MOTOR SPEC %d, %d", motor.id, motor.spec.model);
     }
 }
 
@@ -80,7 +93,7 @@ void DxlMotorsBuilder::loadSpecs()
     }
 
     /* feed motors with model specs */
-    for (dxl_motor motor : motors_)
+    for (dxl_motor &motor : motors_)
     {
         bool spec_found = models_specs_.find(motor.spec.model) != models_specs_.end();
         if (spec_found)
@@ -99,11 +112,11 @@ void DxlMotorsBuilder::loadSpecs()
     }
 }
 
-void DxlMotorsBuilder::setTorque(bool flag)
+bool DxlMotorsBuilder::setTorque(bool flag)
 {
     std::string str_flag = flag ? "on" : "off";
     bool success = true;
-    for (dxl_motor motor : motors_)
+    for (dxl_motor &motor : motors_)
     {
         if (!dxl_interface_.setTorque(motor, flag))
         {
@@ -115,8 +128,22 @@ void DxlMotorsBuilder::setTorque(bool flag)
     }
 
     if (success)
+    {
         ROS_INFO("[dxl_motors]: arm torque is %s", str_flag.c_str());
+        return true;
+    }
+    return false;
 }
+
+bool DxlMotorsBuilder::torqueServiceCB(armadillo_hw::EnableTorque::Request &req,
+                                       armadillo_hw::EnableTorque::Response &res)
+{
+    res.success = false;
+    if (DxlMotorsBuilder::setTorque(req.on_off))
+        res.success = true;
+    return true;
+}
+
 
 void DxlMotorsBuilder::fetchParams()
 {
@@ -155,6 +182,12 @@ void DxlMotorsBuilder::buildMotors()
         }
 
         struct dxl_motor new_motor;
+
+        /* set defaults to prevent bad movement on startup */
+        new_motor.spec.model = 0;
+        new_motor.protocol_ver = 2.0;
+        new_motor.command_position = 0.0;
+        new_motor.command_velocity = 0.15;
 
         //invalid id field
         if(arm_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt)

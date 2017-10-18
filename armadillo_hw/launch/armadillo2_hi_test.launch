@@ -3,10 +3,10 @@
 <launch>
 
 <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
-	
+	<!--
 
 	<param name="robot_description" command="$(find xacro)/xacro.py '$(find robotican_manipulator_h)/models/manipulator_h.xacro'" />
-
+-->
 
 	<node name="armadillo_hw_node" pkg="armadillo_hw" type="armadillo_hw_node" respawn="false" output="screen" />
 <rosparam file="$(find armadillo_hw)/config/arm_config.yaml" command="load"/>

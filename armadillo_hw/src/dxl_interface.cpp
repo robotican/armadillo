@@ -31,7 +31,7 @@ bool DxlInterface::ping(dxl_motor &motor)
 
     result = packet_handler_->ping(port_handler_,
                                    motor.id,
-                                   &motor.spec.model,
+                                   &(motor.spec.model),
                                    &error);
 
     if (result != COMM_SUCCESS || error != 0)
@@ -226,8 +226,14 @@ bool DxlInterface::readMotorosLoad(std::vector<dxl_motor> &motors)
                 motor.current *= 2.69/1000.0;
                 break;
         }
-
+        if (motor.id ==6)/////////////////////////////////////////////////////
+        {
+            printf("CURRENT: %f\n", motor.current);/////////////////////////////////////////////////////////////////
+            printf("torque_const_a: %f, torque_const_b: %f\n", motor.spec.torque_const_a, motor.spec.torque_const_b);
+        }
         motor.effort = motor.spec.torque_const_a * motor.current + motor.spec.torque_const_b;
+        if (motor.id ==6)
+            printf("EFFORT: %f\n", motor.effort);/////////////////////////////////////////////////////////////////
     }
     return true;
 }
@@ -248,6 +254,10 @@ bool DxlInterface::bulkWriteVelocity(std::vector<dxl_motor> &motors)
             pre_rad_per_sec_ = motor.command_velocity;
 
         int32_t motor_vel = DxlMath::radsPerSecToTicksPerSec(motor.command_velocity, motor);
+
+        if (motor.id ==6)
+            printf("MOTOR_VEL: %d\n", motor_vel);/////////////////////////////////////////////////////////////////
+
         addparam_success = bulk_write.addParam(motor.id, addr, LEN_PRO_PRESENT_SPEED, (uint8_t*)&motor_vel);
         if (!addparam_success)
             return false;
