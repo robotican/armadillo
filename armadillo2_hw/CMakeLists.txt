@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(armadillo_hw)
+project(armadillo2_hw)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -88,7 +88,7 @@ add_service_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
    DEPENDENCIES
-        armadillo_hw# Or other packages containing msgs
+        armadillo2_hw# Or other packages containing msgs
 )
 
 ################################################
@@ -122,7 +122,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES armadillo_hw
+#  LIBRARIES armadillo2_hw
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
@@ -140,7 +140,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/armadillo_hw.cpp
+#   src/${PROJECT_NAME}/armadillo2_hw.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -153,10 +153,10 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
  add_executable(${PROJECT_NAME}_node
          src/dxl_interface.cpp
-                src/armadillo_hw.cpp
+                src/armadillo2_hw.cpp
          include/dxl_interface.h
-                include/armadillo_hw.h
-         src/armadillo_hw_node.cpp
+                include/armadillo2_hw.h
+         src/armadillo2_hw_node.cpp
          src/dxl_motors_builder.cpp
          include/dxl_motors_builder.h)
 
@@ -215,7 +215,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_armadillo_hw.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_armadillo2_hw.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

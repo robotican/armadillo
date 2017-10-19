@@ -1,5 +1,5 @@
 
-#include "armadillo_hw.h"
+#include "armadillo2_hw.h"
 
 
 ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :
@@ -22,7 +22,7 @@ ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :
     registerInterface(&position_interface_);
 
     prev_time_ = getTime();
-    ROS_INFO("[armadillo_hw]: armadillo hardware interface loaded successfully");
+    ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
 }
 
 

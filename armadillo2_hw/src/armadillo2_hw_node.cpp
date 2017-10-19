@@ -1,7 +1,7 @@
 
 #include <ros/ros.h>
 #include <controller_manager/controller_manager.h>
-#include "armadillo_hw.h"
+#include "armadillo2_hw.h"
 
 #define LOOP_INTERVAL 100
 #define THREADS_NUM 2
