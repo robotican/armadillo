@@ -19,20 +19,44 @@ DxlMotorsBuilder::DxlMotorsBuilder(ros::NodeHandle &nh)
 
     for (dxl_motor &motor :  motors_)
     {
-        ROS_INFO ("done motor id: %d, model: %d, pos: %f, effort: %f, vel: %f",
+        ROS_INFO ("[dxl_motors_builder]: done motor id: %d, model: %d, pos: %f, effort: %f, vel: %f",
                     motor.id, motor.spec.model, motor.position, motor.effort, motor.velocity);
     }
 
-
+    failed_reads_ = 0;
+    failed_writes_ = 0;
     first_read_ = true;
 }
 
 void DxlMotorsBuilder::read()
 {
-    dxl_interface_.readMotorosLoad(motors_);
-    dxl_interface_.readMotorsError(motors_);
-    dxl_interface_.readMotorsVel(motors_);
-    dxl_interface_.readMotorsPos(motors_);
+    if (!dxl_interface_.readMotorosLoad(motors_))
+    {
+        ROS_ERROR("[dxl_motors_builder]: reading motors load failed");
+        failed_reads_++;
+    }
+    if (!dxl_interface_.readMotorsError(motors_))
+    {
+        ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
+        failed_reads_++;
+    }
+    if (dxl_interface_.readMotorsVel(motors_))
+    {
+        ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
+        failed_reads_++;
+    }
+    if (dxl_interface_.readMotorsPos(motors_))
+    {
+        ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
+        failed_reads_++;
+    }
+
+    if (failed_reads_ >= MAX_READ_ERRORS)
+    {
+        ROS_ERROR("[dxl_motors_builder]: too many read errors, shutting down...");
+        ros::shutdown();
+        exit(EXIT_FAILURE);
+    }
 
     if (first_read_)
     {
@@ -43,8 +67,24 @@ void DxlMotorsBuilder::read()
 
 void DxlMotorsBuilder::write()
 {
-   dxl_interface_.bulkWriteVelocity(motors_);
-   dxl_interface_.bulkWritePosition(motors_);
+    if (dxl_interface_.bulkWriteVelocity(motors_))
+    {
+        ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
+        failed_reads_++;
+    }
+
+    if (dxl_interface_.bulkWritePosition(motors_))
+    {
+        ROS_ERROR("[dxl_motors_builder]: writing postision failed");
+        failed_reads_++;
+    }
+
+    if (failed_reads_ >= MAX_READ_ERRORS)
+    {
+        ROS_ERROR("[dxl_motors_builder]: too many write errors, shutting down...");
+        ros::shutdown();
+        exit(EXIT_FAILURE);
+    }
 }
 
 void DxlMotorsBuilder::pingMotors()
@@ -55,10 +95,10 @@ void DxlMotorsBuilder::pingMotors()
         while (!dxl_interface_.ping(motor))
         {
             error_counter++;
-            ROS_WARN("[dxl_motors]: pinging motor id: %d spec: %d failed", motor.id, motor.spec.model);
-            if (error_counter > MAX_PING_RETRIES)
+            ROS_WARN("[dxl_motors_builder]: pinging motor id: %d spec: %d failed", motor.id, motor.spec.model);
+            if (error_counter > MAX_PING_ERRORS)
             {
-                ROS_ERROR("[dxl_motors]: too many ping errors, motor %d is not responding. \n"
+                ROS_ERROR("[dxl_motors_builder]: too many ping errors, motor %d is not responding. \n"
                                   "check if motor crashed (red blink) and try to restart. \n"
                                   "also make sure LATENCY_TIMER is set to 1 in dynamixel_sdk, and that the appropriate"
                                   "rule for dynamixel port is existed with LATENCY_TIMER=1.", motor.id);
@@ -105,7 +145,7 @@ void DxlMotorsBuilder::loadSpecs()
         }
         else
         {
-            ROS_ERROR("[dxl_motors]: couldn't locate model specification for motor %d, model %d. "
+            ROS_ERROR("[dxl_motors_builder]: couldn't locate model specification for motor %d, model %d. "
                               "make sure dxl_motor_data.yaml contains all the necessary specs", motor.id, motor.spec.model);
         }
 
@@ -121,7 +161,7 @@ bool DxlMotorsBuilder::setTorque(bool flag)
         if (!dxl_interface_.setTorque(motor, flag))
         {
             success = false;
-            ROS_WARN("[dxl_motors]: failed set torque of motor id %d to %s", motor.id, str_flag.c_str());
+            ROS_WARN("[dxl_motors_builder]: failed set torque of motor id %d to %s", motor.id, str_flag.c_str());
         }
         else
             motor.in_torque = flag;
@@ -129,7 +169,7 @@ bool DxlMotorsBuilder::setTorque(bool flag)
 
     if (success)
     {
-        ROS_INFO("[dxl_motors]: arm torque is %s", str_flag.c_str());
+        ROS_INFO("[dxl_motors_builder]: arm torque is %s", str_flag.c_str());
         return true;
     }
     return false;
@@ -149,7 +189,7 @@ void DxlMotorsBuilder::fetchParams()
 {
     if (!node_handle_->hasParam(ARM_CONFIG_PARAM))
     {
-        ROS_ERROR("[dxl_motors]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+        ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
                           "and that your launch includes this param file. shutting down...", ARM_CONFIG_PARAM);
         ros::shutdown();
         exit (EXIT_FAILURE);
@@ -157,7 +197,7 @@ void DxlMotorsBuilder::fetchParams()
     node_handle_->getParam(ARM_CONFIG_PARAM, arm_config_);
     if (arm_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
     {
-        ROS_ERROR("[dxl_motors]: %s param is invalid (need to be an of type array) or missing. "
+        ROS_ERROR("[dxl_motors_builder]: %s param is invalid (need to be an of type array) or missing. "
                           "make sure that this param exist in arm_config.yaml and that your launch "
                           "includes this param file. shutting down...", ARM_CONFIG_PARAM);
         ros::shutdown();
@@ -175,7 +215,7 @@ void DxlMotorsBuilder::buildMotors()
         /* feed motor with user defined settings */
         if(arm_config_[i].getType() != XmlRpc::XmlRpcValue::TypeStruct)
         {
-            ROS_ERROR("[dxl_motors]: arm motor id at index %d param data type is invalid or missing. "
+            ROS_ERROR("[dxl_motors_builder]: arm motor id at index %d param data type is invalid or missing. "
                               "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
@@ -183,44 +223,39 @@ void DxlMotorsBuilder::buildMotors()
 
         struct dxl_motor new_motor;
 
-        /* set defaults to prevent bad movement on startup */
+        /* defaults to prevent bad movement on startup */
         new_motor.spec.model = 0;
         new_motor.protocol_ver = 2.0;
         new_motor.command_position = 0.0;
         new_motor.command_velocity = 0.15;
 
-        //invalid id field
-        if(arm_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt)
+        if(arm_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid id field
         {
-            ROS_ERROR("[dxl_motors]: arm motor id at index %d: invalid data type or missing. "
+            ROS_ERROR("[dxl_motors_builder]: arm motor id at index %d: invalid data type or missing. "
                               "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
         new_motor.id = static_cast<int>(arm_config_[i]["id"]);
 
-        //invalid joint_name field
-        if (arm_config_[i]["joint_name"].getType() != XmlRpc::XmlRpcValue::TypeString)
+        if (arm_config_[i]["joint_name"].getType() != XmlRpc::XmlRpcValue::TypeString) //invalid joint_name field
         {
-            ROS_ERROR("[dxl_motors]: arm motor joint_name at index %d: invalid data type or missing. "
+            ROS_ERROR("[dxl_motors_builder]: arm motor joint_name at index %d: invalid data type or missing. "
                               "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
         new_motor.joint_name = static_cast<std::string>(arm_config_[i]["joint_name"]);
 
-        //invalid interface field
-        if (arm_config_[i]["interface"].getType() != XmlRpc::XmlRpcValue::TypeString)
+        if (arm_config_[i]["interface"].getType() != XmlRpc::XmlRpcValue::TypeString) //invalid interface field
         {
-            ROS_ERROR("[dxl_motors]: arm motor interface_type at index %d: invalid data type or missing. "
+            ROS_ERROR("[dxl_motors_builder]: arm motor interface_type at index %d: invalid data type or missing. "
                               "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
         std::string string_interface_type = static_cast<std::string>(arm_config_[i]["interface"]);
         new_motor.interface_type = dxl_motor::stringToInterfaceType(string_interface_type);
-
-        /* feed motor with dxl defined settings (constant) */
 
         motors_.push_back(new_motor);
     }
@@ -266,15 +301,15 @@ void DxlMotorsBuilder::openPort()
     switch (port_state)
     {
         case DxlInterface::PORT_FAIL:
-            ROS_ERROR("[dxl_motors]: open arm port %s failed. "
+            ROS_ERROR("[dxl_motors_builder]: open arm port %s failed. "
                               "make sure cable is connected and port has the right permissions. shutting down...", arm_port_.c_str());
             ros::shutdown();
             exit (EXIT_FAILURE);
         case DxlInterface::BAUDRATE_FAIL:
-            ROS_ERROR("[dxl_motors]: setting arm baudrate to %d failed. shutting down...", arm_baudrate_);
+            ROS_ERROR("[dxl_motors_builder]: setting arm baudrate to %d failed. shutting down...", arm_baudrate_);
             ros::shutdown();
             exit (EXIT_FAILURE);
         case DxlInterface::SUCCESS:
-            ROS_INFO("[dxl_motors]: arm port opened successfully \nport name: %s \nbaudrate: %d", arm_port_.c_str(), arm_baudrate_);
+            ROS_INFO("[dxl_motors_builder]: arm port opened successfully \nport name: %s \nbaudrate: %d", arm_port_.c_str(), arm_baudrate_);
     }
 }

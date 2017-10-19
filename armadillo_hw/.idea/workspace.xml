@@ -20,10 +20,10 @@
       <config projectName="armadillo_hw" targetName="std_msgs_generate_messages_nodejs" />
       <config projectName="armadillo_hw" targetName="rosgraph_msgs_generate_messages_eus" />
       <config projectName="armadillo_hw" targetName="rosgraph_msgs_generate_messages_lisp" />
+      <config projectName="armadillo_hw" targetName="roscpp_generate_messages_eus" />
       <config projectName="armadillo_hw" targetName="armadillo_hw_genlisp" />
       <config projectName="armadillo_hw" targetName="download_extra_data" />
       <config projectName="armadillo_hw" targetName="controller_manager_msgs_generate_messages_eus" />
-      <config projectName="armadillo_hw" targetName="armadillo_hw_generate_messages_nodejs" />
       <config projectName="armadillo_hw" targetName="armadillo_hw_geneus" />
       <config projectName="armadillo_hw" targetName="roscpp_generate_messages_lisp" />
       <config projectName="armadillo_hw" targetName="std_msgs_generate_messages_eus" />
@@ -40,7 +40,7 @@
       <config projectName="armadillo_hw" targetName="armadillo_hw_gencpp" />
       <config projectName="armadillo_hw" targetName="gtest_main" />
       <config projectName="armadillo_hw" targetName="std_msgs_generate_messages_cpp" />
-      <config projectName="armadillo_hw" targetName="roscpp_generate_messages_eus" />
+      <config projectName="armadillo_hw" targetName="armadillo_hw_generate_messages_nodejs" />
       <config projectName="armadillo_hw" targetName="rosgraph_msgs_generate_messages_py" />
     </generated>
   </component>
@@ -64,28 +64,38 @@
       <file leaf-file-name="armadillo_hw.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/armadillo_hw.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
+            <state relative-caret-position="87">
               <caret line="10" column="31" lean-forward="false" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dxl_motors_builder.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dxl_motors_builder.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/dxl_motors_builder.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="185" column="61" lean-forward="false" selection-start-line="185" selection-start-column="61" selection-end-line="185" selection-end-column="61" />
+            <state relative-caret-position="-2418">
+              <caret line="86" column="5" lean-forward="true" selection-start-line="86" selection-start-column="5" selection-end-line="86" selection-end-column="5" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dxl_interface.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dxl_interface.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/dxl_interface.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="265" column="48" lean-forward="true" selection-start-line="265" selection-start-column="48" selection-end-line="265" selection-end-column="48" />
+            <state relative-caret-position="-1870">
+              <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dxl_motors_builder.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/dxl_motors_builder.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="29" column="10" lean-forward="false" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -94,9 +104,11 @@
       <file leaf-file-name="dxl_interface.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/dxl_interface.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="789">
-              <caret line="150" column="14" lean-forward="false" selection-start-line="150" selection-start-column="14" selection-end-line="150" selection-end-column="14" />
-              <folding />
+            <state relative-caret-position="1962">
+              <caret line="109" column="26" lean-forward="true" selection-start-line="109" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+              <folding>
+                <element signature="e#2481#2500#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -111,6 +123,10 @@
       <find>dxl_motor motor</find>
       <find>read</find>
       <find>/////////</find>
+      <find>read()</find>
+      <find>motor_vel</find>
+      <find>write()</find>
+      <find>m</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -119,7 +135,6 @@
         <option value="$PROJECT_DIR$/include/dxl_arm_interface.h" />
         <option value="$PROJECT_DIR$/src/dxl_arm_interface.cpp" />
         <option value="$PROJECT_DIR$/src/armadillo_hw_node.cpp" />
-        <option value="$PROJECT_DIR$/include/dxl_interface.h" />
         <option value="$PROJECT_DIR$/include/arm_interface.h" />
         <option value="$PROJECT_DIR$/src/arm_interface.cpp" />
         <option value="$PROJECT_DIR$/src/dxl_motors_builder.h" />
@@ -128,6 +143,7 @@
         <option value="$PROJECT_DIR$/include/close_loop_hw.h" />
         <option value="$PROJECT_DIR$/include/armadillo_hw.h" />
         <option value="$PROJECT_DIR$/src/armadillo_hw.cpp" />
+        <option value="$PROJECT_DIR$/include/dxl_interface.h" />
         <option value="$PROJECT_DIR$/include/dxl_motors_builder.h" />
         <option value="$PROJECT_DIR$/src/dxl_motors_builder.cpp" />
         <option value="$PROJECT_DIR$/src/dxl_interface.cpp" />
@@ -407,15 +423,16 @@
       <workItem from="1508158075464" duration="2659000" />
       <workItem from="1508232561304" duration="6974000" />
       <workItem from="1508311899915" duration="3069000" />
-      <workItem from="1508319802425" duration="6524000" />
+      <workItem from="1508319802425" duration="7146000" />
+      <workItem from="1508391999161" duration="4419000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47235000" />
+    <option name="totallyTimeSpent" value="52276000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="3" width="1855" height="1084" extended-state="6" />
+    <frame x="-117" y="226" width="1857" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14501348" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -489,7 +506,7 @@
         <state relative-caret-position="180">
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -539,7 +556,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -551,7 +568,7 @@
         <state relative-caret-position="540">
           <caret line="30" column="2" lean-forward="true" selection-start-line="30" selection-start-column="2" selection-end-line="30" selection-end-column="2" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -575,7 +592,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1700">
           <caret line="100" column="9" lean-forward="false" selection-start-line="100" selection-start-column="9" selection-end-line="100" selection-end-column="9" />
-          <folding />
+          <folding>
+            <element signature="e#2481#2500#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -600,7 +619,7 @@
         <state relative-caret-position="323">
           <caret line="19" column="21" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="21" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -624,7 +643,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1800">
           <caret line="100" column="9" lean-forward="false" selection-start-line="100" selection-start-column="9" selection-end-line="100" selection-end-column="9" />
-          <folding />
+          <folding>
+            <element signature="e#2481#2500#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -649,7 +670,7 @@
         <state relative-caret-position="342">
           <caret line="19" column="21" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="21" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -673,7 +694,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="702">
           <caret line="39" column="35" lean-forward="false" selection-start-line="39" selection-start-column="35" selection-end-line="39" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#2481#2500#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -682,7 +705,7 @@
         <state relative-caret-position="216">
           <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -714,7 +737,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="702">
           <caret line="39" column="35" lean-forward="true" selection-start-line="39" selection-start-column="35" selection-end-line="39" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#2481#2500#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -723,7 +748,7 @@
         <state relative-caret-position="216">
           <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -781,47 +806,49 @@
         <state relative-caret-position="0">
           <caret line="18" column="20" lean-forward="false" selection-start-line="18" selection-start-column="20" selection-end-line="18" selection-end-column="20" />
           <folding>
-            <element signature="e#75#101#0" expanded="true" />
+            <element signature="e#75#101#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/dxl_interface.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1962">
+          <caret line="109" column="26" lean-forward="true" selection-start-line="109" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+          <folding>
+            <element signature="e#2481#2500#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/dxl_interface.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1870">
+          <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/dxl_motors_builder.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="53" column="9" lean-forward="true" selection-start-line="53" selection-start-column="9" selection-end-line="53" selection-end-column="20" />
+        <state relative-caret-position="264">
+          <caret line="29" column="10" lean-forward="false" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="10" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/armadillo_hw.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
+        <state relative-caret-position="87">
           <caret line="10" column="31" lean-forward="false" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/dxl_interface.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="789">
-          <caret line="150" column="14" lean-forward="false" selection-start-line="150" selection-start-column="14" selection-end-line="150" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/dxl_motors_builder.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="185" column="61" lean-forward="false" selection-start-line="185" selection-start-column="61" selection-end-line="185" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/dxl_interface.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="265" column="48" lean-forward="true" selection-start-line="265" selection-start-column="48" selection-end-line="265" selection-end-column="48" />
+        <state relative-caret-position="-2418">
+          <caret line="86" column="5" lean-forward="true" selection-start-line="86" selection-start-column="5" selection-end-line="86" selection-end-column="5" />
           <folding />
         </state>
       </provider>

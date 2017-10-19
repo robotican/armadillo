@@ -14,7 +14,9 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
 
-#define MAX_PING_RETRIES 5
+#define MAX_PING_ERRORS 5
+#define MAX_READ_ERRORS 16
+#define MAX_WRITE_ERRORS 16
 #define ARM_CONFIG_PARAM "arm_config"
 
 /* The >> operator disappeared in yaml-cpp 0.5, so this function is     */
@@ -45,14 +47,14 @@ private:
     std::vector<hardware_interface::PosVelJointHandle> posvel_handles_;
     std::vector<hardware_interface::JointHandle> pos_handles_;
 
+    bool first_read_;
+    int arm_baudrate_;
+    int failed_reads_, failed_writes_;
     std::map<uint16_t, dxl_spec> models_specs_; /* key - model number, value - dxl spec */
     std::string arm_port_;
-    int arm_baudrate_;
     DxlInterface dxl_interface_;
     XmlRpc::XmlRpcValue arm_config_;
     std::vector<dxl_motor> motors_;
-    bool first_read_;
-
 
     bool torqueServiceCB(armadillo_hw::EnableTorque::Request  &req,
                          armadillo_hw::EnableTorque::Response &res);
