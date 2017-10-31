@@ -1,0 +1,5 @@
+dxl_spec_config: [
+{name: H54-200-S500-R, model: 54024, cpr: 501900, rpm_factor: 0.00199234, torque_const_a: 4.337606 , torque_const_b: -2.69444},
+
+{name: MX28, model: 30, cpr: 4095, rpm_factor: 0.229, torque_const_a: 0.01 , torque_const_b: 0.0},
+]

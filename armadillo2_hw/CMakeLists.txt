@@ -27,7 +27,8 @@ find_package(
              roscpp
 	     rospy
              dynamixel_sdk
-             controller_manager)
+             controller_manager
+             bms)
 
 
 ## System dependencies are found with CMake's conventions
@@ -122,7 +123,7 @@ find_package(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES armadillo2_hw
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS bms
 #  DEPENDS system_lib
 )
 
@@ -157,7 +158,7 @@ include_directories(
                 include/armadillo2_hw.h
          src/armadillo2_hw_node.cpp
          src/dxl_motors_builder.cpp
-         include/dxl_motors_builder.h)
+         include/dxl_motors_builder.h src/battery_pub.cpp include/battery_pub.h)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

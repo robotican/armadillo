@@ -4,7 +4,7 @@
 
 #include <ros/ros.h>
 
-#include "bms_interface.h"
+#include "bms/bms_interface.h"
 
 #define LOOP_INTERVAL 1000
 #define THREADS_NUM 2

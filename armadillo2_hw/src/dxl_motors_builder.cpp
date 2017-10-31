@@ -52,12 +52,12 @@ namespace armadillo2_hw
             failed_reads_++;
         }
 
-        if (failed_reads_ >= MAX_READ_ERRORS)
+        /*if (failed_reads_ >= MAX_READ_ERRORS)
         {
             ROS_ERROR("[dxl_motors_builder]: too many read errors, shutting down...");
             ros::shutdown();
             exit(EXIT_FAILURE);
-        }
+        }*/
 
         if (first_read_)
         {
@@ -71,21 +71,21 @@ namespace armadillo2_hw
         if (dxl_interface_.bulkWriteVelocity(motors_))
         {
             ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
-            failed_reads_++;
+            failed_writes_++;
         }
 
         if (dxl_interface_.bulkWritePosition(motors_))
         {
             ROS_ERROR("[dxl_motors_builder]: writing postision failed");
-            failed_reads_++;
+            failed_writes_++;
         }
 
-        if (failed_reads_ >= MAX_READ_ERRORS)
+        /*if (failed_writes_ >= MAX_READ_ERRORS)
         {
             ROS_ERROR("[dxl_motors_builder]: too many write errors, shutting down...");
             ros::shutdown();
             exit(EXIT_FAILURE);
-        }
+        }*/
     }
 
     void DxlMotorsBuilder::pingMotors()
@@ -114,7 +114,7 @@ namespace armadillo2_hw
     void DxlMotorsBuilder::loadSpecs()
     {
         /* load dxl motors specs */
-        std::string motors_data_path = ros::package::getPath("armadillo_hw");
+       /* std::string motors_data_path = ros::package::getPath("armadillo2_hw");
         motors_data_path += "/config/dxl_motor_data.yaml";
         YAML::Node motors_doc;
         motors_doc = YAML::LoadFile(motors_data_path);
@@ -130,19 +130,109 @@ namespace armadillo2_hw
             motors_doc[block_num]["torque_constant_a"]  >> spec.torque_const_a;
             motors_doc[block_num]["torque_constant_b"]  >> spec.torque_const_b;
 
-            models_specs_[spec.model] = spec;
+            specs_[spec.model] = spec;
+        }
+
+        feed motors with model specs
+        for (dxl::motor &motor : motors_)
+        {
+            bool spec_found = specs_.find(motor.spec.model) != specs_.end();
+            if (spec_found)
+            {
+                motor.spec.cpr = specs_[motor.spec.model].cpr;
+                motor.spec.rpm_scale_factor = specs_[motor.spec.model].rpm_scale_factor;
+                motor.spec.torque_const_a = specs_[motor.spec.model].torque_const_a;
+                motor.spec.torque_const_b = specs_[motor.spec.model].torque_const_b;
+            }
+            else
+            {
+                ROS_ERROR("[dxl_motors_builder]: couldn't locate model specification for motor %d, model %d. "
+                                  "make sure dxl_motor_data.yaml contains all the necessary specs", motor.id, motor.spec.model);
+            }
+
+        }*/
+
+        /* build motors */
+        for(int i = 0; i < dxl_spec_config_.size(); i++)
+        {
+            /* feed motor with user defined settings */
+            if(dxl_spec_config_[i].getType() != XmlRpc::XmlRpcValue::TypeStruct)
+            {
+                ROS_ERROR("[dxl_motors_builder]: motor spec at index %d param data type is invalid or missing. "
+                                  "make sure that this param exist in dxl_spec_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+
+            struct dxl::spec spec;
+
+            if(dxl_spec_config_[i]["name"].getType() != XmlRpc::XmlRpcValue::TypeString) //invalid name field
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec name at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.name = static_cast<std::string>(dxl_spec_config_[i]["name"]);
+
+            if(dxl_spec_config_[i]["model"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid name field
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec model at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.model = static_cast<int>(dxl_spec_config_[i]["model"]);
+
+            if(dxl_spec_config_[i]["cpr"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid name field
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec cpr at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.cpr = static_cast<int>(dxl_spec_config_[i]["cpr"]);
+
+            if(dxl_spec_config_[i]["rpm_factor"].getType() != XmlRpc::XmlRpcValue::TypeDouble) //invalid name field
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec rpm_factor at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.rpm_scale_factor = static_cast<double>(dxl_spec_config_[i]["rpm_factor"]);
+
+            if(dxl_spec_config_[i]["torque_const_a"].getType() != XmlRpc::XmlRpcValue::TypeDouble) //invalid name field
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec torque_const_a at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.torque_const_a = static_cast<double>(dxl_spec_config_[i]["torque_const_a"]);
+
+            if(dxl_spec_config_[i]["torque_const_b"].getType() != XmlRpc::XmlRpcValue::TypeDouble) //invalid name field
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec torque_const_b at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.torque_const_b = static_cast<double>(dxl_spec_config_[i]["torque_const_b"]);
+
+            specs_[spec.model] = spec;
         }
 
         /* feed motors with model specs */
         for (dxl::motor &motor : motors_)
         {
-            bool spec_found = models_specs_.find(motor.spec.model) != models_specs_.end();
+            bool spec_found = specs_.find(motor.spec.model) != specs_.end();
             if (spec_found)
             {
-                motor.spec.cpr = models_specs_[motor.spec.model].cpr;
-                motor.spec.rpm_scale_factor = models_specs_[motor.spec.model].rpm_scale_factor;
-                motor.spec.torque_const_a = models_specs_[motor.spec.model].torque_const_a;
-                motor.spec.torque_const_b = models_specs_[motor.spec.model].torque_const_b;
+                motor.spec.cpr = specs_[motor.spec.model].cpr;
+                motor.spec.rpm_scale_factor = specs_[motor.spec.model].rpm_scale_factor;
+                motor.spec.torque_const_a = specs_[motor.spec.model].torque_const_a;
+                motor.spec.torque_const_b = specs_[motor.spec.model].torque_const_b;
             }
             else
             {
@@ -201,6 +291,15 @@ namespace armadillo2_hw
             ROS_ERROR("[dxl_motors_builder]: %s param is invalid (need to be an of type array) or missing. "
                               "make sure that this param exist in arm_config.yaml and that your launch "
                               "includes this param file. shutting down...", ARM_CONFIG_PARAM);
+            ros::shutdown();
+            exit (EXIT_FAILURE);
+        }
+        node_handle_->getParam(SPEC_CONFIG_PARAM, dxl_spec_config_);
+        if (dxl_spec_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
+        {
+            ROS_ERROR("[dxl_motors_builder]: %s param is invalid (need to be an of type array) or missing. "
+                              "make sure that this param exist in arm_config.yaml and that your launch "
+                              "includes this param file. shutting down...", SPEC_CONFIG_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }

@@ -1,5 +1,5 @@
 arm_config: [
-#{id: 1, joint_name: rotation1_joint, interface: PosVel, protocol: 2.0},
+{id: 1, joint_name: rotation1_joint, interface: PosVel, protocol: 2.0},
 #{id: 2, joint_name: shoulder1_joint, interface: PosVel, protocol: 2.0},
 #{id: 3, joint_name: shoulder2_joint, interface: PosVel, protocol: 2.0},
 #{id: 4, joint_name: rotation2_joint, interface: PosVel, protocol: 2.0},

@@ -1,10 +1,11 @@
 
-#ifndef ARMADILLO_HW_ARMADILLO_HW_H
-#define ARMADILLO_HW_ARMADILLO_HW_H
+#ifndef ARMADILLO2_HW_ARMADILLO_HW_H
+#define ARMADILLO2_HW_ARMADILLO_HW_H
 
 
 #include "dxl_interface.h"
 #include "dxl_motors_builder.h"
+#include "battery_pub.h"
 #include <hardware_interface/robot_hw.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
@@ -25,6 +26,7 @@ namespace armadillo2_hw
 
         /* robot close loop components */
         DxlMotorsBuilder dxl_motors_;
+        BatteryPub battery_;
 
 
 
@@ -41,4 +43,4 @@ namespace armadillo2_hw
     };
 }
 
-#endif //ARMADILLO_HW_ARMADILLO_HW_H
+#endif //ARMADILLO2_HW_ARMADILLO_HW_H

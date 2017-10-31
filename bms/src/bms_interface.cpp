@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "bms_interface.h"
+#include "bms/bms_interface.h"
 
 namespace bms
 {
@@ -50,14 +50,14 @@ namespace bms
         tcflush(file_handle_,TCIOFLUSH);
     }
 
-    void BMSInterface::read()
+    data BMSInterface::read()
     {
         char buff[BUFF_SIZE];
         int pkg_size = readPkgFromBMS(buff, BUFF_SIZE);
 
         fprintf(stderr, "\n") ; /////////////////////////////////////////////////////////////////////////////////////////
 
-        decodePkg(buff, pkg_size);
+        return decodePkg(buff, pkg_size);
     }
 
 
@@ -122,7 +122,7 @@ namespace bms
      * (BlanceState), 0000 (DchgNum), 0000 (ChgNum), 2D (soc), 0048
      * ( CapNow ),00A0( CapFull ),4E( CRC ),~( EOI )
      ********************************************************************/
-    void BMSInterface::decodePkg(char *buff, size_t buff_size)
+    data BMSInterface::decodePkg(char *buff, size_t buff_size)
     {
         //fprintf(stderr, "\nbuff_size: %d \n", buff_size);
         data pkg_data;
@@ -205,7 +205,7 @@ namespace bms
 
         /****** fetch TempNum ******/
         pkg_data.temp_num = fetchParam(buff, BMS_PKG_TEMP_NUM_INDX + cells_indx_offset, BMS_PKG_TEMP_NUM_SIZE);
-        fprintf(stderr, "\ntemp_num: %d\n", pkg_data.temp_num);
+        //fprintf(stderr, "\ntemp_num: %d\n", pkg_data.temp_num);
 
         const uint8_t temp_indx_offset = pkg_data.temp_num * BMS_PKG_TEMP_SIZE;
 
@@ -219,85 +219,85 @@ namespace bms
             pkg_data.temps.push_back(temp);
             fprintf(stderr, "temp num: %d temp: %d | ", temp_indx ,pkg_data.temps[temp_indx]);
         }
-        fprintf(stderr, "\ntemp max: %d", pkg_data.temp_max);
-        fprintf(stderr, "\n");
+        //fprintf(stderr, "\ntemp max: %d", pkg_data.temp_max);
+        //fprintf(stderr, "\n");
 
         /****** fetch Vstate ******/
         pkg_data.vstate = fetchParam(buff, BMS_PKG_VSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_VSTATE_SIZE);
-        fprintf(stderr, "\nVSTATE: %d\n", pkg_data.vstate);
+        //fprintf(stderr, "\nVSTATE: %d\n", pkg_data.vstate);
 
         /****** fetch Cstate ******/
         pkg_data.cstate = fetchParam(buff, BMS_PKG_CSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_CSTATE_SIZE);
-        fprintf(stderr, "\nCSTATE: %d\n", pkg_data.cstate);
+        //fprintf(stderr, "\nCSTATE: %d\n", pkg_data.cstate);
 
         /****** fetch Tstate ******/
         pkg_data.tstate = fetchParam(buff, BMS_PKG_TSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_TSTATE_SIZE);
-        fprintf(stderr, "\nTSTATE: %d\n", pkg_data.tstate);
+        //fprintf(stderr, "\nTSTATE: %d\n", pkg_data.tstate);
 
         /****** fetch Alarm ******/
         pkg_data.alarm = fetchParam(buff, BMS_PKG_ALARM_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_ALARM_SIZE);
-        fprintf(stderr, "\nALARM: %d\n", pkg_data.alarm);
+        //fprintf(stderr, "\nALARM: %d\n", pkg_data.alarm);
 
         /****** fetch FetState ******/
         pkg_data.fet_state = fetchParam(buff, BMS_PKG_FET_STATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                     BMS_PKG_FET_STATE_SIZE);
-        fprintf(stderr, "\nFET-STATE: %d\n", pkg_data.fet_state);
+        //fprintf(stderr, "\nFET-STATE: %d\n", pkg_data.fet_state);
 
         /****** fetch WARN_VOV ******/
         pkg_data.warn_vov = fetchParam(buff, BMS_PKG_WARN_VOV_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                         BMS_PKG_WARN_VOV_SIZE);
-        fprintf(stderr, "\nWARN_VOV: %d\n", pkg_data.warn_vov);
+        //fprintf(stderr, "\nWARN_VOV: %d\n", pkg_data.warn_vov);
 
         /****** fetch WARN_VUV ******/
         pkg_data.warn_vuv = fetchParam(buff, BMS_PKG_WARN_VUV_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                        BMS_PKG_WARN_VUV_SIZE);
-        fprintf(stderr, "\nWARN_VUV: %d\n", pkg_data.warn_vuv);
+        //fprintf(stderr, "\nWARN_VUV: %d\n", pkg_data.warn_vuv);
 
         /****** fetch NUM_WARN_VHIGH ******/
         pkg_data.num_warn_vhigh = fetchParam(buff, BMS_PKG_NUM_WARN_VHIGH_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                        BMS_PKG_NUM_WARN_VHIGH_SIZE);
-        fprintf(stderr, "\nNUM_WARN_VHIGH: %d\n", pkg_data.num_warn_vhigh);
+        //fprintf(stderr, "\nNUM_WARN_VHIGH: %d\n", pkg_data.num_warn_vhigh);
 
         /****** fetch NUM_WARN_VLOW ******/
         pkg_data.num_warn_vlow = fetchParam(buff, BMS_PKG_NUM_WARN_VLOW_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                              BMS_PKG_NUM_WARN_VLOW_SIZE);
-        fprintf(stderr, "\nNUM_WARN_VLOW: %d\n", pkg_data.num_warn_vlow);
+        //fprintf(stderr, "\nNUM_WARN_VLOW: %d\n", pkg_data.num_warn_vlow);
 
         /****** fetch BalanceState ******/
         pkg_data.balance_state = fetchParam(buff, BMS_PKG_BALANCE_STATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                             BMS_PKG_BALANCE_STATE_SIZE);
-        fprintf(stderr, "\nBALANCE_STATE: %d\n", pkg_data.balance_state);
+        //fprintf(stderr, "\nBALANCE_STATE: %d\n", pkg_data.balance_state);
 
         /****** fetch DchgNum ******/
         pkg_data.dchg_num = fetchParam(buff, BMS_PKG_DCHG_NUM_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                        BMS_PKG_DCHG_NUM_SIZE);
-        fprintf(stderr, "\nDCHG_NUM: %d\n", pkg_data.dchg_num);
+        //fprintf(stderr, "\nDCHG_NUM: %d\n", pkg_data.dchg_num);
 
         /****** fetch ChgNum ******/
         pkg_data.chg_num = fetchParam(buff, BMS_PKG_CHG_NUM_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                        BMS_PKG_CHG_NUM_SIZE);
-        fprintf(stderr, "\nCHG_NUM: %d\n", pkg_data.chg_num);
+        //fprintf(stderr, "\nCHG_NUM: %d\n", pkg_data.chg_num);
 
         /****** fetch soc ******/
         pkg_data.soc = fetchParam(buff, BMS_PKG_SOC_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                   BMS_PKG_SOC_SIZE);
-        fprintf(stderr, "\nSOC: %d\n", pkg_data.soc);
+        //fprintf(stderr, "\nSOC: %d\n", pkg_data.soc);
 
         /****** fetch CapNow ******/
         pkg_data.cap_now = fetchParam(buff, BMS_PKG_CAP_NOW_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                       BMS_PKG_CAP_NOW_SIZE);
-        fprintf(stderr, "\nCAP_NOW: %d\n", pkg_data.cap_now);
+        //fprintf(stderr, "\nCAP_NOW: %d\n", pkg_data.cap_now);
 
         /****** fetch CapFull ******/
         pkg_data.cap_full = fetchParam(buff, BMS_PKG_CAP_FULL_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                       BMS_PKG_CAP_FULL_SIZE);
-        fprintf(stderr, "\nCAP_FULL: %d\n", pkg_data.cap_full);
+        //fprintf(stderr, "\nCAP_FULL: %d\n", pkg_data.cap_full);
 
-        //TODO: BUILD LOW LEVEL AND HIGH LEVEL DATA STRUCTS
+        return pkg_data;
     }
 
     int BMSInterface::fetchParam(char *buff, int param_indx, size_t param_size)
@@ -305,7 +305,7 @@ namespace bms
         char param[param_size + 1];
         param[param_size] = '\0';
         strncpy(param, buff + param_indx, param_size);
-        return strtol(param, 0, BMS_PKG_BASE); //////////////////////////////maby need strtoul insted
+        return strtol(param, 0, BMS_PKG_BASE);
     }
 
     BMSInterface::~BMSInterface()

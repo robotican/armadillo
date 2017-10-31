@@ -2,8 +2,8 @@
 // Created by sub on 16/10/17.
 //
 
-#ifndef ARMADILLO_HW_DXL_MOTORS_BUILDER_H
-#define ARMADILLO_HW_DXL_MOTORS_BUILDER_H
+#ifndef ARMADILLO2_HW_DXL_MOTORS_BUILDER_H
+#define ARMADILLO2_HW_DXL_MOTORS_BUILDER_H
 
 #include "dxl_interface.h"
 #include <std_srvs/SetBool.h>
@@ -18,6 +18,7 @@
 #define MAX_READ_ERRORS 16
 #define MAX_WRITE_ERRORS 16
 #define ARM_CONFIG_PARAM "arm_config"
+#define SPEC_CONFIG_PARAM "dxl_spec_config"
 
 /* The >> operator disappeared in yaml-cpp 0.5, so this function is     */
 /* added to provide support for code written under the yaml-cpp 0.3 API.*/
@@ -53,10 +54,10 @@ namespace armadillo2_hw
         bool first_read_;
         int arm_baudrate_;
         int failed_reads_, failed_writes_;
-        std::map<uint16_t, dxl::spec> models_specs_; /* key - model number, value - dxl spec */
+        std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */
         std::string arm_port_;
         dxl::DxlInterface dxl_interface_;
-        XmlRpc::XmlRpcValue arm_config_;
+        XmlRpc::XmlRpcValue arm_config_, dxl_spec_config_;
         std::vector<dxl::motor> motors_;
 
         bool torqueServiceCB(std_srvs::SetBool::Request  &req,
@@ -71,4 +72,4 @@ namespace armadillo2_hw
 
     };
 }
-#endif //ARMADILLO_HW_DXL_MOTORS_BUILDER_H
+#endif //ARMADILLO2_HW_DXL_MOTORS_BUILDER_H

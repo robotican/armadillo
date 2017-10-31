@@ -1,8 +1,8 @@
 
 
 
-#ifndef ARMADILLO_HW_ARM_INTERFACE_H
-#define ARMADILLO_HW_ARM_INTERFACE_H
+#ifndef ARMADILLO2_HW_ARM_INTERFACE_H
+#define ARMADILLO2_HW_ARM_INTERFACE_H
 
 // Control table address FOR MX-28
 #define ADDR_MX_MODEL_NUM               0
@@ -160,4 +160,4 @@ namespace dxl
 
 }
 
-#endif //ARMADILLO_HW_ARM_INTERFACE_H
+#endif //ARMADILLO2_HW_ARM_INTERFACE_H

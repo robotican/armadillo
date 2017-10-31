@@ -128,7 +128,7 @@ namespace bms
         ulong time = 0;
         float vbat = 0; //battery total voltage (V)
         uint8_t cell_num = 0; //Number of cells 1~16
-        std::vector<float> vcells; //Vcell[16], a string of all voltages by order (V)
+        std::vector<float> vcells; //all voltages by order (V)
         float chrg_current = 0; //CHG current
         float dchrg_current = 0; //DSG current
         uint8_t temp_num = 0; //Number of temp sensors (m)
@@ -150,6 +150,7 @@ namespace bms
         uint16_t cap_now = 0; //Current capacity
         uint16_t cap_full = 0; //Full Charge Capacity
     };
+
 
     class BMSException : public std::runtime_error
     {
@@ -178,12 +179,12 @@ namespace bms
 
         void setAttributes();
         int readPkgFromBMS(char *buff, size_t buff_size_limit);
-        void decodePkg(char buff[], size_t buff_size);
+        data decodePkg(char buff[], size_t buff_size);
         int fetchParam(char buff[], int param_indx, size_t param_size);
 
     public:
         void connect(std::string port);
-        void read();
+        data read();
         BMSInterface() {int a = BMS_PKG_CAP_FULL_INDX;}
         ~BMSInterface();
 

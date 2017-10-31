@@ -24,6 +24,7 @@ int main(int argc, char **argv)
         controller_manager.update(armadillo_hw.getTime(), armadillo_hw.getPeriod());
         armadillo_hw.write();
 
+        ros::spinOnce;
         loop.sleep();
     }
 }
