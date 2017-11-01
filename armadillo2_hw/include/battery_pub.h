@@ -11,6 +11,7 @@
 
 #define BATT_PORT "/dev/ttyUSB0"
 #define BATT_PUB_INTERVAL 1 //secs
+#define SHOW_WARNINGS false
 
 namespace armadillo2_hw
 {

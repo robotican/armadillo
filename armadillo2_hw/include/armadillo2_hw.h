@@ -2,8 +2,6 @@
 #ifndef ARMADILLO2_HW_ARMADILLO_HW_H
 #define ARMADILLO2_HW_ARMADILLO_HW_H
 
-
-#include "dxl_interface.h"
 #include "dxl_motors_builder.h"
 #include "battery_pub.h"
 #include <hardware_interface/robot_hw.h>

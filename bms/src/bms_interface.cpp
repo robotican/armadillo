@@ -55,7 +55,7 @@ namespace bms
         char buff[BUFF_SIZE];
         int pkg_size = readPkgFromBMS(buff, BUFF_SIZE);
 
-        fprintf(stderr, "\n") ; /////////////////////////////////////////////////////////////////////////////////////////
+        //fprintf(stderr, "\n") ; /////////////////////////////////////////////////////////////////////////////////////////
 
         return decodePkg(buff, pkg_size);
     }
@@ -91,7 +91,7 @@ namespace bms
             }
             else
             {
-                fprintf(stderr, "%c", data_in) ; /////////////////////////////////////////////////////////////////////////////////////////
+                //fprintf(stderr, "%c", data_in) ; /////////////////////////////////////////////////////////////////////////////////////////
                 if (first_read)
                 {
                     if (data_in != BMS_PKG_START_DELIM)
@@ -217,7 +217,7 @@ namespace bms
             if (temp > pkg_data.temp_max)
                 pkg_data.temp_max = temp;
             pkg_data.temps.push_back(temp);
-            fprintf(stderr, "temp num: %d temp: %d | ", temp_indx ,pkg_data.temps[temp_indx]);
+            //fprintf(stderr, "temp num: %d temp: %d | ", temp_indx ,pkg_data.temps[temp_indx]);
         }
         //fprintf(stderr, "\ntemp max: %d", pkg_data.temp_max);
         //fprintf(stderr, "\n");

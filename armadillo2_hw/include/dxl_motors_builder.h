@@ -5,7 +5,7 @@
 #ifndef ARMADILLO2_HW_DXL_MOTORS_BUILDER_H
 #define ARMADILLO2_HW_DXL_MOTORS_BUILDER_H
 
-#include "dxl_interface.h"
+#include <dxl_interface/dxl_interface.h>
 #include <std_srvs/SetBool.h>
 #include <yaml-cpp/yaml.h>
 #include <ros/ros.h>
@@ -51,7 +51,6 @@ namespace armadillo2_hw
         std::vector<hardware_interface::PosVelJointHandle> posvel_handles_;
         std::vector<hardware_interface::JointHandle> pos_handles_;
 
-        bool first_read_;
         int arm_baudrate_;
         int failed_reads_, failed_writes_;
         std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */

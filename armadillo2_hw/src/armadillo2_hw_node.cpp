@@ -3,7 +3,7 @@
 #include <controller_manager/controller_manager.h>
 #include "armadillo2_hw.h"
 
-#define LOOP_INTERVAL 100
+#define LOOP_HZ 100
 #define THREADS_NUM 2
 
 int main(int argc, char **argv)
@@ -17,12 +17,12 @@ int main(int argc, char **argv)
     ros::AsyncSpinner asyncSpinner(THREADS_NUM);
     asyncSpinner.start();
 
-    ros::Rate loop(LOOP_INTERVAL);
+    ros::Rate loop(LOOP_HZ);
     while (ros::ok())
     {
         armadillo_hw.read();
         controller_manager.update(armadillo_hw.getTime(), armadillo_hw.getPeriod());
-        armadillo_hw.write();
+        //armadillo_hw.write();
 
         ros::spinOnce;
         loop.sleep();

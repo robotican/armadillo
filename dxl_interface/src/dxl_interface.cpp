@@ -1,6 +1,6 @@
 
 
-#include "dxl_interface.h"
+#include "dxl_interface/dxl_interface.h"
 
 namespace dxl
 {
@@ -9,6 +9,7 @@ namespace dxl
 
     DxlInterface::DxlInterface()
     {
+
     }
 
     DxlInterface::PortState DxlInterface::openPort(std::string port_name, unsigned int baudrate)
@@ -26,6 +27,7 @@ namespace dxl
         return PORT_FAIL;
     }
 
+    /* ping motor, if success - motor model will be filled */
     bool DxlInterface::ping(motor &motor)
     {
         int result = COMM_TX_FAIL;
@@ -42,19 +44,21 @@ namespace dxl
     }
 
 
-    bool DxlInterface::setTorque(const motor &motor, bool flag)
+    bool DxlInterface::setTorque(dxl::motor &motor, bool flag)
     {
         uint8_t error = 0;
         int result = COMM_TX_FAIL;
 
-        uint16_t torque_register_addr = ADDR_PRO_TORQUE_ENABLE;
-        if (motor.spec.model == MODEL_XH430_V350)
-            torque_register_addr = ADDR_XH_TORQUE_ENABLE;
-
-        result = packet_handler_->write1ByteTxRx(port_handler_, motor.id, torque_register_addr, flag, &error);
+        result = packet_handler_->write1ByteTxRx(port_handler_,
+                                                 motor.id,
+                                                 motor.spec.torque_write_addr,
+                                                 flag,
+                                                 &error);
 
         if (result != COMM_SUCCESS || error != 0)
             return false;
+
+        motor.in_torque = flag;
         return true;
     }
 
@@ -91,10 +95,9 @@ namespace dxl
         dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_PRESENT_POSITION;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_PRESENT_POSITION;
-            bool read_success = bulk_read.addParam(motor.id, addr, LEN_PRO_PRESENT_POSITION);
+            bool read_success = bulk_read.addParam(motor.id,
+                                                   motor.spec.pos_read_addr,
+                                                   LEN_PRESENT_POSITION);
             if (!read_success)
                 return false;
         }
@@ -106,15 +109,22 @@ namespace dxl
 
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_PRESENT_POSITION;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_PRESENT_POSITION;
-            bool getdata_result = bulk_read.isAvailable(motor.id, addr, LEN_PRO_PRESENT_POSITION);
+            bool getdata_result = bulk_read.isAvailable(motor.id,
+                                                        motor.spec.pos_read_addr,
+                                                        LEN_PRESENT_POSITION);
             if (!getdata_result)
                 return false;
 
-            uint32_t ticks = bulk_read.getData(motor.id, addr, LEN_PRO_PRESENT_POSITION);
+            uint32_t ticks = bulk_read.getData(motor.id,
+                                               motor.spec.pos_read_addr,
+                                               LEN_PRESENT_POSITION);
             motor.position =  convertions::ticks2rads(ticks, motor);
+
+            if (motor.first_pos_read)
+            {
+                motor.first_pos_read = false;
+                motor.command_position = motor.position;
+            }
         }
         return true;
     }
@@ -124,10 +134,9 @@ namespace dxl
         dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_PRESENT_SPEED;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_PRESENT_SPEED;
-            bool read_success = bulk_read.addParam(motor.id, addr, LEN_PRO_PRESENT_SPEED);
+            bool read_success = bulk_read.addParam(motor.id,
+                                                   motor.spec.vel_read_addr,
+                                                   LEN_PRESENT_SPEED);
             if (!read_success)
                 return false;
         }
@@ -141,16 +150,18 @@ namespace dxl
 
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_PRESENT_SPEED;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_PRESENT_SPEED;
-            bool getdata_result = bulk_read.isAvailable(motor.id, addr, LEN_PRO_PRESENT_SPEED);
+            bool getdata_result = bulk_read.isAvailable(motor.id,
+                                                        motor.spec.vel_read_addr,
+                                                        LEN_PRESENT_SPEED);
             if (!getdata_result)
                 return false;
 
-            uint32_t ticks_per_sec = bulk_read.getData(motor.id, addr, LEN_PRO_PRESENT_SPEED);
+            uint32_t ticks_per_sec = bulk_read.getData(motor.id,
+                                                       motor.spec.vel_read_addr,
+                                                       LEN_PRESENT_SPEED);
             motor.velocity = convertions::ticks_s2rad_s(ticks_per_sec, motor);
         }
+
         return true;
     }
 
@@ -159,10 +170,9 @@ namespace dxl
         dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_HARDWARE_ERROR;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_HARDWARE_ERROR;
-            bool read_success = bulk_read.addParam(motor.id, addr, LEN_PRO_PRESENT_ERROR);
+            bool read_success = bulk_read.addParam(motor.id,
+                                                   motor.spec.error_read_addr,
+                                                   LEN_PRESENT_ERROR);
             if (!read_success)
                 return false;
         }
@@ -176,29 +186,27 @@ namespace dxl
 
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_HARDWARE_ERROR;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_HARDWARE_ERROR;
-            bool getdata_result = bulk_read.isAvailable(motor.id, addr, LEN_PRO_PRESENT_ERROR);
+            bool getdata_result = bulk_read.isAvailable(motor.id,
+                                                        motor.spec.error_read_addr,
+                                                        LEN_PRESENT_ERROR);
             if (!getdata_result)
                 return false;
 
-            motor.error = bulk_read.getData(motor.id, addr, LEN_PRO_PRESENT_ERROR);
-            if (motor.error)
-                return false;
+            motor.error = bulk_read.getData(motor.id,
+                                            motor.spec.error_read_addr,
+                                            LEN_PRESENT_ERROR);
         }
         return true;
     }
 
-    bool DxlInterface::readMotorosLoad(std::vector<dxl::motor> &motors)
+    bool DxlInterface::readMotorsLoad(std::vector<dxl::motor> &motors)
     {
         dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_PRESENT_CURRENT;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_PRESENT_CURRENT;
-            bool read_success = bulk_read.addParam(motor.id, addr, LEN_PRO_PRESENT_CURRENT);
+            bool read_success = bulk_read.addParam(motor.id,
+                                                   motor.spec.current_read_addr,
+                                                   LEN_PRESENT_CURRENT);
             if (!read_success)
                 return false;
         }
@@ -206,42 +214,29 @@ namespace dxl
         int comm_result = bulk_read.txRxPacket();
         if (comm_result != COMM_SUCCESS)
         {
-            //packet_handler_->printTxRxResult(comm_result);
+            packet_handler_->printTxRxResult(comm_result);
             return false;
         }
 
         for (motor &motor : motors)
         {
-            uint16_t addr = ADDR_PRO_PRESENT_CURRENT;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_PRESENT_CURRENT; //
-            bool getdata_result = bulk_read.isAvailable(motor.id, addr, LEN_PRO_PRESENT_CURRENT);
+            bool getdata_result = bulk_read.isAvailable(motor.id,
+                                                        motor.spec.current_read_addr,
+                                                        LEN_PRESENT_CURRENT);
             if (!getdata_result)
                 return false;
 
 
-            motor.current = (int16_t)bulk_read.getData(motor.id, addr, LEN_PRO_PRESENT_CURRENT) ;
+            motor.current = (int16_t)bulk_read.getData(motor.id,
+                                                       motor.spec.current_read_addr,
+                                                       LEN_PRESENT_CURRENT);
 
-            switch (motor.spec.model)
-            {
-                case MODEL_H54_100_S500_R || MODEL_H54_200_S500_R:
-                    motor.current *= 33000.0 / 2048.0 / 1000.0;
-                    break;
-                case MODEL_H42_20_S300_R:
-                    motor.current *= 8250.0 / 2048.0 / 1000.0;
-                    break;
-                case MODEL_XH430_V350:
-                    motor.current *= 2.69/1000.0;
-                    break;
-            }
-            /*   if (motor.id ==6)/////////////////////////////////////////////////////
-               {
-                   printf("CURRENT: %f\n", motor.current);/////////////////////////////////////////////////////////////////
-                   printf("torque_const_a: %f, torque_const_b: %f\n", motor.spec.torque_const_a, motor.spec.torque_const_b);
-               }
-               motor.effort = motor.spec.torque_const_a * motor.current + motor.spec.torque_const_b;
-               if (motor.id ==6)
-                   printf("EFFORT: %f\n", motor.effort);/////////////////////////////////////////////////////////////////*/
+
+
+            motor.current *= motor.spec.current_ratio;
+            fprintf(stderr, "CURR: %f", motor.current);
+
+
         }
         return true;
     }
@@ -253,9 +248,9 @@ namespace dxl
         for (motor &motor : motors)
         {
             bool addparam_success = false;
-            uint16_t addr = ADDR_PRO_GOAL_SPEED;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_PROFILE_VELOCITY;
+           // uint16_t addr = ADDR_PRO_GOAL_SPEED;
+           // if (motor.spec.model == MODEL_XH430_V350)
+          //      addr = ADDR_XH_PROFILE_VELOCITY;
             if (motor.command_velocity == 0)
                 motor.command_velocity = motor.pre_vel;
             else
@@ -263,7 +258,10 @@ namespace dxl
 
             int32_t motor_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor);
 
-            addparam_success = bulk_write.addParam(motor.id, addr, LEN_PRO_PRESENT_SPEED, (uint8_t*)&motor_vel);
+            addparam_success = bulk_write.addParam(motor.id,
+                                                   motor.spec.vel_write_addr,
+                                                   LEN_PRESENT_SPEED,
+                                                   (uint8_t*)&motor_vel);
             if (!addparam_success)
                 return false;
         }
@@ -284,11 +282,14 @@ namespace dxl
         for (motor &motor : motors)
         {
             bool addparam_success = false;
-            uint16_t addr = ADDR_PRO_GOAL_POSITION;
-            if (motor.spec.model == MODEL_XH430_V350)
-                addr = ADDR_XH_GOAL_POSITION;
+          //  uint16_t addr = ADDR_PRO_GOAL_POSITION;
+        //    if (motor.spec.model == MODEL_XH430_V350)
+        //        addr = ADDR_XH_GOAL_POSITION;
             int32_t motor_pos = convertions::rads2ticks(motor.command_position, motor);
-            addparam_success = bulk_write.addParam(motor.id, addr, LEN_PRO_PRESENT_POSITION, (uint8_t*)&motor_pos);
+            addparam_success = bulk_write.addParam(motor.id,
+                                                   motor.spec.pos_write_addr,
+                                                   LEN_PRESENT_POSITION,
+                                                   (uint8_t*)&motor_pos);
             if (!addparam_success)
                 return false;
         }

@@ -50,7 +50,8 @@ namespace armadillo2_hw
         }
         catch(bms::BMSWarnException exp)
         {
-            ROS_WARN("[armadillo2_hw/battery_pub]: %s", exp.what());
+            if (SHOW_WARNINGS)
+                ROS_WARN("[armadillo2_hw/battery_pub]: %s", exp.what());
         }
 
 
