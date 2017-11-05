@@ -76,13 +76,3 @@ arm_trajectory_controller:
     shoulder3_joint: {trajectory: 10.2, goal: 10.2}
     wrist_joint: {trajectory: 10.2, goal: 10.2}
 
-
-gripper_controller:
- type: gripper_controllers/PosVelGripperController
- left_joint: 'left_finger_joint'
- right_joint: 'right_finger_joint'
- goal_tolerance: 0.005
- stalled_velocity_threshold: 0.005
- stall_timeout: 1.0
- joints_vel: 0.2
- action_monitor_rate: 50

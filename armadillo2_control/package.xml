@@ -49,6 +49,11 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>controller_manager</build_depend>
+  <exec_depend>controller_manager</exec_depend>
+  
+x
+
 
 
   <!-- The export tag contains other, unspecified, tags -->

@@ -9,5 +9,4 @@
         <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro'" />
         <node name="armadillo2_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model armadillo2" />
         
-        <include file="$(find armadillo2_control)/launch/armadillo2_control.launch" />
 </launch>
