@@ -1,30 +1,3 @@
-#joint_names_list: ['arm_rotation1_joint', 'arm_rotation2_joint', 'arm_shoulder1_joint', 'arm_shoulder2_joint', 'arm_shoulder3_joint', 'arm_wrist_joint']
-
-joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 20  
-
-arm_trajectory_controller:
-  type: position_velocity_controllers/JointTrajectoryController
-  joints:
-     - rotation1_joint
-     - shoulder1_joint 
-     - shoulder2_joint 
-     - rotation2_joint 
-     - shoulder3_joint 
-     - wrist_joint 
-  constraints:
-      goal_time: 4.0
-      stopped_velocity_tolerance: 0.05
-      rotation1_joint: {trajectory: 0.1, goal: 0.1}
-      shoulder1_joint: {trajectory: 0.1, goal: 0.1}
-      shoulder2_joint: {trajectory: 0.1, goal: 0.1}
-      rotation2_joint: {trajectory: 0.1, goal: 0.1}
-      shoulder3_joint: {trajectory: 0.1, goal: 0.1}
-      wrist_joint: {trajectory: 0.1, goal: 0.1}
-  stop_trajectory_duration: 0.1
-  state_publish_rate:  50
-  action_monitor_rate: 50
 
 mobile_base_controller:
   type        : "diff_drive_with_split_controller/DiffDriveController"
@@ -69,3 +42,47 @@ mobile_base_controller:
       max_velocity           : 3.0  # rad/s
       has_acceleration_limits: true
       max_acceleration       : 0.5  # rad/s^2
+      
+
+robot_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+
+torso_controller:
+  type: position_controllers/JointPositionController
+  joint: torso_joint
+
+pan_tilt_trajectory_controller:
+  type: position_controllers/JointTrajectoryController
+  joints: ['head_pan_joint', 'head_tilt_joint']
+
+
+arm_trajectory_controller:
+  type: position_velocity_controllers/JointTrajectoryController
+  joints:
+     - rotation1_joint
+     - shoulder1_joint 
+     - shoulder2_joint 
+     - rotation2_joint 
+     - shoulder3_joint 
+     - wrist_joint 
+  constraints:
+    goal_time: 10.5                   # Override default
+    stopped_velocity_tolerance: 10.5 # Override default
+    rotation1_joint: {trajectory: 10.2, goal: 10.2}
+    shoulder1_joint: {trajectory: 10.2, goal: 10.2}
+    shoulder2_joint: {trajectory: 10.2, goal: 10.2}
+    rotation2_joint: {trajectory: 10.2, goal: 10.2}
+    shoulder3_joint: {trajectory: 10.2, goal: 10.2}
+    wrist_joint: {trajectory: 10.2, goal: 10.2}
+
+
+gripper_controller:
+ type: gripper_controllers/PosVelGripperController
+ left_joint: 'left_finger_joint'
+ right_joint: 'right_finger_joint'
+ goal_tolerance: 0.005
+ stalled_velocity_threshold: 0.005
+ stall_timeout: 1.0
+ joints_vel: 0.2
+ action_monitor_rate: 50
