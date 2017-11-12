@@ -8,6 +8,10 @@
 
         <gazebo>
             <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+<<<<<<< HEAD
+=======
+<!--                            <robotNamespace>/armadillo2</robotNamespace>-->
+>>>>>>> ba3b566d0f699b470760f14141a52d9f1a91cb63
             <robotSimType>gazebo_ros_control/Armadillo2RobotHWSim</robotSimType> 
             </plugin>
         </gazebo>
