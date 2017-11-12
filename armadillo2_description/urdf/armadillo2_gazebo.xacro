@@ -7,7 +7,7 @@
 
 
         <gazebo>
-            <plugin name="gazebo_ros_control" filename="libarmadillo2_sim_interface.so">
+            <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
 <!--                            <robotNamespace>/armadillo2</robotNamespace>-->
             <robotSimType>gazebo_ros_control/Armadillo2RobotHWSim</robotSimType> 
             </plugin>

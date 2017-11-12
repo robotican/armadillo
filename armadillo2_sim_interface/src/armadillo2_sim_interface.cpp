@@ -571,6 +571,7 @@ namespace gazebo_ros_control
               }
           }*/
     }
+    PLUGINLIB_EXPORT_CLASS(gazebo_ros_control::Armadillo2RobotHWSim, gazebo_ros_control::RobotHWSim)
 }
 
-PLUGINLIB_EXPORT_CLASS(gazebo_ros_control::Armadillo2RobotHWSim, gazebo_ros_control::RobotHWSim)
+

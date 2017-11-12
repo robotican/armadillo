@@ -21,9 +21,8 @@
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
-    <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
-<!--    <remap from="/joint_states" to="/armadillo2/joint_states" />-->
+   <!--  <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
+   <remap from="/joint_states" to="/armadillo2/joint_states" />-->
   </node>
   
-  <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="joint_publisher velocity_controller --timeout 50 "/>
 </launch>

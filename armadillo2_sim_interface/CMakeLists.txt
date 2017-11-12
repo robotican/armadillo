@@ -32,7 +32,7 @@ catkin_package(
         urdf
         angles
         INCLUDE_DIRS include
-        LIBRARIES ${PROJECT_NAME} armadillo2_sim_interface
+        LIBRARIES armadillo2_sim_interface
 )
 
 link_directories(
