@@ -1,5 +1,4 @@
-<library path="lib/libarmadillo2_hardware_interface_sim">
-
+<library path="lib/libarmadillo2_sim_interface">
     <class
             name="gazebo_ros_control/Armadillo2RobotHWSim"
             type="gazebo_ros_control::Armadillo2RobotHWSim"
