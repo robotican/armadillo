@@ -98,7 +98,7 @@ namespace gazebo_ros_control
             const std::string& hardware_interface = joint_interfaces.front();
 
             // Debug
-            ROS_DEBUG_STREAM_NAMED("default_robot_hw_sim","Loading joint '" << joint_names_[j]
+            ROS_DEBUG_STREAM_NAMED("armadillo2_hw_sim","Loading joint '" << joint_names_[j]
                                                                             << "' of type '" << hardware_interface << "'");
 
             // Create joint state interface for all joints
@@ -108,7 +108,7 @@ namespace gazebo_ros_control
             // Decide what kind of command interface this actuator/joint has
             hardware_interface::JointHandle joint_handle;
             hardware_interface::PosVelJointHandle jointHandlePosVel;
-            if(hardware_interface == "EffortJointInterface")
+            if(hardware_interface == "EffortJointInterface" || hardware_interface == "hardware_interface/EffortJointInterface")
             {
                 // Create effort joint interface
                 joint_control_methods_[j] = EFFORT;
@@ -116,7 +116,7 @@ namespace gazebo_ros_control
                                                                &joint_effort_command_[j]);
                 ej_interface_.registerHandle(joint_handle);
             }
-            else if(hardware_interface == "PositionJointInterface")
+            else if(hardware_interface == "PositionJointInterface" || hardware_interface == "hardware_interface/PositionJointInterface")            
             {
                 // Create position joint interface
                 joint_control_methods_[j] = POSITION;
@@ -124,7 +124,7 @@ namespace gazebo_ros_control
                                                                &joint_position_command_[j]);
                 pj_interface_.registerHandle(joint_handle);
             }
-            else if(hardware_interface == "VelocityJointInterface")
+            else if(hardware_interface == "VelocityJointInterface" || hardware_interface == "hardware_interface/VelocityJointInterface")            
             {
                 // Create velocity joint interface
                 joint_control_methods_[j] = VELOCITY;
@@ -132,13 +132,11 @@ namespace gazebo_ros_control
                                                                &joint_velocity_command_[j]);
                 vj_interface_.registerHandle(joint_handle);
             }
-            else if(hardware_interface == "PosVelJointInterface")
+            else if(hardware_interface == "PosVelJointInterface" || hardware_interface == "hardware_interface/PosVelJointInterface")
             {
                 // Create velocity joint interface
                 joint_control_methods_[j] = POS_VEL;
 
-//                joint_handle = hardware_interface::JointHandle(js_interface_.getHandle(joint_names_[j]),
-//                                                               &joint_velocity_command_[j]);
                 jointHandlePosVel = hardware_interface::PosVelJointHandle(js_interface_.getHandle(joint_names_[j]), &joint_position_command_[j], &joint_velocity_command_[j]);
                 pvj_interface_.registerHandle(jointHandlePosVel);
             }

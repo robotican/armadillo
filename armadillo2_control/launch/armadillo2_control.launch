@@ -10,19 +10,13 @@
     pkg="controller_manager"
     type="spawner" respawn="false"
     output="screen"
-    args="robot_state_controller
-	  mobile_base_controller
-	  torso_controller
-	  pan_tilt_trajectory_controller
-          arm_trajectory_controller 
-          gripper_controller"
+    args="robot_state_controller mobile_base_controller torso_controller pan_tilt_trajectory_controller"
   />
-<!-- ns="/armadillo2"-->
 
+<!--  arm_trajectory_controller gripper_controller  pan_tilt_trajectory_controller mobile_base_controller torso_controller-->
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
-   <!--  <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
-   <remap from="/joint_states" to="/armadillo2/joint_states" />-->
+
   </node>
   
 </launch>

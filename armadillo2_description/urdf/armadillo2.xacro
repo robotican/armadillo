@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo_robot" description="ARMadillo Robot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo2_robot" description="ARMadillo Robot">
 
  <xacro:property name="M_PI" value="3.1415926535897931" />
 
@@ -20,9 +20,9 @@
         xyz="-0.012353 0.000122 0.17716"
         rpy="0 0 0" />
       <mass
-        value="80.6774" />
+        value="1.6774" />
       <inertia
-        ixx="0.61071"
+        ixx="50.61071"
         ixy="2.5604E-05"
         ixz="-0.080403"
         iyy="0.58359"
@@ -138,7 +138,8 @@
         xyz="0 0 0"
         rpy="${M_PI/2} 0 0" />
       <geometry>
-      <cylinder  length="0.04" radius="0.1"/> 
+      <cylinder  length="0.04" radius="0.12"/> 
+<!--        0.1 ********************************************************************************-->
       </geometry>
     </collision>
   </link>
@@ -193,7 +194,9 @@
         xyz="0 0 0"
         rpy="${M_PI/2} 0 0" />
       <geometry>
-      <cylinder  length="0.04" radius="0.1"/> 
+      <cylinder  length="0.04" radius="0.12"/> 
+      <!--        0.1 ********************************************************************************-->
+
       </geometry>
     </collision>
   </link>

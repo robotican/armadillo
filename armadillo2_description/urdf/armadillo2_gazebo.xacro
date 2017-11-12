@@ -1,16 +1,20 @@
 <?xml version="1.0"?>
 
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo2_robot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo_robot" description="ARMadillo Robot">
 
  <xacro:include filename="$(find armadillo2_description)/urdf/armadillo2.xacro" />
 
+ 
 
 
-        <gazebo>
+<gazebo>
             <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
             <robotSimType>gazebo_ros_control/Armadillo2RobotHWSim</robotSimType> 
             </plugin>
-        </gazebo>
+          </gazebo>
+
+
+
 
           <transmission name="left_wheel_joint_trans">
             <type>transmission_interface/SimpleTransmission</type>
