@@ -81,6 +81,6 @@ dxl_spec_config: [
     torque_write_addr: 64, #ADDR_MX_TORQUE_ENABLE
     vel_write_addr: 112, #ADDR_MX_PROFILE_VELOCITY
     pos_write_addr: 116, #ADDR_MX_GOAL_POSITION
-    current_ratio: 0.1 #current *= 0.1; //percentage -100 ~ 100 %
+    current_ratio: 0.01 #current *= 0.01; //percentage -100 ~ 100 %
 },
 ]

@@ -231,8 +231,6 @@ namespace dxl
                                                        motor.spec.current_read_addr,
                                                        LEN_PRESENT_CURRENT);
 
-
-
             motor.current *= motor.spec.current_ratio;
         }
         return true;

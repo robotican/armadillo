@@ -275,20 +275,24 @@ namespace armadillo2_hw
             bool spec_found = specs_.find(motor.spec.model) != specs_.end();
             if (spec_found)
             {
+                motor.spec.name = specs_[motor.spec.model].name;
                 motor.spec.cpr = specs_[motor.spec.model].cpr;
                 motor.spec.rpm_scale_factor = specs_[motor.spec.model].rpm_scale_factor;
                 motor.spec.torque_const_a = specs_[motor.spec.model].torque_const_a;
                 motor.spec.torque_const_b = specs_[motor.spec.model].torque_const_b;
 
+                /* read addrs */
                 motor.spec.pos_read_addr = specs_[motor.spec.model].pos_read_addr;
                 motor.spec.vel_read_addr = specs_[motor.spec.model].vel_read_addr;
                 motor.spec.current_read_addr = specs_[motor.spec.model].current_read_addr;
                 motor.spec.error_read_addr = specs_[motor.spec.model].error_read_addr;
 
+                /* write addrs */
                 motor.spec.torque_write_addr = specs_[motor.spec.model].torque_write_addr;
                 motor.spec.vel_write_addr = specs_[motor.spec.model].vel_write_addr;
                 motor.spec.pos_write_addr = specs_[motor.spec.model].pos_write_addr;
-                motor.spec.current_write_addr = specs_[motor.spec.model].current_write_addr;
+
+                motor.spec.current_ratio = specs_[motor.spec.model].current_ratio;
             }
             else
             {

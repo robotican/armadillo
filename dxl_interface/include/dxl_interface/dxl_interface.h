@@ -79,7 +79,6 @@ namespace dxl
         uint16_t torque_write_addr;
         uint16_t vel_write_addr;
         uint16_t pos_write_addr;
-        uint16_t current_write_addr;
     };
 
     struct motor
