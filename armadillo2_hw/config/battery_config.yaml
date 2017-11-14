@@ -1,0 +1,2 @@
+battery_port_name: "/dev/USB2DYNAMIXEL"
+battery_port_baudrate: 1000000

@@ -8,7 +8,7 @@ namespace armadillo2_hw
 {
     BatteryPub::BatteryPub(ros::NodeHandle nh)
     {
-
+/*
         try
         {
             bms_.connect(BATT_PORT);
@@ -22,7 +22,7 @@ namespace armadillo2_hw
 
         bat_pub_ = nh.advertise<sensor_msgs::BatteryState>("battery_state", 10);
         bat_pub_timer_ = nh.createTimer(ros::Duration(BATT_PUB_INTERVAL), &BatteryPub::pubTimerCB, this);
-        ROS_INFO("[armadillo2_hw/battery_pub]: battery publisher is up");
+        ROS_INFO("[armadillo2_hw/battery_pub]: battery publisher is up");*/
     }
 
     void BatteryPub::pubTimerCB(const ros::TimerEvent &event)
@@ -40,7 +40,6 @@ namespace armadillo2_hw
             //TODO: send the rest of the data
 
             bat_pub_.publish(msg);
-
         }
         catch(bms::BMSErrorException exp)
         {

@@ -234,9 +234,6 @@ namespace dxl
 
 
             motor.current *= motor.spec.current_ratio;
-            fprintf(stderr, "CURR: %f", motor.current);
-
-
         }
         return true;
     }

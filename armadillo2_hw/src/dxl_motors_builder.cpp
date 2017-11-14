@@ -358,8 +358,8 @@ namespace armadillo2_hw
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        node_handle_->param<std::string>("port_name", arm_port_, "/dev/USB2DYNAMIXEL");
-        node_handle_->param<int>("port_baudrate", arm_baudrate_, 1000000);
+        node_handle_->param<std::string>("arm_port_name", arm_port_, "/dev/USB2DYNAMIXEL");
+        node_handle_->param<int>("arm_port_baudrate", arm_baudrate_, 1000000);
     }
 
     void DxlMotorsBuilder::buildMotors()

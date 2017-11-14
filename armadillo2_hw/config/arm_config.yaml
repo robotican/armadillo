@@ -9,5 +9,5 @@ arm_config: [
 #{id: 8, joint_name: right_finger_joint, interface: PosVel, protocol: 2.0}
 ]
 
-port_name: "/dev/USB2DYNAMIXEL"
-port_baudrate: 1000000
+arm_port_name: "/dev/USB2DYNAMIXEL"
+arm_port_baudrate: 1000000
