@@ -58,6 +58,7 @@ namespace armadillo2_hw
         dxl::DxlInterface dxl_interface_;
         XmlRpc::XmlRpcValue arm_config_, dxl_spec_config_;
         std::vector<dxl::motor> motors_;
+        ros::ServiceServer torque_srv_;
 
         bool torqueServiceCB(std_srvs::SetBool::Request  &req,
                              std_srvs::SetBool::Response &res);

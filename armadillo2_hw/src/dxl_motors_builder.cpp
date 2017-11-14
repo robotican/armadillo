@@ -26,6 +26,8 @@ namespace armadillo2_hw
 
         failed_reads_ = 0;
         failed_writes_ = 0;
+
+        torque_srv_ = node_handle_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
     }
 
     void DxlMotorsBuilder::read()
