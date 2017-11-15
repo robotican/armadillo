@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 
         controller_manager.update(armadillo_hw.getTime(), armadillo_hw.getPeriod());
 
-        //armadillo_hw.write();
+        armadillo_hw.write();
         ros::Duration((1000.0 / LOOP_HZ) / 2.0 / 1000.0).sleep();
 
         ros::spinOnce;

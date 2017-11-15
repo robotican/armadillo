@@ -19,6 +19,9 @@
 #define MAX_WRITE_ERRORS 16
 #define ARM_CONFIG_PARAM "arm_config"
 #define SPEC_CONFIG_PARAM "dxl_spec_config"
+#define DXL_PROTOCOL_PARAM "dxl_protocol"
+#define ARM_PORT_PARAM "arm_port_name"
+#define ARM_PORT_BAUD_PARAM "arm_port_baudrate"
 
 /* The >> operator disappeared in yaml-cpp 0.5, so this function is     */
 /* added to provide support for code written under the yaml-cpp 0.3 API.*/
@@ -53,6 +56,7 @@ namespace armadillo2_hw
 
         int arm_baudrate_;
         int failed_reads_, failed_writes_;
+        float protocol_;
         std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */
         std::string arm_port_;
         dxl::DxlInterface dxl_interface_;

@@ -12,9 +12,13 @@ namespace dxl
 
     }
 
-    DxlInterface::PortState DxlInterface::openPort(std::string port_name, unsigned int baudrate)
+    DxlInterface::PortState DxlInterface::openPort(std::string port_name,
+                                                   unsigned int baudrate,
+                                                   float protocol)
     {
-        packet_handler_ = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION2);
+        protocol_ = protocol;
+        if (!loadProtocol(protocol_))
+            return INVALID_PROTOCOL;
         port_handler_ = dynamixel::PortHandler::getPortHandler(port_name.c_str());
         if (port_handler_->openPort())
         {
@@ -27,13 +31,28 @@ namespace dxl
         return PORT_FAIL;
     }
 
+    bool DxlInterface::loadProtocol(uint16_t protocol)
+    {
+        if (protocol == DXL_PROTOCOL1)
+        {
+            pkt_handler_ = dynamixel::PacketHandler::getPacketHandler(DXL_PROTOCOL1);
+            return true;
+        }
+        if (protocol == DXL_PROTOCOL2)
+        {
+            pkt_handler_ = dynamixel::PacketHandler::getPacketHandler(DXL_PROTOCOL2);
+            return true;
+        }
+        return true;
+    }
+
     /* ping motor, if success - motor model will be filled */
-    bool DxlInterface::ping(motor &motor)
+    bool DxlInterface::ping(dxl::motor &motor)
     {
         int result = COMM_TX_FAIL;
         uint8_t error =  0;
 
-        result = packet_handler_->ping(port_handler_,
+        result = pkt_handler_->ping(port_handler_,
                                        motor.id,
                                        &(motor.spec.model),
                                        &error);
@@ -49,7 +68,7 @@ namespace dxl
         uint8_t error = 0;
         int result = COMM_TX_FAIL;
 
-        result = packet_handler_->write1ByteTxRx(port_handler_,
+        result = pkt_handler_->write1ByteTxRx(port_handler_,
                                                  motor.id,
                                                  motor.spec.torque_write_addr,
                                                  flag,
@@ -69,16 +88,19 @@ namespace dxl
         // Dynamixel LED will flicker while it reboots
         uint8_t error = 0;
         int result = COMM_TX_FAIL;
-        result = packet_handler_->reboot(port_handler_, motor.id, &error);
+
+        result = pkt_handler_->reboot(port_handler_, motor.id, &error);
         if (result != COMM_SUCCESS || error != 0)
             return false;
         return true;
     }
 
-    bool DxlInterface::broadcastPing(std::vector<uint8_t> result_vec)
+
+    bool DxlInterface::broadcastPing(std::vector<uint8_t> result_vec, uint16_t protocol)
     {
         int result = COMM_TX_FAIL;
-        result = packet_handler_->broadcastPing(port_handler_, result_vec);
+
+        result = pkt_handler_->broadcastPing(port_handler_, result_vec);
         if (result != COMM_SUCCESS)
             return false;
         return true;
@@ -89,15 +111,14 @@ namespace dxl
         port_handler_->closePort();
     }
 
-
     bool DxlInterface::readMotorsPos(std::vector<dxl::motor> &motors)
     {
-        dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
+        dynamixel::GroupBulkRead bulk_read(port_handler_, pkt_handler_);
         for (motor &motor : motors)
         {
             bool read_success = bulk_read.addParam(motor.id,
                                                    motor.spec.pos_read_addr,
-                                                   LEN_PRESENT_POSITION);
+                                                   motor.spec.len_present_pos);
             if (!read_success)
                 return false;
         }
@@ -111,14 +132,14 @@ namespace dxl
         {
             bool getdata_result = bulk_read.isAvailable(motor.id,
                                                         motor.spec.pos_read_addr,
-                                                        LEN_PRESENT_POSITION);
+                                                        motor.spec.len_present_pos);
             if (!getdata_result)
                 return false;
 
             uint32_t ticks = bulk_read.getData(motor.id,
                                                motor.spec.pos_read_addr,
-                                               LEN_PRESENT_POSITION);
-            motor.position =  convertions::ticks2rads(ticks, motor);
+                                               motor.spec.len_present_pos);
+            motor.position =  convertions::ticks2rads(ticks, motor, protocol_);
 
             if (motor.first_pos_read)
             {
@@ -131,12 +152,12 @@ namespace dxl
 
     bool DxlInterface::readMotorsVel(std::vector<dxl::motor> &motors)
     {
-        dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
+        dynamixel::GroupBulkRead bulk_read(port_handler_, pkt_handler_);
         for (motor &motor : motors)
         {
             bool read_success = bulk_read.addParam(motor.id,
                                                    motor.spec.vel_read_addr,
-                                                   LEN_PRESENT_SPEED);
+                                                   motor.spec.len_present_speed);
             if (!read_success)
                 return false;
         }
@@ -152,14 +173,14 @@ namespace dxl
         {
             bool getdata_result = bulk_read.isAvailable(motor.id,
                                                         motor.spec.vel_read_addr,
-                                                        LEN_PRESENT_SPEED);
+                                                        motor.spec.len_present_speed);
             if (!getdata_result)
                 return false;
 
             uint32_t ticks_per_sec = bulk_read.getData(motor.id,
                                                        motor.spec.vel_read_addr,
-                                                       LEN_PRESENT_SPEED);
-            motor.velocity = convertions::ticks_s2rad_s(ticks_per_sec, motor);
+                                                       motor.spec.len_present_speed);
+            motor.velocity = convertions::ticks_s2rad_s(ticks_per_sec, motor, protocol_);
         }
 
         return true;
@@ -167,12 +188,12 @@ namespace dxl
 
     bool DxlInterface::readMotorsError(std::vector<dxl::motor> &motors)
     {
-        dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
+        dynamixel::GroupBulkRead bulk_read(port_handler_, pkt_handler_);
         for (motor &motor : motors)
         {
             bool read_success = bulk_read.addParam(motor.id,
                                                    motor.spec.error_read_addr,
-                                                   LEN_PRESENT_ERROR);
+                                                   DXL_ERR_LEN);
             if (!read_success)
                 return false;
         }
@@ -188,25 +209,25 @@ namespace dxl
         {
             bool getdata_result = bulk_read.isAvailable(motor.id,
                                                         motor.spec.error_read_addr,
-                                                        LEN_PRESENT_ERROR);
+                                                        DXL_ERR_LEN);
             if (!getdata_result)
                 return false;
 
             motor.error = bulk_read.getData(motor.id,
                                             motor.spec.error_read_addr,
-                                            LEN_PRESENT_ERROR);
+                                            DXL_ERR_LEN);
         }
         return true;
     }
 
     bool DxlInterface::readMotorsLoad(std::vector<dxl::motor> &motors)
     {
-        dynamixel::GroupBulkRead bulk_read(port_handler_, packet_handler_);
+        dynamixel::GroupBulkRead bulk_read(port_handler_, pkt_handler_);
         for (motor &motor : motors)
         {
             bool read_success = bulk_read.addParam(motor.id,
                                                    motor.spec.current_read_addr,
-                                                   LEN_PRESENT_CURRENT);
+                                                   motor.spec.len_present_curr);
             if (!read_success)
                 return false;
         }
@@ -214,7 +235,7 @@ namespace dxl
         int comm_result = bulk_read.txRxPacket();
         if (comm_result != COMM_SUCCESS)
         {
-            packet_handler_->printTxRxResult(comm_result);
+            pkt_handler_->printTxRxResult(comm_result);
             return false;
         }
 
@@ -222,14 +243,14 @@ namespace dxl
         {
             bool getdata_result = bulk_read.isAvailable(motor.id,
                                                         motor.spec.current_read_addr,
-                                                        LEN_PRESENT_CURRENT);
+                                                        motor.spec.len_present_curr);
             if (!getdata_result)
                 return false;
 
 
             motor.current = (int16_t)bulk_read.getData(motor.id,
                                                        motor.spec.current_read_addr,
-                                                       LEN_PRESENT_CURRENT);
+                                                       motor.spec.len_present_curr);
 
             motor.current *= motor.spec.current_ratio;
         }
@@ -238,24 +259,20 @@ namespace dxl
 
     bool DxlInterface::bulkWriteVelocity(std::vector<dxl::motor> &motors)
     {
-        dynamixel::GroupBulkWrite bulk_write(port_handler_, packet_handler_);
+        dynamixel::GroupBulkWrite bulk_write(port_handler_, pkt_handler_);
 
         for (motor &motor : motors)
         {
             bool addparam_success = false;
-           // uint16_t addr = ADDR_PRO_GOAL_SPEED;
-           // if (motor.spec.model == MODEL_XH430_V350)
-          //      addr = ADDR_XH_PROFILE_VELOCITY;
             if (motor.command_velocity == 0)
                 motor.command_velocity = motor.pre_vel;
             else
                 motor.pre_vel = motor.command_velocity;
 
-            int32_t motor_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor);
-
+            int32_t motor_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.vel_write_addr,
-                                                   LEN_PRESENT_SPEED,
+                                                   motor.spec.len_goal_speed,
                                                    (uint8_t*)&motor_vel);
             if (!addparam_success)
                 return false;
@@ -272,18 +289,15 @@ namespace dxl
 
     bool DxlInterface::bulkWritePosition(std::vector<dxl::motor> &motors)
     {
-        dynamixel::GroupBulkWrite bulk_write(port_handler_, packet_handler_);
+        dynamixel::GroupBulkWrite bulk_write(port_handler_, pkt_handler_);
 
         for (motor &motor : motors)
         {
             bool addparam_success = false;
-          //  uint16_t addr = ADDR_PRO_GOAL_POSITION;
-        //    if (motor.spec.model == MODEL_XH430_V350)
-        //        addr = ADDR_XH_GOAL_POSITION;
-            int32_t motor_pos = convertions::rads2ticks(motor.command_position, motor);
+            int32_t motor_pos = convertions::rads2ticks(motor.command_position, motor, protocol_);
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.pos_write_addr,
-                                                   LEN_PRESENT_POSITION,
+                                                   motor.spec.len_goal_pos,
                                                    (uint8_t*)&motor_pos);
             if (!addparam_success)
                 return false;
@@ -299,9 +313,9 @@ namespace dxl
     }
 
     /**** DXL MATH *****/
-    double convertions::ticks2rads(int32_t ticks, struct motor &motor)
+    double convertions::ticks2rads(int32_t ticks, struct motor &motor, float protocol)
     {
-        if (motor.protocol_ver == 2.0)
+        if (protocol == DXL_PROTOCOL2)
         {
             if (motor.spec.model==1040)
             {
@@ -326,10 +340,10 @@ namespace dxl
         }
     }
 
-    int32_t convertions::rads2ticks(double rads, struct motor &motor)
+    int32_t convertions::rads2ticks(double rads, struct motor &motor, float protocol)
     {
 
-        if (motor.protocol_ver == 2.0) {
+        if (protocol == DXL_PROTOCOL2) {
             if (motor.spec.model==1040) {
                 return static_cast<int32_t>(round((-rads *180.0/ M_PI+180.0)/ 0.088));
             }
@@ -349,18 +363,18 @@ namespace dxl
     }
 
     /* rads per sec to ticks per sec */
-    int32_t convertions::rad_s2ticks_s(double rads, struct motor &motor)
+    int32_t convertions::rad_s2ticks_s(double rads, struct motor &motor, float protocol)
     {
-        if (motor.protocol_ver == 2.0)
+        if (protocol == DXL_PROTOCOL2)
             return static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor);
         else
             return static_cast<int32_t >(83.49f * (rads)-0.564f);
     }
 
     /* ticks per sec to rads per sec */
-    double convertions::ticks_s2rad_s(int32_t ticks, struct motor &motor)
+    double convertions::ticks_s2rad_s(int32_t ticks, struct motor &motor, float protocol)
     {
-        if (motor.protocol_ver == 2.0)
+        if (protocol == DXL_PROTOCOL2)
             return ((double)ticks) * 2.0 * M_PI / 60.0 / motor.spec.rpm_scale_factor;
         else
             return (100.0f / 8349.0f) * ((double)ticks) + (94.0f / 13915.0f);

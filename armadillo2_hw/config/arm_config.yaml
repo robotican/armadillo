@@ -1,12 +1,12 @@
 arm_config: [
-{id: 1, joint_name: rotation1_joint, interface: PosVel, protocol: 2.0},
-#{id: 2, joint_name: shoulder1_joint, interface: PosVel, protocol: 2.0},
-#{id: 3, joint_name: shoulder2_joint, interface: PosVel, protocol: 2.0},
-#{id: 4, joint_name: rotation2_joint, interface: PosVel, protocol: 2.0},
-#{id: 5, joint_name: shoulder3_joint, interface: PosVel, protocol: 2.0},
-#{id: 6, joint_name: wrist_joint,     interface: PosVel, protocol: 2.0},
-#{id: 7, joint_name: left_finger_joint,  interface: PosVel, protocol: 2.0},
-#{id: 8, joint_name: right_finger_joint, interface: PosVel, protocol: 2.0}
+{id: 1, joint_name: rotation1_joint, interface: PosVel},
+#{id: 2, joint_name: shoulder1_joint, interface: PosVel},
+#{id: 3, joint_name: shoulder2_joint, interface: PosVel},
+#{id: 4, joint_name: rotation2_joint, interface: PosVel},
+#{id: 5, joint_name: shoulder3_joint, interface: PosVel},
+#{id: 6, joint_name: wrist_joint,     interface: PosVel},
+#{id: 7, joint_name: left_finger_joint,  interface: PosVel},
+#{id: 8, joint_name: right_finger_joint, interface: PosVel}
 ]
 
 arm_port_name: "/dev/USB2DYNAMIXEL"

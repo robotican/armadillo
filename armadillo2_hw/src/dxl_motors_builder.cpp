@@ -47,30 +47,28 @@ namespace armadillo2_hw
             ROS_ERROR("[dxl_motors_builder]: reading motors load failed");
             failed_reads_++;
         }
-
-        /*if (!dxl_interface_.readMotorsError(motors_))
+        if (!dxl_interface_.readMotorsError(motors_))
         {
             ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
             failed_reads_++;
-        }*/
-
+        }
         if (failed_reads_ >= MAX_READ_ERRORS)
         {
-            //ROS_ERROR("[dxl_motors_builder]: too many read errors, shutting down...");
-            //ros::shutdown();
-            //exit(EXIT_FAILURE);
+            ROS_ERROR("[dxl_motors_builder]: too many read errors, shutting down...");
+            ros::shutdown();
+            exit(EXIT_FAILURE);
         }
     }
 
     void DxlMotorsBuilder::write()
     {
-        if (dxl_interface_.bulkWriteVelocity(motors_))
+        if (!dxl_interface_.bulkWriteVelocity(motors_))
         {
             ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
             failed_writes_++;
         }
 
-        if (dxl_interface_.bulkWritePosition(motors_))
+        if (!dxl_interface_.bulkWritePosition(motors_))
         {
             ROS_ERROR("[dxl_motors_builder]: writing postision failed");
             failed_writes_++;
@@ -268,6 +266,56 @@ namespace armadillo2_hw
             }
             spec.current_ratio = static_cast<double>(dxl_spec_config_[i]["current_ratio"]);
 
+            /* len_present_speed */
+            if(dxl_spec_config_[i]["len_present_speed"].getType() != XmlRpc::XmlRpcValue::TypeInt)
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec len_present_speed at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.len_present_speed = static_cast<int>(dxl_spec_config_[i]["len_present_speed"]);
+
+            /* len_present_pos */
+            if(dxl_spec_config_[i]["len_present_pos"].getType() != XmlRpc::XmlRpcValue::TypeInt)
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec len_present_pos at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.len_present_pos = static_cast<int>(dxl_spec_config_[i]["len_present_pos"]);
+
+            /* len_present_curr */
+            if(dxl_spec_config_[i]["len_present_curr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec len_present_curr at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.len_present_curr = static_cast<int>(dxl_spec_config_[i]["len_present_curr"]);
+
+            /* len_goal_speed */
+            if(dxl_spec_config_[i]["len_goal_speed"].getType() != XmlRpc::XmlRpcValue::TypeInt)
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec len_goal_speed at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.len_goal_speed = static_cast<int>(dxl_spec_config_[i]["len_goal_speed"]);
+
+            /* len_goal_pos */
+            if(dxl_spec_config_[i]["len_goal_pos"].getType() != XmlRpc::XmlRpcValue::TypeInt)
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec len_goal_pos at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.len_goal_pos = static_cast<int>(dxl_spec_config_[i]["len_goal_pos"]);
+
             specs_[spec.model] = spec;
         }
 
@@ -293,8 +341,17 @@ namespace armadillo2_hw
                 motor.spec.torque_write_addr = specs_[motor.spec.model].torque_write_addr;
                 motor.spec.vel_write_addr = specs_[motor.spec.model].vel_write_addr;
                 motor.spec.pos_write_addr = specs_[motor.spec.model].pos_write_addr;
+                motor.spec.len_present_speed = specs_[motor.spec.model].len_present_speed;
+                motor.spec.len_present_pos = specs_[motor.spec.model].len_present_pos;
+                motor.spec.len_present_curr = specs_[motor.spec.model].len_present_curr;
+                motor.spec.len_goal_speed = specs_[motor.spec.model].len_goal_speed;
+                motor.spec.len_goal_pos = specs_[motor.spec.model].len_goal_pos;
+
+
 
                 motor.spec.current_ratio = specs_[motor.spec.model].current_ratio;
+
+
             }
             else
             {
@@ -339,6 +396,7 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::fetchParams()
     {
+        /* ARM_CONFIG_PARAM */
         if (!node_handle_->hasParam(ARM_CONFIG_PARAM))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
@@ -355,6 +413,15 @@ namespace armadillo2_hw
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
+
+        /* SPEC_CONFIG_PARAM */
+        if (!node_handle_->hasParam(SPEC_CONFIG_PARAM))
+        {
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+                              "and that your launch includes this param file. shutting down...", SPEC_CONFIG_PARAM);
+            ros::shutdown();
+            exit (EXIT_FAILURE);
+        }
         node_handle_->getParam(SPEC_CONFIG_PARAM, dxl_spec_config_);
         if (dxl_spec_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
         {
@@ -364,8 +431,37 @@ namespace armadillo2_hw
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        node_handle_->param<std::string>("arm_port_name", arm_port_, "/dev/USB2DYNAMIXEL");
-        node_handle_->param<int>("arm_port_baudrate", arm_baudrate_, 1000000);
+
+        /* DXL_PROTOCOL_PARAM */
+        if (!node_handle_->hasParam(DXL_PROTOCOL_PARAM))
+        {
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+                              "and that your launch includes this param file. shutting down...", DXL_PROTOCOL_PARAM);
+            ros::shutdown();
+            exit (EXIT_FAILURE);
+        }
+        node_handle_->getParam(DXL_PROTOCOL_PARAM, protocol_);
+
+
+        /* ARM_PORT_PARAM */
+        if (!node_handle_->hasParam(ARM_PORT_PARAM))
+        {
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+                              "and that your launch includes this param file. shutting down...", ARM_PORT_PARAM);
+            ros::shutdown();
+            exit (EXIT_FAILURE);
+        }
+        node_handle_->getParam(ARM_PORT_PARAM, arm_port_);
+
+        /* ARM_PORT_BAUD_PARAM */
+        if (!node_handle_->hasParam(ARM_PORT_BAUD_PARAM))
+        {
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+                              "and that your launch includes this param file. shutting down...", ARM_PORT_BAUD_PARAM);
+            ros::shutdown();
+            exit (EXIT_FAILURE);
+        }
+        node_handle_->getParam(ARM_PORT_BAUD_PARAM, arm_baudrate_);
     }
 
     void DxlMotorsBuilder::buildMotors()
@@ -386,7 +482,6 @@ namespace armadillo2_hw
 
             /* defaults to prevent bad movement on startup */
             new_motor.spec.model = 0;
-            new_motor.protocol_ver = 2.0;
             new_motor.command_position = 0.0;
             new_motor.command_velocity = 0.15;
             new_motor.pre_vel = 0.01;
@@ -459,7 +554,9 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::openPort()
     {
-        dxl::DxlInterface::PortState port_state = dxl_interface_.openPort(arm_port_, arm_baudrate_);
+        dxl::DxlInterface::PortState port_state = dxl_interface_.openPort(arm_port_,
+                                                                          arm_baudrate_,
+                                                                          protocol_);
         switch (port_state)
         {
             case dxl::DxlInterface::PORT_FAIL:
@@ -469,6 +566,10 @@ namespace armadillo2_hw
                 exit (EXIT_FAILURE);
             case dxl::DxlInterface::BAUDRATE_FAIL:
                 ROS_ERROR("[dxl_motors_builder]: setting arm baudrate to %d failed. shutting down...", arm_baudrate_);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            case dxl::DxlInterface::INVALID_PROTOCOL:
+                ROS_ERROR("[dxl_motors_builder]: protocol version %f is invalid. shutting down...", protocol_);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             case dxl::DxlInterface::SUCCESS:
