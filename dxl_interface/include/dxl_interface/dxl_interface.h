@@ -41,6 +41,21 @@ namespace dxl
         uint16_t len_goal_pos;
     };
 
+    struct led_color
+    {
+        uint8_t red,
+                green,
+                blue;
+        led_color(uint8_t red,
+                  uint8_t green,
+                  uint8_t blue)
+        {
+            this->red = red;
+            this->green = green;
+            this->blue = blue;
+        }
+    };
+
     struct motor
     {
         enum InterfaceType
@@ -123,6 +138,8 @@ namespace dxl
         bool readMotorsError(std::vector<motor> & motors);
         bool reboot(const motor &motor);
         bool broadcastPing(std::vector<uint8_t> result_vec, uint16_t protocol);
+        bool setMotorsLed(std::vector<dxl::motor> &motors,
+                          const led_color &color);
     };
 
 }

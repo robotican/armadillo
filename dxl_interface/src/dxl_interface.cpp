@@ -312,6 +312,13 @@ namespace dxl
         return true;
     }
 
+    bool DxlInterface::setMotorsLed(std::vector<dxl::motor> &motors,
+                                    const led_color &color)
+    {
+        /* todo: implement. reason for not implementing so far: some motor models
+         * have only red led, and some have rgb led. red led looks like warning */
+    }
+
     /**** DXL MATH *****/
     double convertions::ticks2rads(int32_t ticks, struct motor &motor, float protocol)
     {

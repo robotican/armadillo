@@ -80,6 +80,7 @@ namespace armadillo2_hw
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
+
     }
 
     void DxlMotorsBuilder::pingMotors()

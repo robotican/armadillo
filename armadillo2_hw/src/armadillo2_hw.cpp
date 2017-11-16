@@ -16,10 +16,6 @@ namespace armadillo2_hw
                                     position_interface_,
                                     posvel_interface_);
 
-
-
-
-
         /* register interfaces */
         registerInterface(&joint_state_interface_);
         registerInterface(&posvel_interface_);
