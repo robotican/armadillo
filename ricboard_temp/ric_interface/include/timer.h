@@ -22,8 +22,9 @@ public:
     void startTimer(int micro_secs);
     bool isFinished();
     long long int elaspedTimeSec();
-    long long int elapsedTimeMs();
-    long long int elapsedTimeNs();
+    long long int elapsedTimeMilliSec();
+    long long int elapsedTimeNanoSec();
+    long long int elapsedTimeMicroSec();
 };
 
 #endif //RIC_INTERFACE_TIMER_H

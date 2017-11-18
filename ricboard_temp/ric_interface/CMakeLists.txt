@@ -6,5 +6,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 include_directories(
         include
 )
-set(SOURCE_FILES main.cpp src/communicator.cpp include/communicator.h include/ric_exception.h include/protocol.h src/board_manager.cpp include/board_manager.h include/timer.h src/timer.cpp src/timer.h)
+set(SOURCE_FILES main.cpp
+        src/communicator.cpp
+        include/communicator.h
+        include/ric_exception.h
+        include/protocol.h
+        src/board_manager.cpp
+        include/board_manager.h
+        include/timer.h
+        src/timer.cpp)
 add_executable(ric_interface ${SOURCE_FILES})

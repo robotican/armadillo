@@ -75,7 +75,8 @@ namespace ric_interface {
     }
 
     bool Communicator::send(const byte buff[], size_t size) {
-        int write_len = ::write(file_handle_, &buff, size);
+        char i = buff[0];
+        int write_len = ::write(file_handle_, buff, size);
         if (write_len != size)
             return false;
         return true;

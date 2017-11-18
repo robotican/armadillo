@@ -13,10 +13,16 @@ void Communicator::send(byte buff[], size_t size)
 /* return: number of bytes read */
 int Communicator::read(byte buff[], size_t size)
 {
+  bool no_bytes = true;
   int indx=0;
-	for (; indx<size && Serial.available()>0; indx++)
+	while (indx<size && Serial.available()>0)
 	{
-		buff[indx] = Serial.read();
-	}
+    no_bytes = false;
+    int incoming_byte = Serial.read();
+    if (incoming_byte != -1) 
+		  buff[indx++] = (byte)incoming_byte;
+	};
+  if (no_bytes)
+    return -1;
 	return indx;
 }

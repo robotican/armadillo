@@ -14,15 +14,17 @@ namespace ric_interface
     class BoardManager
     {
     private:
-        const int KEEP_ALIVE_TIMEOUT = 500; //ms
+        const int SEND_KA_TIMEOUT = 300; //ms
+        const int GET_KA_TIMEOUT = 1000; //ms
 
         /* is board sent keep alive on time */
         bool is_board_alive_, got_keepalive_;
-        Timer keepalive_timer_;
+        Timer send_keepalive_timer_, get_keepalive_timer_;
         ric_interface::Communicator comm_;
 
         void connect();
         bool readHeader(protocol::header &h);
+        void sendKeepAlive();
         void handleHeader(const protocol::header &h);
 
     public:
