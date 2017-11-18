@@ -5,7 +5,7 @@ namespace protocol
 {
   enum class Type
   {
-    KEEP_ALIVE = 0
+    KEEP_ALIVE = 1
   };
   
   struct header

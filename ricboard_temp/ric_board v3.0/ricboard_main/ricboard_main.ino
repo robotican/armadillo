@@ -20,7 +20,7 @@ void loop()
 
 
   protocol::header pkg_header;
-  pkg_header.type = 50;
+  pkg_header.type = 1;
   //byte* buff = reinterpret_cast<byte*>(&pkg_header);
   byte buff[sizeof(pkg_header)];
   memcpy(buff, &pkg_header, sizeof(pkg_header));

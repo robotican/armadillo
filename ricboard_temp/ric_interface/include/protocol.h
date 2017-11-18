@@ -3,27 +3,30 @@
 
 #include <stdint.h>
 
-namespace protocol
+namespace ric_interface
 {
-    enum class Type
+    namespace protocol
     {
-        KEEP_ALIVE = 0
-    };
+        enum class Type
+        {
+            KEEP_ALIVE = 1
+        };
 
-    struct header
-    {
-        uint8_t type;
-    };
+        struct header
+        {
+            uint8_t type;
+        };
 
-    struct package
-    {
+        struct package
+        {
 
-    };
+        };
 
-    struct keep_alive : package
-    {
+        struct keep_alive : package
+        {
 
-    };
+        };
+    }
 }
 
 

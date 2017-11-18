@@ -51,6 +51,7 @@ namespace ric_interface {
     }
 
     bool Communicator::read(byte buff[], size_t size) {
+
         const int max_bad_reads = 200;
         int bad_reads = 0;
         for (int indx=0; indx<size && bad_reads<max_bad_reads;)
@@ -59,13 +60,13 @@ namespace ric_interface {
             int i = ::read(file_handle_, &incoming_byte, 1);
             if (i == 1)
             {
-                printf("new: %i\n", incoming_byte);
+                //printf("new: %i\n", incoming_byte);
                 buff[indx++] = incoming_byte;
             }
             else
             {
                 bad_reads++;
-                printf("fucked\n");
+                //printf("fucked\n");
             }
         }
         if (bad_reads == max_bad_reads)
