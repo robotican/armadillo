@@ -1,11 +1,6 @@
 
-#include "../include/communicator.h"
-
-#include <stdatomic.h>
-#include <termios.h>
-#include <fcntl.h>
-#include <unistd.h>  // UNIX standard function definitions
-#include "ric_exception.h"
+#include <ric_interface/communicator.h>
+  // UNIX standard function definitions
 
 namespace ric_interface {
     void Communicator::connect(std::string port, int baudrate) {

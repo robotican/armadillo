@@ -31,4 +31,4 @@ namespace ric_interface
 
 
 
-#endif PROTOCOL_H
+#endif //PROTOCOL_H

@@ -35,8 +35,7 @@ printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 printf "${WHITE_TXT}Installing USB rules...\n${NO_COLOR}"
 sudo apt -y install setserial #for setting port latency
 sudo cp ./rules/usb_to_dxl.rules /etc/udev/rules.d
-sudo udevadm control --reload
-sudo udevadm trigger --action=add
+sudo udevadm control --reload-rules && udevadm trigger
 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 

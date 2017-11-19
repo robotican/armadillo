@@ -8,6 +8,7 @@
 #include "communicator.h"
 #include "timer.h"
 #include "protocol.h"
+#include <string.h>
 
 namespace ric_interface
 {

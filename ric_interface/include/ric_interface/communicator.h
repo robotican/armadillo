@@ -3,7 +3,10 @@
 
 
 
-//#include "ric_exception.h"
+#include "ric_exception.h"
+#include <termios.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 typedef unsigned char byte;
 

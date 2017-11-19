@@ -5,8 +5,10 @@
 #ifndef RIC_INTERFACE_RIC_EXCEPTION_H
 #define RIC_INTERFACE_RIC_EXCEPTION_H
 
-#include <cerrno>
-#include <string>
+#include <iostream>
+//#include <exception>
+//#include <stdexcept>
+//#include <sstream>
 
 namespace ric_interface
 {

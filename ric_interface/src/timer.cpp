@@ -2,8 +2,7 @@
 // Created by Eli Eli on 18/11/2017.
 //
 
-#include "timer.h"
-#include <iostream>
+#include <ric_interface/timer.h>
 
 void Timer::reset()
 {
@@ -17,11 +16,11 @@ void Timer::reset()
 
 void Timer::startMeasure()
 {
-    begin_ = std::chrono::high_resolution_clock::now();
+    begin_ = std::chrono::steady_clock::now();
 }
 void Timer::endMeasure()
 {
-    end_ = std::chrono::high_resolution_clock::now();
+    end_ = std::chrono::steady_clock::now();
 }
 
 void Timer::startTimer(int micro_secs)

@@ -2,7 +2,7 @@
 // Created by Eli Eli on 18/11/2017.
 //
 
-#include "board_manager.h"
+#include <ric_interface/board_manager.h>
 
 namespace ric_interface
 {
@@ -53,7 +53,7 @@ namespace ric_interface
     /* if conncetion fails, exception will be thrown */
     void BoardManager::connect()
     {
-        comm_.connect("/dev/cu.usbmodem1411", 115200); //TODO: GET FROM PARAM YAML FILE
+        comm_.connect("/dev/RICBOARD", 115200); //TODO: GET FROM PARAM YAML FILE
     }
 
 
