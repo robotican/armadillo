@@ -2,12 +2,14 @@
 #include "protocol.h"
 #include "strober.h"
 #include "timer.h"
+#include "imu.h"
 
 #define INDICATOR_LED 13
 #define BAUDRATE 115200
 #define SEND_KA_INTERVAL 300 //ms
 #define GET_KA_INTERVAL 1000 //ms
 
+Imu imu;
 RicCommunicator comm;
 Timer send_keepalive_timer, get_keepalive_timer;
 Strober strober;
@@ -18,15 +20,18 @@ void setup()
   pinMode(INDICATOR_LED, OUTPUT);
   strober.setNotes(Strober::Notes::BLINK_SLOW);
   comm.init(BAUDRATE);
+  imu.init();
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
-
+  
 
 }
 
 void loop() 
 {
   strober.play(INDICATOR_LED);
+
+  //imu.read();
   
   if (send_keepalive_timer.finished())
   {
