@@ -32,6 +32,7 @@ namespace ric_interface
         void keepAliveAndRead();
         bool readLoggerPkg(protocol::logger &logger_pkg);
         bool readUltrasonicPkg(protocol::ultrasonic &ultrasonic_pkg);
+        bool readImuPkg(protocol::imu &imu_pkg);
 
     public:
         BoardManager();

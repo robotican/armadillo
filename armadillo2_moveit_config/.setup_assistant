@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: armadillo2_description
+    relative_path: urdf/armadillo2.xacro
+  SRDF:
+    relative_path: config/armadillo2_robot.srdf
+  CONFIG:
+    author_name: RoboTiCan
+    author_email: office@robotican.com
+    generated_timestamp: 1511863353

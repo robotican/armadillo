@@ -97,6 +97,16 @@ namespace ric_interface
                 }
                 break;
             }
+            case protocol::Type::IMU:
+            {
+                protocol::imu imu_pkg;
+                if (readImuPkg(imu_pkg))
+                {
+                    sensors_state_.imu = imu_pkg;
+                    //printf("ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
+                }
+                break;
+            }
         }
     }
 
@@ -131,4 +141,16 @@ namespace ric_interface
         memcpy(&ultrasonic_pkg, buff, ultrasonic_size);
         return true;
     }
+
+    bool BoardManager::readImuPkg(protocol::imu &imu_pkg)
+    {
+        size_t imu_size = sizeof(protocol::imu);
+        byte buff[imu_size];
+        int bytes_read = comm_.read(buff, imu_size);
+        if (bytes_read != imu_size)
+            return false;
+        memcpy(&imu_pkg, buff, imu_size);
+        return true;
+    }
+
 }

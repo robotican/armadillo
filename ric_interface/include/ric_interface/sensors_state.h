@@ -12,7 +12,7 @@ namespace ric_interface
     struct sensors_state
     {
         protocol::ultrasonic ultrasonic;
-
+        protocol::imu imu;
     };
 }
 

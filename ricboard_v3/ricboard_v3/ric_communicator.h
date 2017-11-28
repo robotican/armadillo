@@ -46,6 +46,18 @@ namespace communicator
             send(buff, ultasonic_size);
         }
 
+        void sendImu(const protocol::imu &imu_pkg)
+        {
+            protocol::header imu_header;
+            imu_header.type = protocol::Type::IMU;
+            sendHeader(imu_header);
+
+            size_t imu_size = sizeof(protocol::imu);
+            byte buff[imu_size];
+            memcpy(buff, &imu_pkg, imu_size);
+            send(buff, imu_size);
+        }
+
         void sendLogger(const protocol::logger &logger_pkg) 
         {
             protocol::header logger_header;

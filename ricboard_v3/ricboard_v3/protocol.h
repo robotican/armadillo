@@ -8,7 +8,8 @@ namespace protocol
     KEEP_ALIVE = 1,
     LOGGER = 2,
     ULTRASONIC = 3,
-    LIDAR = 4
+    LIDAR = 4,
+    IMU = 5
   };
   
   struct header
@@ -23,8 +24,14 @@ namespace protocol
   
   struct logger : package
   {
+    enum Code
+    {
+      INFO = 1,
+      WARNING = 2,
+      ERROR = 3
+    };
     char msg[128];
-    uint8_t code;
+    Code code;
   };
   
   struct sensor : package
@@ -46,11 +53,26 @@ namespace protocol
     uint16_t distance_mm;  
   };
   
+  struct imu : sensor
+  {
+   float roll,
+         pitch,
+         yaw,
+         accl_x,
+         accl_y,
+         accl_z,
+         gyro_x,
+         gyro_y,
+         gyro_z,
+         mag_x,
+         mag_y,
+         mag_z;    
+  };
+  
   struct elevator : actuator
   {
     uint16_t cmd_mm;  
   };
-  
 }
 
 

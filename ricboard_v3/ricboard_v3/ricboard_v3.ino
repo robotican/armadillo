@@ -4,6 +4,7 @@
 #include "strober.h"
 #include "timer.h"
 #include "ultrasonic.h"
+#include "imu.h"
 
 /* this cpp acts as board manager */
 Timer send_keepalive_timer, 
@@ -14,6 +15,7 @@ bool got_keepalive;
 
 /* front ultrasonic */
 Ultrasonic ultrasonic;
+Imu imu;
 
 /******************************************************/
 
@@ -27,6 +29,8 @@ void setup()
   send_readings_timer.start(SEND_READINGS_INTERVAL);
 
   ultrasonic.init(ULTRASONIC_PIN);
+  if (!imu.init())
+    log("imu failed", protocol::logger::Code::ERROR);
 }
 
 /******************************************************/
@@ -49,7 +53,10 @@ void sendReadings()
     ultrasonic_pkg.distance_mm = ultrasonic.readDistanceMm();
     communicator::ric::sendUltrasonic(ultrasonic_pkg);
 
-    log("hello world", 2);
+    /* read IMU */
+    protocol::imu imu_pkg;
+    if (imu.read(imu_pkg)) //if imu ready, send it
+      communicator::ric::sendImu(imu_pkg);
     
     send_readings_timer.startOver();
   }
@@ -98,9 +105,8 @@ void handleHeader(const protocol::header &h)
 
 /******************************************************/
 
-void log(const char* msg_str, uint8_t code)
+void log(const char* msg_str, protocol::logger::Code code)
 {
-  //Serial.println(msg_str);
     protocol::logger logger_pkg;
     strcpy(logger_pkg.msg, msg_str);
     
