@@ -45,11 +45,12 @@ namespace ric_interface {
         tcflush(file_handle_, TCIOFLUSH);
     }
 
-    bool Communicator::read(byte buff[], size_t size) {
+    int Communicator::read(byte buff[], size_t size) {
 
         const int max_bad_reads = 200;
         int bad_reads = 0;
-        for (int indx=0; indx<size && bad_reads<max_bad_reads;)
+        int indx;
+        for (indx=0; indx<size && bad_reads<max_bad_reads;)
         {
             byte incoming_byte;
             int i = ::read(file_handle_, &incoming_byte, 1);
@@ -65,8 +66,8 @@ namespace ric_interface {
             }
         }
         if (bad_reads == max_bad_reads)
-            return false;
-        return true;
+            return -1;
+        return indx;
     }
 
     bool Communicator::send(const byte buff[], size_t size) {

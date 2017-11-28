@@ -133,7 +133,7 @@ set(
 add_library(
         ${PROJECT_NAME}
         ${PROJECT_FILES}
-)
+        include/ric_interface/sensors_state.h)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

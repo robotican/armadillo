@@ -8,6 +8,7 @@
 #include "communicator.h"
 #include "timer.h"
 #include "protocol.h"
+#include "sensors_state.h"
 #include <string.h>
 
 namespace ric_interface
@@ -21,12 +22,16 @@ namespace ric_interface
         /* is board sent keep alive on time */
         bool is_board_alive_, got_keepalive_;
         Timer send_keepalive_timer_, get_keepalive_timer_;
-        ric_interface::Communicator comm_;
+        Communicator comm_;
+        sensors_state sensors_state_;
 
         void connect();
         bool readHeader(protocol::header &h);
         void sendKeepAlive();
         void handleHeader(const protocol::header &h);
+        void keepAliveAndRead();
+        bool readLoggerPkg(protocol::logger &logger_pkg);
+        bool readUltrasonicPkg(protocol::ultrasonic &ultrasonic_pkg);
 
     public:
         BoardManager();

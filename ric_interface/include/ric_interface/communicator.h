@@ -26,7 +26,7 @@ namespace ric_interface
     public:
         void connect(std::string port, int baudrate);
         bool send(const byte buff[], size_t size);
-        bool read(byte buff[], size_t size);
+        int read(byte buff[], size_t size);
 
     };
 }

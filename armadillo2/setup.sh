@@ -28,6 +28,7 @@ sudo apt-get -y install ros-kinetic-joint-limits-interface
 sudo apt-get -y install ros-kinetic-gazebo-ros-control 
 sudo apt-get -y install ros-kinetic-ros-controllers 
 sudo apt-get -y install ros-kinetic-ros-control 
+sudo apt-get install ros-kinetic-moveit
 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 

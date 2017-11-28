@@ -9,12 +9,15 @@ namespace ric_interface
     {
         enum class Type
         {
-            KEEP_ALIVE = 1
+            KEEP_ALIVE = 1,
+            LOGGER = 2,
+            ULTRASONIC = 3,
+
         };
 
         struct header
         {
-            uint8_t type;
+            Type type;
         };
 
         struct package
@@ -22,9 +25,20 @@ namespace ric_interface
 
         };
 
-        struct keep_alive : package
+        struct logger : package
+        {
+            char msg[128];
+            uint8_t code;
+        };
+
+        struct sensor : package
         {
 
+        };
+
+        struct ultrasonic : sensor
+        {
+            uint16_t distance_mm;
         };
     }
 }
