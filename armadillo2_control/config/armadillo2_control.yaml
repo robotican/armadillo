@@ -53,5 +53,36 @@ mobile_base_controller:
       max_velocity           : 3.0  # rad/s
       has_acceleration_limits: true
       max_acceleration       : 0.5  # rad/s^2
+
+arm_trajectory_controller:
+  type: pos_vel_controllers/JointTrajectoryController
+  joints:
+     - rotation1_joint
+     - shoulder1_joint 
+     - shoulder2_joint 
+     - rotation2_joint 
+     - shoulder3_joint 
+     - wrist_joint 
+  publish_rate: 50
+  constraints:
+    goal_time: 15.5                   # Override default
+    stopped_velocity_tolerance: 0.05 # Override default
+    rotation1_joint: {trajectory: 10.2, goal: 10.2}
+    shoulder1_joint: {trajectory: 10.2, goal: 10.2}
+    shoulder2_joint: {trajectory: 10.2, goal: 10.2}
+    rotation2_joint: {trajectory: 10.2, goal: 10.2}
+    shoulder3_joint: {trajectory: 10.2, goal: 10.2}
+    wrist_joint: {trajectory: 10.2, goal: 10.2}
+
+
+gripper_controller:
+ type: pos_vel_controllers/GripperActionController #gripper_controllers/PosVelGripperController
+ left_finger_joint: 'left_finger_joint'
+ right_finger_joint: 'right_finger_joint'
+ goal_tolerance: 0.005
+ stalled_velocity_threshold: 0.005
+ stall_timeout: 1.0
+ joints_vel: 0.4
+action_monitor_rate: 50
       
 

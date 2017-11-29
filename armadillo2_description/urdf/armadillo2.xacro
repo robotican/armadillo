@@ -60,7 +60,7 @@
             <geometry>
               <sphere radius="0.05"/>
             </geometry>
-            <surface>
+       <!--     <surface>
               <friction>
                 <ode>
                   <mu>0</mu>
@@ -69,7 +69,7 @@
                   <slip2>1.0</slip2>
                 </ode>
               </friction>
-            </surface>
+            </surface> -->
           </collision>
   </link>
   <link

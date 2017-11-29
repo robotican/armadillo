@@ -75,7 +75,7 @@
             <turnGravityOff>true</turnGravityOff>
           </gazebo>
 
-
+<!--
         <gazebo reference="left_wheel_link">
   
           <kp>1000000.0</kp>
@@ -98,7 +98,8 @@
           <minDepth>0.00</minDepth>
         </gazebo>
 
- 
+          -->
+          
   <transmission name="rotation1_joint_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rotation1_joint">
