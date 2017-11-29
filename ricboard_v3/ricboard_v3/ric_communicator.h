@@ -58,6 +58,18 @@ namespace communicator
             send(buff, imu_size);
         }
 
+        void sendLaser(const protocol::laser &laser_pkg)
+        {
+            protocol::header laser_header;
+            laser_header.type = protocol::Type::LASER;
+            sendHeader(laser_header);
+
+            size_t laser_size = sizeof(protocol::laser);
+            byte buff[laser_size];
+            memcpy(buff, &laser_pkg, laser_size);
+            send(buff, laser_size);
+        }
+
         void sendLogger(const protocol::logger &logger_pkg) 
         {
             protocol::header logger_header;

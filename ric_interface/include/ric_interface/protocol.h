@@ -12,7 +12,7 @@ namespace ric_interface
             KEEP_ALIVE = 1,
             LOGGER = 2,
             ULTRASONIC = 3,
-            LIDAR = 4,
+            LASER = 4,
             IMU = 5
         };
 
@@ -52,25 +52,25 @@ namespace ric_interface
             uint16_t distance_mm;
         };
 
-        struct lidar : sensor
+        struct laser : sensor
         {
             uint16_t distance_mm;
         };
 
         struct imu : sensor
         {
-            float roll,
-                    pitch,
-                    yaw,
-                    accl_x,
-                    accl_y,
-                    accl_z,
-                    gyro_x,
-                    gyro_y,
-                    gyro_z,
-                    mag_x,
-                    mag_y,
-                    mag_z;
+            float roll_rad,
+                    pitch_rad,
+                    yaw_rad,
+                    accl_x_rad,
+                    accl_y_rad,
+                    accl_z_rad,
+                    gyro_x_rad,
+                    gyro_y_rad,
+                    gyro_z_rad,
+                    mag_x_rad,
+                    mag_y_rad,
+                    mag_z_rad;
         };
 
         struct elevator : actuator

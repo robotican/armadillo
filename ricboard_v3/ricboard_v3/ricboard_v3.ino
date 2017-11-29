@@ -5,32 +5,48 @@
 #include "timer.h"
 #include "ultrasonic.h"
 #include "imu.h"
+#include "laser.h"
 
 /* this cpp acts as board manager */
+
 Timer send_keepalive_timer, 
       get_keepalive_timer,
       send_readings_timer;
-Strober strober;
 bool got_keepalive;
+Strober strober;
 
 /* front ultrasonic */
 Ultrasonic ultrasonic;
 Imu imu;
+Laser laser;
 
 /******************************************************/
 
 void setup() 
 {
-  pinMode(INDICATOR_LED, OUTPUT);
-  strober.setNotes(Strober::Notes::BLINK_SLOW);
+  
   communicator::init(BAUDRATE);
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
 
+  //delay(200);
+  
   ultrasonic.init(ULTRASONIC_PIN);
   if (!imu.init())
-    log("imu failed", protocol::logger::Code::ERROR);
+    Serial.println("imu failed");//log("imu failed", protocol::logger::Code::ERROR);
+
+  delay(200);
+
+  laser.init();
+
+  delay(200);
+
+  /* pin mode must be invoked after i2c devices (arduino bug) */
+  pinMode(INDICATOR_LED, OUTPUT);
+  strober.setNotes(Strober::Notes::BLINK_SLOW);
+  
+  delay(200);
 }
 
 /******************************************************/
@@ -46,17 +62,40 @@ void loop()
 
 void sendReadings()
 {
+  
+  /* read IMU if available. IMU read must be called */
+  /* as fast as possible (no delays*                */
+  protocol::imu imu_pkg;
+  bool valid_imu = false;
+  if (imu.read(imu_pkg)) //if imu ready, send it
+    valid_imu = true;
+  
+     
   if (send_readings_timer.finished())
   {
-    /* read ultrasonic */
+    /* ULTRASONIC */
     protocol::ultrasonic ultrasonic_pkg;
     ultrasonic_pkg.distance_mm = ultrasonic.readDistanceMm();
     communicator::ric::sendUltrasonic(ultrasonic_pkg);
 
-    /* read IMU */
-    protocol::imu imu_pkg;
-    if (imu.read(imu_pkg)) //if imu ready, send it
+    /* IMU */
+    if (valid_imu)
+    {
       communicator::ric::sendImu(imu_pkg);
+        //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
+        //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
+        //Serial.print("yaw: "); Serial.println(imu_pkg.yaw * 180 / M_PI);
+    }
+
+    /* LASER */
+    uint16_t laser_read = laser.read();
+    if (laser_read != (uint16_t)Laser::Code::ERROR)
+    {
+      protocol::laser laser_pkg;
+      laser_pkg.distance_mm = laser_read;
+      communicator::ric::sendLaser(laser_pkg);
+    }
+
     
     send_readings_timer.startOver();
   }
@@ -104,7 +143,6 @@ void handleHeader(const protocol::header &h)
 }
 
 /******************************************************/
-
 void log(const char* msg_str, protocol::logger::Code code)
 {
     protocol::logger logger_pkg;

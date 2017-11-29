@@ -33,6 +33,7 @@ namespace ric_interface
         bool readLoggerPkg(protocol::logger &logger_pkg);
         bool readUltrasonicPkg(protocol::ultrasonic &ultrasonic_pkg);
         bool readImuPkg(protocol::imu &imu_pkg);
+        bool readLaserPkg(protocol::laser &laser_pkg);
 
     public:
         BoardManager();

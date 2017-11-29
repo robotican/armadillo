@@ -1,6 +1,7 @@
 
 #include <ric_interface/board_manager.h>
 
+
 namespace ric_interface
 {
     BoardManager::BoardManager()
@@ -103,7 +104,19 @@ namespace ric_interface
                 if (readImuPkg(imu_pkg))
                 {
                     sensors_state_.imu = imu_pkg;
-                    //printf("ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
+                   /* fprintf(stderr, "imu: roll: %f, pitch: %f, yaw: %f \n", sensors_state_.imu.roll_rad * 180 / M_PI,
+                                                                    sensors_state_.imu.pitch_rad * 180 / M_PI,
+                                                                    sensors_state_.imu.yaw_rad * 180 / M_PI);*/
+                }
+                break;
+            }
+            case protocol::Type::LASER:
+            {
+                protocol::laser laser_pkg;
+                if (readLaserPkg(laser_pkg))
+                {
+                    sensors_state_.laser = laser_pkg;
+                    printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
                 }
                 break;
             }
@@ -150,6 +163,17 @@ namespace ric_interface
         if (bytes_read != imu_size)
             return false;
         memcpy(&imu_pkg, buff, imu_size);
+        return true;
+    }
+
+    bool BoardManager::readLaserPkg(protocol::laser &laser_pkg)
+    {
+        size_t laser_size = sizeof(protocol::laser);
+        byte buff[laser_size];
+        int bytes_read = comm_.read(buff, laser_size);
+        if (bytes_read != laser_size)
+            return false;
+        memcpy(&laser_pkg, buff, laser_size);
         return true;
     }
 

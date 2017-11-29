@@ -69,8 +69,8 @@ bool RTIMUHal::HALRead(unsigned char slaveAddr, unsigned char regAddr, unsigned 
         if (I2Cdev::readBytes(slaveAddr, regAddr, length, data, 10) == length)
              return true;
 
-        if (strlen(errorMsg) > 0)
-            HAL_ERROR1("I2C read failed - %s\n", errorMsg);
+        //if (strlen(errorMsg) > 0)
+            //HAL_ERROR1("I2C read failed - %s\n", errorMsg);
 
         return false;
     } else {

@@ -13,6 +13,7 @@ namespace ric_interface
     {
         protocol::ultrasonic ultrasonic;
         protocol::imu imu;
+        protocol::laser laser;
     };
 }
 
