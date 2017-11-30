@@ -13,6 +13,8 @@
     <rosparam file="$(find armadillo2_hw)/config/arm_config.yaml" command="load"/>
     
     <rosparam file="$(find armadillo2_hw)/config/dxl_spec_config.yaml" command="load"/>
+
+    <rosparam file="$(find armadillo2_hw)/config/battery_config.yaml" command="load"/>
         
         <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find armadillo2_control)/config/armadillo2_control.yaml" command="load"/>
