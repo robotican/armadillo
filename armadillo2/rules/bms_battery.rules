@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A403IKYO", SYMLINK+="BMS", MODE="0666"

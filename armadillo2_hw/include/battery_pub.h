@@ -9,7 +9,7 @@
 #include <bms/bms_interface.h>
 #include <sensor_msgs/BatteryState.h>
 
-#define BATT_PORT "/dev/ttyUSB1"
+#define BATT_PORT "/dev/BMS"
 #define BATT_PUB_INTERVAL 1 //secs
 #define SHOW_WARNINGS false
 

@@ -50,7 +50,7 @@ namespace armadillo2_hw
         if (!dxl_interface_.readMotorsError(motors_))
         {
             ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
-            failed_reads_++;
+            //failed_reads_++;
         }
         if (failed_reads_ >= MAX_READ_ERRORS)
         {
@@ -351,7 +351,6 @@ namespace armadillo2_hw
 
 
                 motor.spec.current_ratio = specs_[motor.spec.model].current_ratio;
-
 
             }
             else
