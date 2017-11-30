@@ -56,11 +56,11 @@
 #define BMS_PKG_CELLS_ARR_INDX                 31
 #define BMS_PKG_CELL_SIZE                      4
 
-#define BMS_PKG_CHRG_CURR_INDX                 35
-#define BMS_PKG_CHRG_CURR_SIZE                 2
+#define BMS_PKG_CHRG_CURR_INDX                 31
+#define BMS_PKG_CHRG_CURR_SIZE                 4
 
-#define BMS_PKG_DCHRG_CURR_INDX                37
-#define BMS_PKG_DCHRG_CURR_SIZE                2
+#define BMS_PKG_DCHRG_CURR_INDX                35
+#define BMS_PKG_DCHRG_CURR_SIZE                4
 
 /* assuming cell size is 0 (for other values, multiply) */
 #define BMS_PKG_TEMP_NUM_INDX                  39
