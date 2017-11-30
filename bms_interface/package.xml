@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>bms</name>
+  <name>bms_interface</name>
   <version>1.0.0</version>
   <description>
       bms package provide an easy interface to read and monitor bms battery. 

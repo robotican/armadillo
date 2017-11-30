@@ -6,7 +6,7 @@
 #define ARMADILLO2_HW_BATTERY_PUB_H
 
 #include <ros/ros.h>
-#include <bms/bms_interface.h>
+#include <bms_interface/bms_interface.h>
 #include <sensor_msgs/BatteryState.h>
 
 #define BATT_PORT "/dev/BMS"

@@ -8,7 +8,6 @@ namespace armadillo2_hw
 {
     BatteryPub::BatteryPub(ros::NodeHandle nh)
     {
-
         try
         {
             bms_.connect(BATT_PORT);
@@ -19,6 +18,7 @@ namespace armadillo2_hw
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
+        ROS_INFO("[armadillo2_hw/battery_pub]: battery port opened successfully \nport name: %s \nbaudrate: 9600", BATT_PORT);
 
         bat_pub_ = nh.advertise<sensor_msgs::BatteryState>("battery_state", 10);
         bat_pub_timer_ = nh.createTimer(ros::Duration(BATT_PUB_INTERVAL), &BatteryPub::pubTimerCB, this);
@@ -35,10 +35,13 @@ namespace armadillo2_hw
             sensor_msgs::BatteryState msg;
             msg.present = true;
             msg.voltage = bms_data.vbat;
-            msg.percentage = ((float)bms_data.cap_now / (float)bms_data.cap_full) * 100.0;
-            msg.current = bms_data.
-
-            //TODO: send the rest of the data
+            msg.percentage = bms_data.soc;
+            msg.current = bms_data.chrg_current - bms_data.dchrg_current;
+            msg.charge = bms_data.chrg_current;
+            msg.capacity = bms_data.cap_full; //Ah
+            msg.power_supply_status = bms_data.is_chrg;
+            msg.cell_voltage = bms_data.vcells;
+            msg.location = "base_link";
 
             bat_pub_.publish(msg);
         }

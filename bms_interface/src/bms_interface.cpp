@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "bms/bms_interface.h"
+#include "bms_interface/bms_interface.h"
 
 namespace bms
 {
@@ -231,6 +231,8 @@ namespace bms
         pkg_data.cstate = fetchParam(buff, BMS_PKG_CSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_CSTATE_SIZE);
         //fprintf(stderr, "\nCSTATE: %d\n", pkg_data.cstate);
+        pkg_data.is_chrg = getBitInWord(pkg_data.cstate, 0);
+        pkg_data.is_dchrg = getBitInWord(pkg_data.cstate, 1);
 
         /****** fetch Tstate ******/
         pkg_data.tstate = fetchParam(buff, BMS_PKG_TSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
@@ -289,12 +291,12 @@ namespace bms
 
         /****** fetch CapNow ******/
         pkg_data.cap_now = fetchParam(buff, BMS_PKG_CAP_NOW_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
-                                      BMS_PKG_CAP_NOW_SIZE);
+                                      BMS_PKG_CAP_NOW_SIZE) / 10;
         //fprintf(stderr, "\nCAP_NOW: %d\n", pkg_data.cap_now);
 
         /****** fetch CapFull ******/
         pkg_data.cap_full = fetchParam(buff, BMS_PKG_CAP_FULL_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
-                                      BMS_PKG_CAP_FULL_SIZE);
+                                      BMS_PKG_CAP_FULL_SIZE) / 10;
         //fprintf(stderr, "\nCAP_FULL: %d\n", pkg_data.cap_full);
 
         return pkg_data;

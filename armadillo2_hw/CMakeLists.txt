@@ -28,7 +28,7 @@ find_package(
 	     rospy
 
              controller_manager
-             bms
+             bms_interface
             dxl_interface)
 
 
@@ -124,7 +124,7 @@ find_package(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES armadillo2_hw
-  CATKIN_DEPENDS bms dxl_interface
+  CATKIN_DEPENDS bms_interface dxl_interface
 #  DEPENDS system_lib
 )
 

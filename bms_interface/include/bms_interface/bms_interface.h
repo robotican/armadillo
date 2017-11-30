@@ -135,10 +135,17 @@ namespace bms
         std::vector<uint8_t> temps; //temp sensors array
         uint8_t temp_max = 0;
         uint16_t vstate = 0;
+
+        /* raw cstate_state and bits flags fetched from it */
         uint16_t cstate = 0;
+        uint8_t is_dchrg = 0; //1 if discharging, 0 if not
+        uint8_t is_chrg = 0; //1 if charging, 0 if not
+
         uint16_t tstate = 0;
         uint16_t alarm = 0;
+
         uint8_t fet_state = 0;
+
         uint16_t warn_vov = 0; //single cell high voltage warning value mV
         uint16_t warn_vuv = 0; //single cell undervoltage warning value
         uint16_t num_warn_vhigh = 0; //battery pack high voltage warning value
@@ -148,7 +155,7 @@ namespace bms
         uint16_t chg_num = 0; //Number of charge events
         uint8_t soc = 0; //Battery SOC [%]
         uint16_t cap_now = 0; //Current capacity
-        uint16_t cap_full = 0; //Full Charge Capacity
+        uint16_t cap_full = 0; //Full Charge Capacity [Ah]
     };
 
 
@@ -187,6 +194,15 @@ namespace bms
         data read();
         BMSInterface() {int a = BMS_PKG_CAP_FULL_INDX;}
         ~BMSInterface();
+        uint8_t getBitInByte(uint8_t byte, uint8_t position)
+        {
+            return (byte >> position) & 0x1;
+        }
+
+        uint8_t getBitInWord(uint16_t byte, uint8_t position)
+        {
+            return (byte >> position) & 0x1;
+        }
 
     };
 }
