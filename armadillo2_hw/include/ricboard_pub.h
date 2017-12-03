@@ -3,6 +3,7 @@
 #define ARMADILLO2_HW_RICBOARD_PUB_H
 
 #include <ric_interface/ric_interface.h>
+#include <ric_interface/ric_exception.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Range.h>
 #include <sensor_msgs/NavSatFix.h>

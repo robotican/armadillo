@@ -1,44 +1,48 @@
 #ifndef LASER_H
 #define LASER_H
 
-#include <Wire.h>
-#include <VL53L0X.h>
-
+#include <Adafruit_VL53L0X.h>
 
 class Laser
 {
 
 private:
-	VL53L0X sensor_;
+	Adafruit_VL53L0X *lox;
+  bool init_ok_ = false;
 
 public:
+
+  ~Laser() { delete lox; }
+  
 	enum Code 
 	{
     ERROR = 65535,
-    OUT_OF_RANGE = 8190
+    OUT_OF_RANGE = 4
 	};
   
-	void init()
+	bool init()
   {
-    Wire1.begin();
-    sensor_.init();
-    
-    /* cancel libaray inner while loop delay. instead, call */
-    /* read() inside loop(), and check for errors           */
-    sensor_.setTimeout(1); 
-    
-    sensor_.setMeasurementTimingBudget(1);  
+    lox = new Adafruit_VL53L0X();
+    init_ok_ = lox->begin();
+    if (!init_ok_) 
+      return false;
+    return true;
   }
   
   /*
   * return values:
   * 30 - 8189  real data (mm)
-  * 8190       object to far
+  * 4          object to far
   * 65535      error - reached timeout and read failed 
   */
   uint16_t read()
   {
-    return sensor_.readRangeSingleMillimeters();   
+    if (!init_ok_) 
+      return (uint16_t)Code::ERROR;
+      
+    VL53L0X_RangingMeasurementData_t measure;
+    lox->rangingTest(&measure, false); //pass in 'true' to get debug data printout
+    return measure.RangeMilliMeter;
   }
 
 };

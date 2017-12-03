@@ -9,6 +9,9 @@
 
 /* this cpp acts as board manager */
 
+/* DO NOT use Serial.print, because */
+/* communicator use it for communication with pc */
+
 Timer send_keepalive_timer, 
       get_keepalive_timer,
       send_readings_timer;
@@ -84,14 +87,13 @@ void sendReadings()
     }
 
     /* LASER */
-    /*uint16_t laser_read = laser.read();
+    uint16_t laser_read = laser.read();
     if (laser_read != (uint16_t)Laser::Code::ERROR)
     {
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
       communicator::ric::sendLaser(laser_pkg);
-    }*/
-
+    }
     
     send_readings_timer.startOver();
   }

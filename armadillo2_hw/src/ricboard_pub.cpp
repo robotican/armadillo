@@ -47,14 +47,15 @@ void RicboardPub::loop()
     if (!load_ric_hw_)
         return;
     if (ric_.isBoardAlive())
-
-    ric_.loop();
+        ric_.loop();
+    else
+        throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
 }
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 {
     /* update robot state according to ric sensor for joints_states */
-    ric_state_.torso.pos =  ric_.getSensorsState().ultrasonic.distance_mm / 1000.0;
+    ric_state_.torso.pos =  ric_.getSensorsState().laser.distance_mm / 1000.0;
     ric_state_.torso.vel = (ric_state_.torso.pos - ric_state_.torso.prev_pos) / RIC_PUB_INTERVAL;
     ric_state_.torso.prev_pos = ric_state_.torso.pos;
 
