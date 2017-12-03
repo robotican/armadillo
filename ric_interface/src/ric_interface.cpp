@@ -6,7 +6,7 @@ namespace ric_interface
 {
     RicInterface::RicInterface()
     {
-        connect("/dev/RICBOARD");
+        //connect("/dev/RICBOARD");
     }
 
     void RicInterface::loop()

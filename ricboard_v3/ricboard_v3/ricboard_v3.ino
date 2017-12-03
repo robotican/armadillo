@@ -84,13 +84,13 @@ void sendReadings()
     }
 
     /* LASER */
-    uint16_t laser_read = laser.read();
+    /*uint16_t laser_read = laser.read();
     if (laser_read != (uint16_t)Laser::Code::ERROR)
     {
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
       communicator::ric::sendLaser(laser_pkg);
-    }
+    }*/
 
     
     send_readings_timer.startOver();

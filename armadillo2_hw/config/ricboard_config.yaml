@@ -1,2 +1,4 @@
-load_ric_hw: true
+load_ric_hw: false
+torso_joint: "torso_joint"
+
 ric_port: "/dev/RICBOARD"

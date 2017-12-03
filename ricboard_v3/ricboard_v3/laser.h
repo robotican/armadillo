@@ -27,7 +27,7 @@ public:
     /* read() inside loop(), and check for errors           */
     sensor_.setTimeout(1); 
     
-    sensor_.setMeasurementTimingBudget(200000);  
+    sensor_.setMeasurementTimingBudget(1);  
   }
   
   /*
