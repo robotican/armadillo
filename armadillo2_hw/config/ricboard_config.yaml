@@ -1,0 +1,2 @@
+load_ric_hw: true
+ric_port: "/dev/RICBOARD"

@@ -39,14 +39,13 @@ namespace armadillo2_hw
         ROS_INFO("[armadillo2_hw/battery_pub]: battery port opened successfully \nport name: %s \nbaudrate: 9600", batt_port_.c_str());
 
         /* batt publisher */
-        bat_pub_ = nh.advertise<sensor_msgs::BatteryState>("battery_state", 10);
+        bat_pub_ = nh.advertise<sensor_msgs::BatteryState>("battery", 10);
         bat_pub_timer_ = nh.createTimer(ros::Duration(BATT_PUB_INTERVAL), &BatteryPub::pubTimerCB, this);
         ROS_INFO("[armadillo2_hw/battery_pub]: battery publisher is up");
     }
 
     void BatteryPub::pubTimerCB(const ros::TimerEvent &event)
     {
-
         try
         {
             bms::data bms_data =  bms_.read();
@@ -78,9 +77,6 @@ namespace armadillo2_hw
             if (show_warnings_)
                 ROS_WARN("[armadillo2_hw/battery_pub]: %s", exp.what());
         }
-
-
-        //TODO: PUBLISH DATA
     }
 
     void BatteryPub::startPublish()

@@ -47,7 +47,7 @@ namespace armadillo2_hw
 
     private:
 
-        ros::NodeHandle *node_handle_;
+        ros::NodeHandle *nh_;
 
         /* handles */
         std::vector<hardware_interface::JointStateHandle> joint_state_handles_;

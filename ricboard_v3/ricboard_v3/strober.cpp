@@ -36,7 +36,7 @@
 * milliseconds), pair indexes are notes to play (0 - led off,
 * 1 - led on)
 **************************************************************/
-const uint16_t Strober::SLOW_BLINK_ARR[SLOW_BLINK_SIZE] = {1, 700, 0, 700};
+const uint16_t Strober::SLOW_BLINK_ARR[SLOW_BLINK_SIZE] = {1, 500, 0, 500};
 const uint16_t Strober::FAST_BLINK_ARR[FAST_BLINK_SIZE] = {1, 300, 0, 300};
 const uint16_t Strober::STROBE_BLINK_ARR[STROBE_BLINK_SIZE] = {1, 70, 0, 70, 1, 70, 0, 70, 1, 70, 0, 500};
 

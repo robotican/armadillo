@@ -29,7 +29,8 @@ find_package(
 
              controller_manager
              bms_interface
-            dxl_interface)
+            dxl_interface
+            ric_interface)
 
 
 ## System dependencies are found with CMake's conventions
@@ -124,7 +125,7 @@ find_package(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES armadillo2_hw
-  CATKIN_DEPENDS bms_interface dxl_interface
+  CATKIN_DEPENDS bms_interface dxl_interface ric_interface
 #  DEPENDS system_lib
 )
 
@@ -157,7 +158,7 @@ include_directories(
                 include/armadillo2_hw.h
          src/armadillo2_hw_node.cpp
          src/dxl_motors_builder.cpp
-         include/dxl_motors_builder.h src/battery_pub.cpp include/battery_pub.h)
+         include/dxl_motors_builder.h src/battery_pub.cpp include/battery_pub.h src/ricboard_pub.cpp include/ricboard_pub.h)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

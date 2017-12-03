@@ -19,6 +19,8 @@ int main(int argc, char **argv)
 
     while (ros::ok())
     {
+        armadillo_hw.loop();
+
         armadillo_hw.read();
         ros::Duration((1000.0 / LOOP_HZ) / 2.0 / 1000.0).sleep();
 

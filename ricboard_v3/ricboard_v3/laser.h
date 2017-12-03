@@ -25,7 +25,7 @@ public:
     
     /* cancel libaray inner while loop delay. instead, call */
     /* read() inside loop(), and check for errors           */
-    sensor_.setTimeout(0); 
+    sensor_.setTimeout(1); 
     
     sensor_.setMeasurementTimingBudget(200000);  
   }

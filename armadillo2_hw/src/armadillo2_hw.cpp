@@ -5,11 +5,12 @@ namespace armadillo2_hw
 {
 
     ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :
-            dxl_motors_(nh), battery_(nh)
+            dxl_motors_(nh), battery_(nh), ric_(nh)
     {
         node_handle_ = &nh;
 
         battery_.startPublish();
+        ric_.startPublish();
 
         /* register handles */
         dxl_motors_.registerHandles(joint_state_interface_,
@@ -43,5 +44,10 @@ namespace armadillo2_hw
     void ArmadilloHW::write()
     {
         dxl_motors_.write();
+    }
+
+    void ArmadilloHW::loop()
+    {
+        ric_.loop();
     }
 }

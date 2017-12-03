@@ -2,9 +2,9 @@
 #define LOOP_HZ 100.0
 #define THREADS_NUM 2
 
-#include <ric_interface/board_manager.h>
+#include <ric_interface/ric_interface.h>
 
-ric_interface::BoardManager bm;
+ric_interface::RicInterface bm;
 
 int main(int argc, char **argv)
 {

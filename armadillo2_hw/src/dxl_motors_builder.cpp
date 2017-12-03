@@ -7,7 +7,7 @@ namespace armadillo2_hw
 {
     DxlMotorsBuilder::DxlMotorsBuilder(ros::NodeHandle &nh)
     {
-        node_handle_ = &nh;
+        nh_ = &nh;
 
         /* the order of calling the following methods is important      */
         /* because some calls load params / objects for following calls */
@@ -27,7 +27,7 @@ namespace armadillo2_hw
         failed_reads_ = 0;
         failed_writes_ = 0;
 
-        torque_srv_ = node_handle_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
+        torque_srv_ = nh_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
     }
 
     void DxlMotorsBuilder::read()
@@ -397,14 +397,14 @@ namespace armadillo2_hw
     void DxlMotorsBuilder::fetchParams()
     {
         /* ARM_CONFIG_PARAM */
-        if (!node_handle_->hasParam(ARM_CONFIG_PARAM))
+        if (!nh_->hasParam(ARM_CONFIG_PARAM))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
                               "and that your launch includes this param file. shutting down...", ARM_CONFIG_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        node_handle_->getParam(ARM_CONFIG_PARAM, arm_config_);
+        nh_->getParam(ARM_CONFIG_PARAM, arm_config_);
         if (arm_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is invalid (need to be an of type array) or missing. "
@@ -415,14 +415,14 @@ namespace armadillo2_hw
         }
 
         /* SPEC_CONFIG_PARAM */
-        if (!node_handle_->hasParam(SPEC_CONFIG_PARAM))
+        if (!nh_->hasParam(SPEC_CONFIG_PARAM))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
                               "and that your launch includes this param file. shutting down...", SPEC_CONFIG_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        node_handle_->getParam(SPEC_CONFIG_PARAM, dxl_spec_config_);
+        nh_->getParam(SPEC_CONFIG_PARAM, dxl_spec_config_);
         if (dxl_spec_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is invalid (need to be an of type array) or missing. "
@@ -433,35 +433,35 @@ namespace armadillo2_hw
         }
 
         /* DXL_PROTOCOL_PARAM */
-        if (!node_handle_->hasParam(DXL_PROTOCOL_PARAM))
+        if (!nh_->hasParam(DXL_PROTOCOL_PARAM))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
                               "and that your launch includes this param file. shutting down...", DXL_PROTOCOL_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        node_handle_->getParam(DXL_PROTOCOL_PARAM, protocol_);
+        nh_->getParam(DXL_PROTOCOL_PARAM, protocol_);
 
 
         /* ARM_PORT_PARAM */
-        if (!node_handle_->hasParam(ARM_PORT_PARAM))
+        if (!nh_->hasParam(ARM_PORT_PARAM))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
                               "and that your launch includes this param file. shutting down...", ARM_PORT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        node_handle_->getParam(ARM_PORT_PARAM, arm_port_);
+        nh_->getParam(ARM_PORT_PARAM, arm_port_);
 
         /* ARM_PORT_BAUD_PARAM */
-        if (!node_handle_->hasParam(ARM_PORT_BAUD_PARAM))
+        if (!nh_->hasParam(ARM_PORT_BAUD_PARAM))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
                               "and that your launch includes this param file. shutting down...", ARM_PORT_BAUD_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        node_handle_->getParam(ARM_PORT_BAUD_PARAM, arm_baudrate_);
+        nh_->getParam(ARM_PORT_BAUD_PARAM, arm_baudrate_);
     }
 
     void DxlMotorsBuilder::buildMotors()

@@ -29,24 +29,20 @@ void setup()
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
-
-  //delay(200);
   
   ultrasonic.init(ULTRASONIC_PIN);
   if (!imu.init())
     Serial.println("imu failed");//log("imu failed", protocol::logger::Code::ERROR);
 
-  delay(200);
+  delay(5);
 
   laser.init();
 
-  delay(200);
+  delay(5);
 
   /* pin mode must be invoked after i2c devices (arduino bug) */
   pinMode(INDICATOR_LED, OUTPUT);
   strober.setNotes(Strober::Notes::BLINK_SLOW);
-  
-  delay(200);
 }
 
 /******************************************************/

@@ -1,20 +1,20 @@
 
-#include <ric_interface/board_manager.h>
+#include <ric_interface/ric_interface.h>
 
 
 namespace ric_interface
 {
-    BoardManager::BoardManager()
+    RicInterface::RicInterface()
     {
-        connect();
+        connect("/dev/RICBOARD");
     }
 
-    void BoardManager::loop()
+    void RicInterface::loop()
     {
         keepAliveAndRead();
     }
 
-    void BoardManager::keepAliveAndRead()
+    void RicInterface::keepAliveAndRead()
     {
         get_keepalive_timer_.startTimer(GET_KA_TIMEOUT);
         if (get_keepalive_timer_.isFinished())
@@ -23,13 +23,13 @@ namespace ric_interface
             {
                 is_board_alive_ = true;
                 got_keepalive_ = false;
-                printf("board alive ! \n");
+                //printf("board alive ! \n");
                 get_keepalive_timer_.reset();
             }
             else
             {
                 is_board_alive_ = false;
-                printf("board dead ! \n");
+                //printf("board dead ! \n");
                 get_keepalive_timer_.reset();
             }
         }
@@ -45,20 +45,21 @@ namespace ric_interface
         protocol::header incoming_header;
         if (readHeader(incoming_header))
         {
-            printf("INCOMMING header type: %d\n", (int)incoming_header.type);
+            //printf("INCOMMING header type: %d\n", (int)incoming_header.type);
             handleHeader(incoming_header);
         }
     }
 
     /* open connection to serial port                */
     /* if conncetion fails, exception will be thrown */
-    void BoardManager::connect()
+    void RicInterface::connect(std::string port)
     {
-        comm_.connect("/dev/RICBOARD", 115200); //TODO: GET FROM PARAM YAML FILE
+        //comm_.connect("/dev/RICBOARD", 115200);
+        comm_.connect(port, 115200);
     }
 
 
-    bool BoardManager::readHeader(protocol::header &h)
+    bool RicInterface::readHeader(protocol::header &h)
     {
         size_t header_size = sizeof(protocol::header);
         byte buff[header_size];
@@ -70,7 +71,7 @@ namespace ric_interface
         return true;
     }
 
-    void BoardManager::handleHeader(const protocol::header &h)
+    void RicInterface::handleHeader(const protocol::header &h)
     {
         switch (h.type)
         {
@@ -123,7 +124,7 @@ namespace ric_interface
         }
     }
 
-    void BoardManager::sendKeepAlive()
+    void RicInterface::sendKeepAlive()
     {
         protocol::header keepalive_header;
         keepalive_header.type = protocol::Type::KEEP_ALIVE;
@@ -133,7 +134,7 @@ namespace ric_interface
             printf("cant send keep alive\n");
     }
 
-    bool BoardManager::readLoggerPkg(protocol::logger &logger_pkg)
+    bool RicInterface::readLoggerPkg(protocol::logger &logger_pkg)
     {
         size_t logger_size = sizeof(protocol::logger);
         byte buff[logger_size];
@@ -144,7 +145,7 @@ namespace ric_interface
         return true;
     }
 
-    bool BoardManager::readUltrasonicPkg(protocol::ultrasonic &ultrasonic_pkg)
+    bool RicInterface::readUltrasonicPkg(protocol::ultrasonic &ultrasonic_pkg)
     {
         size_t ultrasonic_size = sizeof(protocol::ultrasonic);
         byte buff[ultrasonic_size];
@@ -155,7 +156,7 @@ namespace ric_interface
         return true;
     }
 
-    bool BoardManager::readImuPkg(protocol::imu &imu_pkg)
+    bool RicInterface::readImuPkg(protocol::imu &imu_pkg)
     {
         size_t imu_size = sizeof(protocol::imu);
         byte buff[imu_size];
@@ -166,7 +167,7 @@ namespace ric_interface
         return true;
     }
 
-    bool BoardManager::readLaserPkg(protocol::laser &laser_pkg)
+    bool RicInterface::readLaserPkg(protocol::laser &laser_pkg)
     {
         size_t laser_size = sizeof(protocol::laser);
         byte buff[laser_size];

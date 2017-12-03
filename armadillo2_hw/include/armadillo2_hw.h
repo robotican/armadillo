@@ -4,6 +4,7 @@
 
 #include "dxl_motors_builder.h"
 #include "battery_pub.h"
+#include "ricboard_pub.h"
 #include <hardware_interface/robot_hw.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
@@ -17,6 +18,7 @@ namespace armadillo2_hw
 
         ros::Time prev_time_;
         ros::NodeHandle *node_handle_;
+
         /* interfaces */
         hardware_interface::JointStateInterface joint_state_interface_;
         hardware_interface::PositionJointInterface position_interface_;
@@ -25,6 +27,7 @@ namespace armadillo2_hw
         /* robot close loop components */
         DxlMotorsBuilder dxl_motors_;
         BatteryPub battery_;
+        RicboardPub ric_;
 
 
 
@@ -35,6 +38,7 @@ namespace armadillo2_hw
         ArmadilloHW(ros::NodeHandle &nh);
         void read();
         void write();
+        void loop();
         static ros::Time getTime() { return ros::Time::now(); }
         ros::Duration getPeriod();
 

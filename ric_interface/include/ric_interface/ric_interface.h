@@ -13,7 +13,7 @@
 
 namespace ric_interface
 {
-    class BoardManager
+    class RicInterface
     {
     private:
         const int SEND_KA_TIMEOUT = 300; //ms
@@ -25,7 +25,6 @@ namespace ric_interface
         Communicator comm_;
         sensors_state sensors_state_;
 
-        void connect();
         bool readHeader(protocol::header &h);
         void sendKeepAlive();
         void handleHeader(const protocol::header &h);
@@ -36,9 +35,11 @@ namespace ric_interface
         bool readLaserPkg(protocol::laser &laser_pkg);
 
     public:
-        BoardManager();
+        RicInterface();
+        void connect(std::string port);
         void loop();
         bool isBoardAlive() { return is_board_alive_; }
+        sensors_state getSensorsState() { return sensors_state_; }
 
     };
 }
