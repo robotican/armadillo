@@ -9,18 +9,21 @@ namespace armadillo2_hw
     {
         node_handle_ = &nh;
 
-        battery_.startPublish();
-        ric_.startPublish();
-
         /* register handles */
         dxl_motors_.registerHandles(joint_state_interface_,
                                     position_interface_,
                                     posvel_interface_);
+        ric_.registerHandles(joint_state_interface_,
+                             position_interface_);
 
         /* register interfaces */
         registerInterface(&joint_state_interface_);
         registerInterface(&posvel_interface_);
         registerInterface(&position_interface_);
+
+        /* publish topics */
+        battery_.startPublish();
+        ric_.startPublish();
 
         prev_time_ = getTime();
         ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");

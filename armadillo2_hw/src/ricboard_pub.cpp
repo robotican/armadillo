@@ -26,13 +26,13 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(RIC_PORT_PARAM, ric_state_.torso.joint_name);
+        nh_->getParam(TORSO_JOINT_PARAM, torso_.joint_name);
 
-        /* if connection fails, exception will be thrown */
+        /* try connect. if connection fails, exception will be thrown */
         ric_.connect(ric_port_);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard port opened successfully \nport name: %s \nbaudrate: 115200", ric_port_.c_str());
 
-        /* ric publisher */
+        /* ric publishers */
         ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("gps", 10);
         ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("ultrasonic", 10);
         ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("imu", 10);
@@ -54,10 +54,12 @@ void RicboardPub::loop()
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 {
+    if (!load_ric_hw_)
+        return;
     /* update robot state according to ric sensor for joints_states */
-    ric_state_.torso.pos =  ric_.getSensorsState().laser.distance_mm / 1000.0;
-    ric_state_.torso.vel = (ric_state_.torso.pos - ric_state_.torso.prev_pos) / RIC_PUB_INTERVAL;
-    ric_state_.torso.prev_pos = ric_state_.torso.pos;
+    torso_.pos =  ric_.getSensorsState().laser.distance_mm / 1000.0;
+    torso_.vel = (torso_.pos - torso_.prev_pos) / RIC_PUB_INTERVAL;
+    torso_.prev_pos = torso_.pos;
 
     /* publish ultrasonic */
     sensor_msgs::Range range_msg;
@@ -73,33 +75,35 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 
 void RicboardPub::startPublish()
 {
+    if (!load_ric_hw_)
+        return;
     ric_pub_timer_.start();
 }
 
 void RicboardPub::stopPublish()
 {
+    if (!load_ric_hw_)
+        return;
     ric_pub_timer_.stop();
 }
 
 void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
-                                       hardware_interface::PositionJointInterface &position_interface,
-                                       hardware_interface::PosVelJointInterface &posvel_interface)
+                                       hardware_interface::PositionJointInterface &position_interface)
 {
+    if (!load_ric_hw_)
+        return;
     /* joint state registration */
 
-    /*joint_state_handles_.push_back(hardware_interface::JointStateHandle (ric_state_.torso.joint_name,
-                                                                         &ric_state_.torso.pos,
-                                                                         &ric_state_.torso.vel,
-                                                                         &motor.current));*////////////////////////////////
+    joint_state_handles_.push_back(hardware_interface::JointStateHandle (torso_.joint_name,
+                                                                         &torso_.pos,
+                                                                         &torso_.vel,
+                                                                         &torso_.effort));
     joint_state_interface.registerHandle(joint_state_handles_.back());
 
     /* joint command registration */
-
-    posvel_handles_.push_back(hardware_interface::PosVelJointHandle (joint_state_interface.getHandle(ric_state_.torso.joint_name),
-                                                                     &ric_state_.torso.command_pos,
-                                                                     &ric_state_.torso.command_vel));
-    posvel_interface.registerHandle(posvel_handles_.back());
-
+    pos_handles_.push_back(hardware_interface::JointHandle (joint_state_interface.getHandle(torso_.joint_name),
+                                                            &torso_.command_pos));
+    position_interface.registerHandle(pos_handles_.back());
 }
 
 

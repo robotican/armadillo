@@ -17,20 +17,17 @@
 #define TORSO_JOINT_PARAM "torso_joint"
 #define RIC_PUB_INTERVAL 0.1 //secs
 
-struct armadillo2_torso
+struct torso_joint
 {
     double pos = 0;
     double vel = 0;
     double prev_pos = 0;
+    double effort = 0; /* effort stub - not implemented */
     double command_pos = 0;
     double command_vel = 0;
     std::string joint_name;
 };
 
-struct ric_state
-{
-    armadillo2_torso torso;
-};
 
 class RicboardPub
 {
@@ -39,16 +36,15 @@ private:
     ros::Publisher ric_ultrasonic_pub_;
     ros::Publisher ric_imu_pub_;
     ros::Timer ric_pub_timer_;
-
+    torso_joint torso_;
     ric_interface::RicInterface ric_;
-    ric_state ric_state_;
     ros::NodeHandle *nh_;
     std::string ric_port_;
+
     bool load_ric_hw_ = true;
 
     /* handles */
     std::vector<hardware_interface::JointStateHandle> joint_state_handles_;
-    std::vector<hardware_interface::PosVelJointHandle> posvel_handles_;
     std::vector<hardware_interface::JointHandle> pos_handles_;
 
     void pubTimerCB(const ros::TimerEvent& event);
@@ -61,8 +57,7 @@ public:
     void startPublish();
     void stopPublish();
     void registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
-                         hardware_interface::PositionJointInterface &position_interface,
-                         hardware_interface::PosVelJointInterface &posvel_interface);
+                         hardware_interface::PositionJointInterface &position_interface);
 };
 
 

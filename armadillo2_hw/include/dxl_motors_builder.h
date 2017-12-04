@@ -17,11 +17,11 @@
 #define MAX_PING_ERRORS 5
 #define MAX_READ_ERRORS 16
 #define MAX_WRITE_ERRORS 16
-#define ARM_CONFIG_PARAM "arm_config"
+#define DXL_JOINTS_CONFIG_PARAM "dxl_joints_config"
 #define SPEC_CONFIG_PARAM "dxl_spec_config"
 #define DXL_PROTOCOL_PARAM "dxl_protocol"
-#define ARM_PORT_PARAM "arm_port_name"
-#define ARM_PORT_BAUD_PARAM "arm_port_baudrate"
+#define ARM_PORT_PARAM "dxl_port_name"
+#define ARM_PORT_BAUD_PARAM "dxl_port_baudrate"
 
 /* The >> operator disappeared in yaml-cpp 0.5, so this function is     */
 /* added to provide support for code written under the yaml-cpp 0.3 API.*/

@@ -1,4 +1,4 @@
-arm_config: [
+dxl_joints_config: [
 {id: 1, joint_name: rotation1_joint, interface: PosVel},
 {id: 2, joint_name: shoulder1_joint, interface: PosVel},
 {id: 3, joint_name: shoulder2_joint, interface: PosVel},
@@ -11,5 +11,5 @@ arm_config: [
 #{id: 10, joint_name: right_finger_joint, interface: PosVel}
 ]
 
-arm_port_name: "/dev/USB2DYNAMIXEL"
-arm_port_baudrate: 1000000
+dxl_port_name: "/dev/USB2DYNAMIXEL"
+dxl_port_baudrate: 1000000

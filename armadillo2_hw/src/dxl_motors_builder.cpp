@@ -127,7 +127,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["name"].getType() != XmlRpc::XmlRpcValue::TypeString)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec name at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -137,7 +137,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["model"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec model at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -147,7 +147,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["cpr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec cpr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -157,7 +157,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["rpm_factor"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec rpm_factor at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -167,7 +167,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["torque_const_a"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec torque_const_a at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -177,7 +177,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["torque_const_b"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec torque_const_b at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -189,7 +189,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["pos_read_addr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec pos_read_addr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -199,7 +199,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["vel_read_addr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec vel_read_addr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -210,7 +210,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["current_read_addr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec current_read_addr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -220,7 +220,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["error_read_addr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec error_read_addr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -230,7 +230,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["torque_write_addr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec torque_write_addr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -240,7 +240,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["vel_write_addr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec vel_write_addr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -251,7 +251,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["pos_write_addr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec pos_write_addr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -261,7 +261,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["current_ratio"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec current_ratio at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -271,7 +271,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["len_present_speed"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec len_present_speed at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -281,7 +281,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["len_present_pos"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec len_present_pos at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -291,7 +291,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["len_present_curr"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec len_present_curr at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -301,7 +301,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["len_goal_speed"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec len_goal_speed at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -311,7 +311,7 @@ namespace armadillo2_hw
             if(dxl_spec_config_[i]["len_goal_pos"].getType() != XmlRpc::XmlRpcValue::TypeInt)
             {
                 ROS_ERROR("[dxl_motors_builder]: spec len_goal_pos at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -396,20 +396,20 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::fetchParams()
     {
-        /* ARM_CONFIG_PARAM */
-        if (!nh_->hasParam(ARM_CONFIG_PARAM))
+        /* DXL_JOINTS_CONFIG_PARAM */
+        if (!nh_->hasParam(DXL_JOINTS_CONFIG_PARAM))
         {
-            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
-                              "and that your launch includes this param file. shutting down...", ARM_CONFIG_PARAM);
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
+                              "and that your launch includes this param file. shutting down...", DXL_JOINTS_CONFIG_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(ARM_CONFIG_PARAM, arm_config_);
+        nh_->getParam(DXL_JOINTS_CONFIG_PARAM, arm_config_);
         if (arm_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is invalid (need to be an of type array) or missing. "
-                              "make sure that this param exist in arm_config.yaml and that your launch "
-                              "includes this param file. shutting down...", ARM_CONFIG_PARAM);
+                              "make sure that this param exist in dxl_joints_config.yaml and that your launch "
+                              "includes this param file. shutting down...", DXL_JOINTS_CONFIG_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
@@ -417,7 +417,7 @@ namespace armadillo2_hw
         /* SPEC_CONFIG_PARAM */
         if (!nh_->hasParam(SPEC_CONFIG_PARAM))
         {
-            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
                               "and that your launch includes this param file. shutting down...", SPEC_CONFIG_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
@@ -426,7 +426,7 @@ namespace armadillo2_hw
         if (dxl_spec_config_.getType() != XmlRpc::XmlRpcValue::TypeArray)
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is invalid (need to be an of type array) or missing. "
-                              "make sure that this param exist in arm_config.yaml and that your launch "
+                              "make sure that this param exist in dxl_joints_config.yaml and that your launch "
                               "includes this param file. shutting down...", SPEC_CONFIG_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
@@ -435,7 +435,7 @@ namespace armadillo2_hw
         /* DXL_PROTOCOL_PARAM */
         if (!nh_->hasParam(DXL_PROTOCOL_PARAM))
         {
-            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
                               "and that your launch includes this param file. shutting down...", DXL_PROTOCOL_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
@@ -446,7 +446,7 @@ namespace armadillo2_hw
         /* ARM_PORT_PARAM */
         if (!nh_->hasParam(ARM_PORT_PARAM))
         {
-            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
                               "and that your launch includes this param file. shutting down...", ARM_PORT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
@@ -456,7 +456,7 @@ namespace armadillo2_hw
         /* ARM_PORT_BAUD_PARAM */
         if (!nh_->hasParam(ARM_PORT_BAUD_PARAM))
         {
-            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in arm_config.yaml "
+            ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
                               "and that your launch includes this param file. shutting down...", ARM_PORT_BAUD_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
@@ -473,7 +473,7 @@ namespace armadillo2_hw
             if(arm_config_[i].getType() != XmlRpc::XmlRpcValue::TypeStruct)
             {
                 ROS_ERROR("[dxl_motors_builder]: arm motor id at index %d param data type is invalid or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -489,7 +489,7 @@ namespace armadillo2_hw
             if(arm_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid id field
             {
                 ROS_ERROR("[dxl_motors_builder]: arm motor id at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -498,7 +498,7 @@ namespace armadillo2_hw
             if (arm_config_[i]["joint_name"].getType() != XmlRpc::XmlRpcValue::TypeString) //invalid joint_name field
             {
                 ROS_ERROR("[dxl_motors_builder]: arm motor joint_name at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -507,7 +507,7 @@ namespace armadillo2_hw
             if (arm_config_[i]["interface"].getType() != XmlRpc::XmlRpcValue::TypeString) //invalid interface field
             {
                 ROS_ERROR("[dxl_motors_builder]: arm motor interface_type at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in arm_config.yaml and that your launch includes this param file. shutting down...", i);
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             }
@@ -539,7 +539,7 @@ namespace armadillo2_hw
 
                     pos_handles_.push_back(hardware_interface::JointHandle (joint_state_interface.getHandle(motor.joint_name),
                                                                             &motor.command_position));
-                    joint_state_interface.registerHandle(pos_handles_.back());
+                    position_interface.registerHandle(pos_handles_.back());
                     break;
 
                 case dxl::motor::POS_VEL:
