@@ -3,34 +3,44 @@ project(armadillo2_hw)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
-add_compile_options(-lyaml-cpp)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(YAML_CPP REQUIRED yaml-cpp)
-find_path(YAML_CPP_INCLUDE_DIR
-        NAMES yaml_cpp.h
-        PATHS ${YAML_CPP_INCLUDE_DIRS})
-find_library(YAML_CPP_LIBRARY
-        NAMES YAML_CPP
-        PATHS ${YAML_CPP_LIBRARY_DIRS})
+#add_compile_options(-lyaml-cpp)
 
-add_definitions(-DPC_SIDE)
-if(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
- add_definitions(-DHAVE_NEW_YAMLCPP)
-endif(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
+#find_package(PkgConfig REQUIRED)
+#pkg_check_modules(YAML_CPP REQUIRED yaml-cpp)
+#find_path(YAML_CPP_INCLUDE_DIR
+#        NAMES yaml_cpp.h
+#        PATHS ${YAML_CPP_INCLUDE_DIRS})
+#find_library(YAML_CPP_LIBRARY
+#        NAMES YAML_CPP
+#        PATHS ${YAML_CPP_LIBRARY_DIRS})
+
+#add_definitions(-DPC_SIDE)
+#if(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
+# add_definitions(-DHAVE_NEW_YAMLCPP)
+#endif(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(
-             catkin REQUIRED COMPONENTS
+         catkin REQUIRED COMPONENTS
              roscpp
-	     rospy
-
+	         rospy
              controller_manager
              bms_interface
             dxl_interface
-            ric_interface)
+            ric_interface
+            roboteq_control
+)
+
+## System dependencies are found with CMake's conventions
+find_package(Boost REQUIRED
+        COMPONENTS
+        chrono
+        system
+        thread
+        )
 
 
 ## System dependencies are found with CMake's conventions
@@ -125,7 +135,12 @@ find_package(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES armadillo2_hw
-  CATKIN_DEPENDS bms_interface dxl_interface ric_interface
+  CATKIN_DEPENDS bms_interface
+        dxl_interface
+        ric_interface
+        roboteq_control
+DEPENDS
+    Boost
 #  DEPENDS system_lib
 )
 
@@ -137,7 +152,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
- ${catkin_INCLUDE_DIRS} ${yaml-cpp_INCLUDE_DIRS}
+ ${catkin_INCLUDE_DIRS} ${yaml-cpp_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -158,7 +173,7 @@ include_directories(
                 include/armadillo2_hw.h
          src/armadillo2_hw_node.cpp
          src/dxl_motors_builder.cpp
-         include/dxl_motors_builder.h src/battery_pub.cpp include/battery_pub.h src/ricboard_pub.cpp include/ricboard_pub.h)
+         include/dxl_motors_builder.h src/battery_pub.cpp include/battery_pub.h src/ricboard_pub.cpp include/ricboard_pub.h src/roboteq_diff_drive.cpp include/roboteq_diff_drive.h)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -173,6 +188,7 @@ add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catk
 ## Specify libraries to link a library or executable target against
  target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES} yaml-cpp
+         ${Boost_LIBRARIES}
  )
 
 #############

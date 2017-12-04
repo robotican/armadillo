@@ -18,9 +18,6 @@
     <rosparam file="$(find armadillo2_hw)/config/ricboard_config.yaml" command="load"/>
     
         
-        <!-- Load joint controller configurations from YAML file to parameter server -->
-  <rosparam file="$(find armadillo2_control)/config/armadillo2_control.yaml" command="load"/>
-  
    <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find armadillo2_control)/config/armadillo2_control.yaml" command="load"/>
 
@@ -29,7 +26,7 @@
     pkg="controller_manager"
     type="spawner" respawn="false"
     output="screen"
-    args="robot_state_controller arm_trajectory_controller torso_controller gripper_controller"
+    args="robot_state_controller arm_trajectory_controller torso_controller gripper_controller  "
   />
 
 

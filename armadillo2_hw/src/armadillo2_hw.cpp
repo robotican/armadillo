@@ -5,7 +5,7 @@ namespace armadillo2_hw
 {
 
     ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :
-            dxl_motors_(nh), battery_(nh), ric_(nh)
+            dxl_motors_(nh), battery_(nh), ric_(nh), roboteq_(nh)
     {
         node_handle_ = &nh;
 
@@ -15,11 +15,14 @@ namespace armadillo2_hw
                                     posvel_interface_);
         ric_.registerHandles(joint_state_interface_,
                              position_interface_);
+        roboteq_.registerHandles(joint_state_interface_,
+                                 velocity_interface_);
 
         /* register interfaces */
         registerInterface(&joint_state_interface_);
         registerInterface(&posvel_interface_);
         registerInterface(&position_interface_);
+        registerInterface(&velocity_interface_);
 
         /* publish topics */
         battery_.startPublish();
@@ -42,15 +45,18 @@ namespace armadillo2_hw
     void ArmadilloHW::read()
     {
         dxl_motors_.read();
+        roboteq_.read();
     }
 
     void ArmadilloHW::write()
     {
         dxl_motors_.write();
+        roboteq_.write();
     }
 
     void ArmadilloHW::loop()
     {
         ric_.loop();
+        roboteq_.loop();
     }
 }

@@ -16,12 +16,12 @@
 
 #define MAX_PING_ERRORS 5
 #define MAX_READ_ERRORS 100
-#define MAX_WRITE_ERRORS 16
+#define MAX_WRITE_ERRORS 10
 #define DXL_JOINTS_CONFIG_PARAM "dxl_joints_config"
 #define SPEC_CONFIG_PARAM "dxl_spec_config"
 #define DXL_PROTOCOL_PARAM "dxl_protocol"
-#define ARM_PORT_PARAM "dxl_port_name"
-#define ARM_PORT_BAUD_PARAM "dxl_port_baudrate"
+#define DXL_PORT_PARAM "dxl_port_name"
+#define DXL_PORT_BAUD_PARAM "dxl_port_baudrate"
 
 /* The >> operator disappeared in yaml-cpp 0.5, so this function is     */
 /* added to provide support for code written under the yaml-cpp 0.3 API.*/
@@ -54,13 +54,13 @@ namespace armadillo2_hw
         std::vector<hardware_interface::PosVelJointHandle> posvel_handles_;
         std::vector<hardware_interface::JointHandle> pos_handles_;
 
-        int arm_baudrate_;
+        int dxl_baudrate_;
         int failed_reads_, failed_writes_;
         float protocol_;
         std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */
         std::string arm_port_;
         dxl::DxlInterface dxl_interface_;
-        XmlRpc::XmlRpcValue arm_config_, dxl_spec_config_;
+        XmlRpc::XmlRpcValue dxl_joints_config_, dxl_spec_config_;
         std::vector<dxl::motor> motors_;
         ros::ServiceServer torque_srv_;
 

@@ -5,6 +5,7 @@
 #include "dxl_motors_builder.h"
 #include "battery_pub.h"
 #include "ricboard_pub.h"
+#include "roboteq_diff_drive.h"
 #include <hardware_interface/robot_hw.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
@@ -23,11 +24,13 @@ namespace armadillo2_hw
         hardware_interface::JointStateInterface joint_state_interface_;
         hardware_interface::PositionJointInterface position_interface_;
         hardware_interface::PosVelJointInterface posvel_interface_;
+        hardware_interface::VelocityJointInterface velocity_interface_;
 
         /* robot close loop components */
         DxlMotorsBuilder dxl_motors_;
         BatteryPub battery_;
         RicboardPub ric_;
+        RoboteqDiffDrive roboteq_;
 
 
 

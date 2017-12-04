@@ -12,7 +12,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
     {
         if (!nh_->hasParam(RIC_PORT_PARAM))
         {
-            ROS_ERROR("[armadillo2_hw/ricboard_pub]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
+            ROS_ERROR("[armadillo2_hw/ricboard_pub]: %s param is missing on param server. make sure that you load this param exist in ricboard_config.yaml "
                               "and that your launch includes this param file. shutting down...", RIC_PORT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
@@ -21,7 +21,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
 
         if (!nh_->hasParam(TORSO_JOINT_PARAM))
         {
-            ROS_ERROR("[armadillo2_hw/ricboard_pub]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
+            ROS_ERROR("[armadillo2_hw/ricboard_pub]: %s param is missing on param server. make sure that this param exist in controllers.yaml "
                               "and that your launch includes this param file. shutting down...", TORSO_JOINT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);

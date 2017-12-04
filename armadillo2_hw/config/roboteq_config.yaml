@@ -1,0 +1,4 @@
+load_roboteq_hw: true
+
+roboteq_port: "/dev/ROBOTEQ"
+roboteq_baud: 115200
