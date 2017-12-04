@@ -1,4 +1,5 @@
 load_roboteq_hw: true
-+968
+left_wheel_joint: 'left_wheel_joint'
+right_wheel_joint: 'right_wheel_joint'
 roboteq_port: "/dev/ROBOTEQ"
 roboteq_baud: 115200

@@ -345,7 +345,7 @@
   </link>
   <joint
     name="torso_joint"
-      type="fixed"> <!--prismatic -->
+      type="prismatic">
     <origin
       xyz="0 0 0"
       rpy="0 0 0" />
