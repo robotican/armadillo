@@ -90,7 +90,7 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
     /*joint_state_handles_.push_back(hardware_interface::JointStateHandle (ric_state_.torso.joint_name,
                                                                          &ric_state_.torso.pos,
                                                                          &ric_state_.torso.vel,
-                                                                         &motor.current));*/
+                                                                         &motor.current));*////////////////////////////////
     joint_state_interface.registerHandle(joint_state_handles_.back());
 
     /* joint command registration */
