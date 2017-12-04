@@ -28,7 +28,6 @@ private:
     ros::NodeHandle *nh_;
     roboteq::serial_controller *roboteq_serial_;
     roboteq::Roboteq *roboteq_;
-    boost::chrono::duration<double> elapsed_duration_;
     time_source::time_point last_time_ = time_source::now();
 
     std::string roboteq_port_;
@@ -40,9 +39,8 @@ private:
 public:
     ~RoboteqDiffDrive() { delete roboteq_; }
     RoboteqDiffDrive(ros::NodeHandle &nh);
-    void loop();
-    void read();
-    void write();
+    void read(const ros::Duration elapsed);
+    void write(const ros::Duration elapsed);
     void registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
                          hardware_interface::VelocityJointInterface &velocity_joint_interface);
 };

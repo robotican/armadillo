@@ -45,18 +45,17 @@ namespace armadillo2_hw
     void ArmadilloHW::read()
     {
         dxl_motors_.read();
-        roboteq_.read();
+        roboteq_.read(getPeriod());
     }
 
     void ArmadilloHW::write()
     {
         dxl_motors_.write();
-        roboteq_.write();
+        roboteq_.write(getPeriod());
     }
 
     void ArmadilloHW::loop()
     {
         ric_.loop();
-        roboteq_.loop();
     }
 }

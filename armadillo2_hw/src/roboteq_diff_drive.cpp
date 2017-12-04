@@ -77,30 +77,17 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
     }
 }
 
-void RoboteqDiffDrive::loop()
+void RoboteqDiffDrive::write(const ros::Duration elapsed)
 {
     if (!load_roboteq_hw_)
         return;
-    /* calculate monotonic time difference */
-    time_source::time_point this_time = time_source::now();
-    boost::chrono::duration<double> elapsed_duration = this_time - last_time_;
-    ros::Duration elapsed(elapsed_duration.count());
-    last_time_ = this_time;
-}
-
-void RoboteqDiffDrive::write()
-{
-    if (!load_roboteq_hw_)
-        return;
-    ros::Duration elapsed(elapsed_duration_.count());
     roboteq_->write(ros::Time::now(), elapsed);
 }
 
-void RoboteqDiffDrive::read()
+void RoboteqDiffDrive::read(const ros::Duration elapsed)
 {
     if (!load_roboteq_hw_)
         return;
-    ros::Duration elapsed(elapsed_duration_.count());
     roboteq_->read(ros::Time::now(), elapsed);
 }
 
