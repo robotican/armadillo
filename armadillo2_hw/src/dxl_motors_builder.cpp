@@ -34,23 +34,23 @@ namespace armadillo2_hw
     {
         if (!dxl_interface_.readMotorsPos(motors_))
         {
-            ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
+            //ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
             failed_reads_++;
         }
         if (!dxl_interface_.readMotorsVel(motors_))
         {
-            ROS_ERROR("[dxl_motors_builder]: reading motors velocity failed");
+            //ROS_ERROR("[dxl_motors_builder]: reading motors velocity failed");
             failed_reads_++;
         }
         if (!dxl_interface_.readMotorsLoad(motors_))
         {
-            ROS_ERROR("[dxl_motors_builder]: reading motors load failed");
+            //ROS_ERROR("[dxl_motors_builder]: reading motors load failed");
             failed_reads_++;
         }
         if (!dxl_interface_.readMotorsError(motors_))
         {
-            ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
-            //failed_reads_++;
+            //ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
+            failed_reads_++;
         }
         if (failed_reads_ >= MAX_READ_ERRORS)
         {
