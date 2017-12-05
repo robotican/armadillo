@@ -11,5 +11,5 @@ dxl_joints_config: [
 #{id: 10, joint_name: right_finger_joint, interface: PosVel}
 ]
 
-dxl_port_name: "/dev/USB2DYNAMIXEL"
+dxl_port_name: "/dev/armadillo2/USB2DYNAMIXEL"
 dxl_port_baudrate: 1000000

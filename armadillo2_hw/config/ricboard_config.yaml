@@ -2,4 +2,4 @@ load_ric_hw: true
 
 torso_joint: "torso_joint"
 
-ric_port: "/dev/RICBOARD"
+ric_port: "/dev/armadillo2/RICBOARD"
