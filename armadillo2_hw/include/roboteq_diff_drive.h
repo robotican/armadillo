@@ -7,12 +7,8 @@
 
 #include <ros/ros.h>
 #include <hardware_interface/joint_command_interface.h>
-#include <ros/callback_queue.h>
-#include <signal.h>
 #include <roboteq/roboteq.h>
 #include <roboteq/serial_controller.h>
-
-#include <boost/chrono.hpp>
 
 #define ROBOTEQ_PORT_PARAM "roboteq_port"
 #define ROBOTEQ_BAUD_PARAM "roboteq_baud"
