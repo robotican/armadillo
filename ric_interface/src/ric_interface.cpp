@@ -28,6 +28,7 @@ namespace ric_interface
             }
             else
             {
+                puts("RIC DEAD");
                 is_board_alive_ = false;
                 //printf("board dead ! \n");
                 get_keepalive_timer_.reset();

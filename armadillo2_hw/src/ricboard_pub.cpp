@@ -54,6 +54,7 @@ void RicboardPub::loop()
     }
     else
     {
+        ROS_ERROR("STARTING RIC TIMER");
         ric_dead_timer_.start();
     }
 }
@@ -62,7 +63,7 @@ void RicboardPub::ricDeadTimerCB(const ros::TimerEvent &event)
 {
     if (!load_ric_hw_)
         return;
-    throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
+    //throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
 }
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
