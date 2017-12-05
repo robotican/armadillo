@@ -58,7 +58,7 @@ void MotorParamConfigurator::initConfigurator(bool load_from_board)
         // Set Ratio
         ratio = 1.0;
         // Send alter ratio value
-        ROS_WARN_STREAM("Default Ratio is " << ratio);
+        //ROS_WARN_STREAM("Default Ratio is " << ratio);
     }
 
     // Check if is required load paramers
@@ -168,7 +168,7 @@ void MotorParamConfigurator::getParamFromRoboteq()
         double max_rpm = ((double) rpm_motor) / ratio;
         // Set parameter
         nh_.setParam(mName + "/max_speed", max_rpm);
-        ROS_ERROR("MAX SPEED !! %f", max_rpm);
+        //ROS_ERROR("MAX SPEED !! %f", max_rpm);
 
         // Get Max RPM acceleration rate
         string str_rpm_acceleration_motor = mSerial->getParam("MAC", std::to_string(mNumber));

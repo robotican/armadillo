@@ -94,7 +94,7 @@ Roboteq::Roboteq(const ros::NodeHandle &nh, const ros::NodeHandle &private_nh, s
         }
         else
         {
-            ROS_WARN_STREAM("Default number selected for Motor: " << motor_name << " is " << number);
+            //ROS_WARN_STREAM("Default number selected for Motor: " << motor_name << " is " << number);
             private_nh.setParam(motor_name + "/number", number);
         }
 

@@ -31,7 +31,7 @@ find_package(
              bms_interface
             dxl_interface
             ric_interface
-            roboteq_interface
+        roboteq_control
 )
 
 
@@ -130,7 +130,7 @@ catkin_package(
   CATKIN_DEPENDS bms_interface
         dxl_interface
         ric_interface
-        roboteq_interface
+        roboteq_control
 DEPENDS
     Boost
 #  DEPENDS system_lib

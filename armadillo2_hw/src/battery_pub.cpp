@@ -61,7 +61,8 @@ namespace armadillo2_hw
             msg.cell_voltage = bms_data.vcells;
             msg.location = "base_link";
 
-            if (low_batt_val_ >=0 && msg.percentage <= low_batt_val_)
+            /* if battery low and not in charging print warning */
+            if ((low_batt_val_ >=0 && msg.percentage <= low_batt_val_) && !bms_data.is_chrg)
                 ROS_WARN("[armadillo2_hw/battery_pub]: LOW BATTERY, please connect Armadillo2 to charger");
 
             bat_pub_.publish(msg);
