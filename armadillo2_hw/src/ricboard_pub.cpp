@@ -38,6 +38,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("imu", 10);
 
         ric_pub_timer_ = nh.createTimer(ros::Duration(RIC_PUB_INTERVAL), &RicboardPub::pubTimerCB, this);
+        ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
     }
 }
@@ -47,9 +48,21 @@ void RicboardPub::loop()
     if (!load_ric_hw_)
         return;
     if (ric_.isBoardAlive())
+    {
         ric_.loop();
+        ric_dead_timer_.stop();
+    }
     else
-        throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
+    {
+        ric_dead_timer_.start();
+    }
+}
+
+void RicboardPub::ricDeadTimerCB(const ros::TimerEvent &event)
+{
+    if (!load_ric_hw_)
+        return;
+    throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
 }
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)

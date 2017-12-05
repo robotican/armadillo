@@ -95,7 +95,7 @@ namespace bms
                 if (first_read)
                 {
                     if (data_in != BMS_PKG_START_DELIM)
-                        throw BMSException("Invalid BMS pkg start delimiter");
+                        throw BMSWarnException("Invalid BMS pkg start delimiter");
                     else
                         first_read = false;
                 }
