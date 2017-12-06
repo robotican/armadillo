@@ -17,16 +17,22 @@ int main(int argc, char **argv)
     ros::AsyncSpinner asyncSpinner(THREADS_NUM);
     asyncSpinner.start();
 
+    ros::Time last_time = ros::Time::now();
+
     while (ros::ok())
     {
         armadillo_hw.loop();
 
         armadillo_hw.read();
+
         ros::Duration((1000.0 / LOOP_HZ) / 2.0 / 1000.0).sleep();
 
-        controller_manager.update(armadillo_hw.getTime(), armadillo_hw.getPeriod());
+        ros::Duration duration = ros::Time::now() - last_time;
+        controller_manager.update(ros::Time::now(), duration);
+        last_time = ros::Time::now();
 
         armadillo_hw.write();
+
         ros::Duration((1000.0 / LOOP_HZ) / 2.0 / 1000.0).sleep();
 
         ros::spinOnce;

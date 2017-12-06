@@ -36,6 +36,7 @@ class RicboardPub
 private:
 
     bool  load_ric_hw_ = true;
+    std::string ric_port_;
     ros::Publisher ric_gps_pub_;
     ros::Publisher ric_ultrasonic_pub_;
     ros::Publisher ric_imu_pub_;
@@ -44,7 +45,6 @@ private:
     torso_joint torso_;
     ric_interface::RicInterface ric_;
     ros::NodeHandle *nh_;
-    std::string ric_port_;
 
     /* handles */
     std::vector<hardware_interface::JointStateHandle> joint_state_handles_;
@@ -56,7 +56,7 @@ private:
 public:
     RicboardPub(ros::NodeHandle &nh);
     void loop();
-    void read();
+    void read(const ros::Duration elapsed);
     void write();
     void registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
                          hardware_interface::PositionJointInterface &position_interface);

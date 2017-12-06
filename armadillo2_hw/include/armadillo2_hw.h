@@ -32,8 +32,6 @@ namespace armadillo2_hw
         RicboardPub ric_;
         RoboteqDiffDrive roboteq_;
 
-
-
         void registerInterfaces();
 
     public:
@@ -42,9 +40,6 @@ namespace armadillo2_hw
         void read();
         void write();
         void loop();
-        static ros::Time getTime() { return ros::Time::now(); }
-        ros::Duration getPeriod();
-
     };
 }
 

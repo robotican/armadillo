@@ -24,36 +24,29 @@ namespace armadillo2_hw
         registerInterface(&position_interface_);
         registerInterface(&velocity_interface_);
 
-        prev_time_ = getTime();
+        prev_time_ = ros::Time::now();
         ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
-    }
-
-
-
-    ros::Duration ArmadilloHW::getPeriod()
-    {
-        ros::Time now = getTime();
-        ros::Duration period = now - prev_time_;
-        prev_time_ = now;
-        return period;
     }
 
     void ArmadilloHW::read()
     {
+        ros::Duration period = ros::Time::now() - prev_time_;
         dxl_motors_.read();
-        roboteq_.read(getPeriod());
-        ric_.read();
+        roboteq_.read(period);
+        ric_.read(period);
     }
 
     void ArmadilloHW::write()
     {
+        ros::Duration period = ros::Time::now() - prev_time_;
         dxl_motors_.write();
-        roboteq_.write(getPeriod());
+        roboteq_.write(period);
         ric_.write();
     }
 
     void ArmadilloHW::loop()
     {
         ric_.loop();
+        prev_time_ = ros::Time::now();
     }
 }

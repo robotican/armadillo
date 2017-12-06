@@ -80,11 +80,6 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 
     ric_interface::sensors_state sensors = ric_.getSensorsState();
 
-    /* update robot state according to ric sensor for joints_states */
-    torso_.pos =  sensors.laser.distance_mm / 1000.0;
-    torso_.vel = (torso_.pos - torso_.prev_pos) / RIC_PUB_INTERVAL;
-    torso_.prev_pos = torso_.pos;
-
     /* publish ultrasonic */
     sensor_msgs::Range range_msg;
     range_msg.min_range = 0.3;
@@ -119,7 +114,7 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
         gps_msg.latitude = sensors.gps.lat;
         gps_msg.longitude = sensors.gps.lon;
         gps_msg.status = gps_status;
-        
+
         ric_gps_pub_.publish(gps_msg);
     }
 }
@@ -129,8 +124,8 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 {
     if (!load_ric_hw_)
         return;
-    /* joint state registration */
 
+    /* joint state registration */
     joint_state_handles_.push_back(hardware_interface::JointStateHandle (torso_.joint_name,
                                                                          &torso_.pos,
                                                                          &torso_.vel,
@@ -145,12 +140,18 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 
 void RicboardPub::write()
 {
-
+    //get command from torso controller and send to ric
 }
 
-void RicboardPub::read()
+void RicboardPub::read(const ros::Duration elapsed)
 {
+   //get torso feedback from ric and send to controller
+    ric_interface::sensors_state sensors = ric_.getSensorsState();
 
+    /* update robot state according to ric sensor for joints_states */
+    torso_.pos =  sensors.laser.distance_mm / 1000.0;
+    torso_.vel = (torso_.pos - torso_.prev_pos) / elapsed.sec;
+    torso_.prev_pos = torso_.pos;
 }
 
 
