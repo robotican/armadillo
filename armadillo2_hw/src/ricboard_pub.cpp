@@ -108,8 +108,20 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     imu_msg.orientation = q_msg;
     ric_imu_pub_.publish(imu_msg);
 
-    /* publish gps */
-    sensor_msgs::NavSatFix gps_msg;
+    /* publish gps if data is available */
+    if (sensors.gps.satellites > 0)
+    {
+        sensor_msgs::NavSatFix gps_msg;
+        sensor_msgs::NavSatStatus gps_status;
+        gps_status.status = sensor_msgs::NavSatStatus::STATUS_SBAS_FIX;
+        gps_status.status = sensor_msgs::NavSatStatus::SERVICE_GPS;
+
+        gps_msg.latitude = sensors.gps.lat;
+        gps_msg.longitude = sensors.gps.lon;
+        gps_msg.status = gps_status;
+        
+        ric_gps_pub_.publish(gps_msg);
+    }
 }
 
 void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint_state_interface,

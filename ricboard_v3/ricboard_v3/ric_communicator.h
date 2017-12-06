@@ -18,15 +18,7 @@ namespace communicator
           memcpy(&pkg, buff, pkg_size);
           return true;
         }
-
-        /* this function is called automatically insied sendPkg() 
-        void sendHeader(const protocol::header &header_pkg)
-        {
-            byte buff[sizeof(protocol::header)];
-            memcpy(buff, &header_pkg, sizeof(protocol::header));
-            send(buff, sizeof(protocol::header));
-        }*/
-
+        
         /* send header and then pkg content */
         void sendPkg(const protocol::header &header_pkg,
                      const protocol::package &pkg, 

@@ -13,7 +13,8 @@ namespace ric_interface
             LOGGER = 2,
             ULTRASONIC = 3,
             LASER = 4,
-            IMU = 5
+            IMU = 5,
+            GPS = 6
         };
 
         struct package
@@ -77,6 +78,34 @@ namespace ric_interface
                     mag_y_rad,
                     mag_z_rad;
         };
+
+        struct gps : sensor
+        {
+            float lat,
+                    lon;
+
+            float speed,
+                    angle;
+
+            float elevation;
+
+            /* E, N, S, W */
+            char lat_mark,
+                    lon_mark;
+
+            uint8_t hour,
+                    minute,
+                    seconds,
+                    year,
+                    month,
+                    day;
+
+            uint8_t fix_quality,
+                    satellites;
+
+            bool fix;
+        };
+
 
         struct elevator : actuator
         {

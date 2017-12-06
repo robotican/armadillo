@@ -23,6 +23,7 @@ Strober strober;
 Ultrasonic ultrasonic;
 Imu imu;
 Laser laser;
+Gps gps;
 
 /******************************************************/
 
@@ -41,6 +42,10 @@ void setup()
   delay(5);
 
   laser.init();
+
+  delay(5);
+
+  gps.init();
 
   delay(5);
 
@@ -102,6 +107,17 @@ void sendReadings()
       laser_pkg.distance_mm = laser_read;
       communicator::ric::sendPkg(laser_header, laser_pkg, sizeof(laser_pkg));
     }
+
+    /* GPS */
+    protocol::gps gps_pkg;
+    bool valid_gps = gps.read(gps_pkg);
+    if (valid_gps)
+    {
+      protocol::header gps_header;
+      gps_header.type = protocol::Type::GPS;
+      communicator::ric::sendPkg(gps_header, gps_pkg, sizeof(gps_pkg));
+    }
+
     
     send_readings_timer.startOver();
   }

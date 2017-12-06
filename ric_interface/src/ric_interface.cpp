@@ -56,7 +56,7 @@ namespace ric_interface
         protocol::header incoming_header;
         if (readPkg(incoming_header, sizeof(incoming_header)))
         {
-            printf("INCOMMING header type: %d\n", (int)incoming_header.type);
+            //printf("INCOMMING header type: %d\n", (int)incoming_header.type);
             handleHeader(incoming_header);
         }
     }
@@ -80,7 +80,7 @@ namespace ric_interface
                 protocol::logger logger_pkg;
                 if (readPkg(logger_pkg, sizeof(logger_pkg)))
                 {
-                    printf("logger: %s\n", logger_pkg.msg);
+                    //printf("logger: %s\n", logger_pkg.msg);
                 }
                 break;
             }
@@ -90,7 +90,7 @@ namespace ric_interface
                 if (readPkg(ultrasonic_pkg, sizeof(ultrasonic_pkg)))
                 {
                     sensors_state_.ultrasonic = ultrasonic_pkg;
-                    printf("ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
+                    //printf("ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
                 }
                 break;
             }
@@ -113,6 +113,16 @@ namespace ric_interface
                 {
                     sensors_state_.laser = laser_pkg;
                     //printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
+                }
+                break;
+            }
+            case protocol::Type::GPS:
+            {
+                protocol::gps gps_pkg;
+                if (readPkg(gps_pkg, sizeof(gps_pkg)))
+                {
+                    sensors_state_.gps = gps_pkg;
+                    //printf("gps lat: %f, lon: %f\n", sensors_state_.gps.lat, sensors_state_.gps.lon);
                 }
                 break;
             }
