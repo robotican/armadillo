@@ -19,7 +19,7 @@ namespace communicator
           return true;
         }
         
-        /* send header and then pkg content */
+        /* send header and then sensor state pkg content to pc */
         void sendPkg(const protocol::header &header_pkg,
                      const protocol::package &pkg, 
                      size_t pkg_size)

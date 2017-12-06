@@ -166,7 +166,11 @@ void handleHeader(const protocol::header &h)
         case protocol::Type::KEEP_ALIVE:
             got_keepalive = true;
             break;
-        //TODO: handle other cases. if pkg header arrive, read pkg
+        case protocol::Type::SERVO:
+            protocol::servo servo_pkg;
+            communicator::ric::readPkg(servo_pkg, sizeof(servo_pkg));
+            //TODO: SEND SERVO CMD PKG TO SERVO CLASS --------------------------
+            break;
     }
 }
 

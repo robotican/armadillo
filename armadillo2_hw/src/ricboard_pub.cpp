@@ -70,7 +70,9 @@ void RicboardPub::ricDeadTimerCB(const ros::TimerEvent &event)
 {
     if (!load_ric_hw_)
         return;
-    throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
+    ROS_ERROR("[armadillo2_hw/ricboard_pub]: ricboard disconnected. shutting down...");
+    //ros::shutdown();
+    //exit(EXIT_FAILURE);
 }
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
@@ -140,9 +142,9 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 
 void RicboardPub::write()
 {
-    ric_interface::protocol::servo torso_pkg;
+    //ric_interface::protocol::servo torso_pkg;
     //torso_pkg.cmd = //get pid cmd
-    ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
+    //ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
 }
 
 void RicboardPub::read(const ros::Duration elapsed)

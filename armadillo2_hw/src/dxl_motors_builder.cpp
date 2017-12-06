@@ -7,6 +7,7 @@ namespace armadillo2_hw
 {
     DxlMotorsBuilder::DxlMotorsBuilder(ros::NodeHandle &nh)
     {
+        nh_ = &nh;
         nh_->getParam("load_dxl_hw", load_dxl_hw_);
         if (load_dxl_hw_)
         {
