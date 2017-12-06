@@ -6,6 +6,7 @@
 #include "ultrasonic.h"
 #include "imu.h"
 #include "laser.h"
+#include "gps.h"
 
 /* this cpp acts as board manager */
 
