@@ -169,6 +169,7 @@ void handleHeader(const protocol::header &h)
         case protocol::Type::SERVO:
             protocol::servo servo_pkg;
             communicator::ric::readPkg(servo_pkg, sizeof(servo_pkg));
+            log("got servo", (protocol::logger::Code)servo_pkg.cmd);
             //TODO: SEND SERVO CMD PKG TO SERVO CLASS --------------------------
             break;
     }

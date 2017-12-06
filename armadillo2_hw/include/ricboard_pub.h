@@ -17,6 +17,7 @@
 #define RIC_PORT_PARAM "ric_port"
 #define TORSO_JOINT_PARAM "torso_joint"
 #define RIC_PUB_INTERVAL 0.1 //secs
+#define RIC_WRITE_INTERVAL 0.1 //secs
 #define RIC_DEAD_TIMEOUT 3 //secs
 
 struct torso_joint
@@ -42,6 +43,7 @@ private:
     ros::Publisher ric_imu_pub_;
     ros::Timer ric_pub_timer_;
     ros::Timer ric_dead_timer_;
+    ros::Time last_read_time_;
     torso_joint torso_;
     ric_interface::RicInterface ric_;
     ros::NodeHandle *nh_;

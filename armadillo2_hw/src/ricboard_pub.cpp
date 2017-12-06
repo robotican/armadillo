@@ -37,6 +37,8 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
             exit(1);
         }
 
+        last_read_time_ = ros::Time::now();
+
         /* ric publishers */
         ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("gps", 10);
         ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("ultrasonic", 10);
@@ -81,6 +83,7 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
         return;
 
     ric_interface::sensors_state sensors = ric_.getSensorsState();
+    //sensors
 
     /* publish ultrasonic */
     sensor_msgs::Range range_msg;
@@ -142,9 +145,15 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 
 void RicboardPub::write()
 {
-    //ric_interface::protocol::servo torso_pkg;
-    //torso_pkg.cmd = //get pid cmd
-    //ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
+    //ros::Duration(0.05).sleep();
+    ros::Duration duration = ros::Time::now() - last_read_time_;
+    if (duration >= ros::Duration(RIC_WRITE_INTERVAL)) //make sure ric have some time to breath
+    {
+        ric_interface::protocol::servo torso_pkg;
+        //torso_pkg.cmd = //get pid cmd --------------------------------------------------------------------------------------
+        ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
+        last_read_time_ = ros::Time::now();
+    }
 }
 
 void RicboardPub::read(const ros::Duration elapsed)

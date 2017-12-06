@@ -80,7 +80,8 @@ namespace ric_interface
                 protocol::logger logger_pkg;
                 if (readPkg(logger_pkg, sizeof(logger_pkg)))
                 {
-                    //printf("logger: %s\n", logger_pkg.msg);
+                    sensors_state_.logger = logger_pkg;
+                    printf("logger: %s\n", logger_pkg.msg);
                 }
                 break;
             }

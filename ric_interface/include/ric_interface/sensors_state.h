@@ -11,6 +11,7 @@ namespace ric_interface
 {
     struct sensors_state
     {
+        protocol::logger logger;
         protocol::ultrasonic ultrasonic;
         protocol::imu imu;
         protocol::laser laser;
