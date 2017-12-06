@@ -7,31 +7,35 @@ namespace armadillo2_hw
 {
     DxlMotorsBuilder::DxlMotorsBuilder(ros::NodeHandle &nh)
     {
-        nh_ = &nh;
-
-        /* the order of calling the following methods is important      */
-        /* because some calls load params / objects for following calls */
-        fetchParams();
-        buildMotors();
-        openPort();
-        pingMotors();
-        loadSpecs();
-        setTorque(true);
-
-        for (dxl::motor &motor :  motors_)
+        nh_->getParam("load_dxl_hw", load_dxl_hw_);
+        if (load_dxl_hw_)
         {
-            ROS_INFO ("[dxl_motors_builder]: done building motor id: %d, model: %d",
-                      motor.id, motor.spec.model);
+            /* the order of calling the following methods is important      */
+            /* because some calls load params / objects for following calls */
+            fetchParams();
+            buildMotors();
+            openPort();
+            pingMotors();
+            loadSpecs();
+            setTorque(true);
+
+            for (dxl::motor &motor :  motors_)
+            {
+                ROS_INFO ("[dxl_motors_builder]: done building motor id: %d, model: %d",
+                          motor.id, motor.spec.model);
+            }
+
+            failed_reads_ = 0;
+            failed_writes_ = 0;
+
+            torque_srv_ = nh_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
         }
-
-        failed_reads_ = 0;
-        failed_writes_ = 0;
-
-        torque_srv_ = nh_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
     }
 
     void DxlMotorsBuilder::read()
     {
+        if (!load_dxl_hw_)
+            return;
         if (!dxl_interface_.readMotorsPos(motors_))
         {
             //ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
@@ -62,6 +66,8 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::write()
     {
+        if (!load_dxl_hw_)
+            return;
         if (!dxl_interface_.bulkWriteVelocity(motors_))
         {
             //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
@@ -85,6 +91,8 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::pingMotors()
     {
+        if (!load_dxl_hw_)
+            return;
         ros::Duration(1).sleep();
         for (dxl::motor &motor : motors_)
         {
@@ -109,6 +117,8 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::loadSpecs()
     {
+        if (!load_dxl_hw_)
+            return;
         /* build motors */
         for(int i = 0; i < dxl_spec_config_.size(); i++)
         {
@@ -363,6 +373,8 @@ namespace armadillo2_hw
 
     bool DxlMotorsBuilder::setTorque(bool flag)
     {
+        if (!load_dxl_hw_)
+            return false;
         std::string str_flag = flag ? "on" : "off";
         bool success = true;
         for (dxl::motor &motor : motors_)
@@ -387,6 +399,8 @@ namespace armadillo2_hw
     bool DxlMotorsBuilder::torqueServiceCB(std_srvs::SetBool::Request  &req,
                                            std_srvs::SetBool::Response &res)
     {
+        if (!load_dxl_hw_)
+            return false;
         res.success = false;
         if (DxlMotorsBuilder::setTorque(req.data))
             res.success = true;
@@ -396,6 +410,8 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::fetchParams()
     {
+        if (!load_dxl_hw_)
+            return;
         /* DXL_JOINTS_CONFIG_PARAM */
         if (!nh_->hasParam(DXL_JOINTS_CONFIG_PARAM))
         {
@@ -466,6 +482,8 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::buildMotors()
     {
+        if (!load_dxl_hw_)
+            return;
         /* build motors */
         for(int i = 0; i < dxl_joints_config_.size(); i++)
         {
@@ -522,6 +540,8 @@ namespace armadillo2_hw
                                            hardware_interface::PositionJointInterface &position_interface,
                                            hardware_interface::PosVelJointInterface &posvel_interface)
     {
+        if (!load_dxl_hw_)
+            return;
         for(dxl::motor &motor : motors_)
         {
             /* joint state registration */
@@ -554,6 +574,8 @@ namespace armadillo2_hw
 
     void DxlMotorsBuilder::openPort()
     {
+        if (!load_dxl_hw_)
+            return;
         dxl::DxlInterface::PortState port_state = dxl_interface_.openPort(arm_port_,
                                                                           dxl_baudrate_,
                                                                           protocol_);

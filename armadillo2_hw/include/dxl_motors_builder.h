@@ -57,6 +57,7 @@ namespace armadillo2_hw
         int dxl_baudrate_;
         int failed_reads_, failed_writes_;
         float protocol_;
+        bool load_dxl_hw_ = true;
         std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */
         std::string arm_port_;
         dxl::DxlInterface dxl_interface_;

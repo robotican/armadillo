@@ -140,7 +140,9 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 
 void RicboardPub::write()
 {
-    //get command from torso controller and send to ric
+    ric_interface::protocol::servo torso_pkg;
+    //torso_pkg.cmd = //get pid cmd
+    ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
 }
 
 void RicboardPub::read(const ros::Duration elapsed)

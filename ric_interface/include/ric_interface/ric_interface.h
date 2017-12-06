@@ -38,7 +38,7 @@ namespace ric_interface
         void loop();
         bool isBoardAlive() { return is_board_alive_; }
         sensors_state getSensorsState() { return sensors_state_; }
-
+        void writeCmd(const protocol::actuator &actu_pkg, size_t size, protocol::Type type);
     };
 }
 

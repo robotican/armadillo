@@ -140,23 +140,30 @@ namespace ric_interface
         return true;
     }
 
-    /* send header and then pkg content */
+    /* send header and then state (i.e. keep alive) pkg content to ricboard */
     bool RicInterface::sendPkg(const protocol::header &header_pkg,
-                 const protocol::package &pkg,
-                 size_t pkg_size)
+                               const protocol::package &pkg,
+                               size_t pkg_size)
     {
         /* send header */
         size_t header_size = sizeof(protocol::header);
         byte header_buff[header_size];
         memcpy(header_buff, &header_pkg, header_size);
-        if (!comm_.send(header_buff, sizeof(protocol::header)))
+        if (!comm_.send(header_buff, header_size))
             return false;
 
         /* send pkg */
         byte pkg_buff[pkg_size];
         memcpy(pkg_buff, &pkg, pkg_size);
-        if (!comm_.send(pkg_buff, sizeof(protocol::header)))
+        if (!comm_.send(pkg_buff, pkg_size))
             return false;
         return true;
+    }
+
+    void RicInterface::writeCmd(const protocol::actuator &actu_pkg, size_t size, protocol::Type type)
+    {
+        protocol::header header_pkg;
+        header_pkg.type = type;
+        sendPkg(header_pkg, actu_pkg, size);
     }
 }

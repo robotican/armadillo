@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
         armadillo_hw.read();
 
-        ros::Duration((1000.0 / LOOP_HZ) / 2.0 / 1000.0).sleep();
+        ros::Duration(1.0 / (2.0 * LOOP_HZ)).sleep();
 
         ros::Duration duration = ros::Time::now() - last_time;
         controller_manager.update(ros::Time::now(), duration);
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
         armadillo_hw.write();
 
-        ros::Duration((1000.0 / LOOP_HZ) / 2.0 / 1000.0).sleep();
+        ros::Duration(1.0 / (2.0 * LOOP_HZ)).sleep();
 
         ros::spinOnce;
     }

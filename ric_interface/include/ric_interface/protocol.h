@@ -14,7 +14,8 @@ namespace ric_interface
             ULTRASONIC = 3,
             LASER = 4,
             IMU = 5,
-            GPS = 6
+            GPS = 6,
+            SERVO = 7
         };
 
         struct package
@@ -106,10 +107,9 @@ namespace ric_interface
             bool fix;
         };
 
-
-        struct elevator : actuator
+        struct servo : actuator
         {
-            uint16_t cmd_mm;
+            uint16_t cmd; //servo command 1000-2000
         };
     }
 }
