@@ -5,6 +5,7 @@
 #include <ric_interface/ric_interface.h>
 #include <ric_interface/ric_exception.h>
 #include <ros/ros.h>
+#include <tf/tf.h>
 #include <sensor_msgs/Range.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Imu.h>
@@ -57,8 +58,6 @@ public:
     void loop();
     void read();
     void write();
-    void startPublish();
-    void stopPublish();
     void registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
                          hardware_interface::PositionJointInterface &position_interface);
 };

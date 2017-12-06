@@ -24,10 +24,6 @@ namespace armadillo2_hw
         registerInterface(&position_interface_);
         registerInterface(&velocity_interface_);
 
-        /* publish topics */
-        battery_.startPublish();
-        ric_.startPublish();
-
         prev_time_ = getTime();
         ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
     }
@@ -46,12 +42,14 @@ namespace armadillo2_hw
     {
         dxl_motors_.read();
         roboteq_.read(getPeriod());
+        ric_.read();
     }
 
     void ArmadilloHW::write()
     {
         dxl_motors_.write();
         roboteq_.write(getPeriod());
+        ric_.write();
     }
 
     void ArmadilloHW::loop()

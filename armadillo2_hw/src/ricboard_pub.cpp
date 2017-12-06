@@ -61,7 +61,6 @@ void RicboardPub::loop()
     }
     else
     {
-        ROS_ERROR("STARTING RIC TIMER");
         ric_dead_timer_.start();
         ric_pub_timer_.stop();
     }
@@ -78,8 +77,11 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 {
     if (!load_ric_hw_)
         return;
+
+    ric_interface::sensors_state sensors = ric_.getSensorsState();
+
     /* update robot state according to ric sensor for joints_states */
-    torso_.pos =  ric_.getSensorsState().laser.distance_mm / 1000.0;
+    torso_.pos =  sensors.laser.distance_mm / 1000.0;
     torso_.vel = (torso_.pos - torso_.prev_pos) / RIC_PUB_INTERVAL;
     torso_.prev_pos = torso_.pos;
 
@@ -88,25 +90,26 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     range_msg.min_range = 0.3;
     range_msg.max_range = 3.0;
     range_msg.radiation_type = sensor_msgs::Range::ULTRASOUND;
-    range_msg.range = ric_.getSensorsState().ultrasonic.distance_mm / 1000.0;
+    range_msg.range = sensors.ultrasonic.distance_mm / 1000.0;
     ric_ultrasonic_pub_.publish(range_msg);
+
+    /* publish imu */
+    sensor_msgs::Imu imu_msg;
+
+    tf::Quaternion orientation_q = tf::createQuaternionFromRPY(sensors.imu.roll_rad,
+                                                               sensors.imu.pitch_rad,
+                                                               sensors.imu.yaw_rad);
+    geometry_msgs::Quaternion q_msg;
+    q_msg.x = orientation_q.x();
+    q_msg.y = orientation_q.y();
+    q_msg.z = orientation_q.z();
+    q_msg.w = orientation_q.w();
+
+    imu_msg.orientation = q_msg;
+    ric_imu_pub_.publish(imu_msg);
 
     /* publish gps */
     sensor_msgs::NavSatFix gps_msg;
-}
-
-void RicboardPub::startPublish()
-{
-    if (!load_ric_hw_)
-        return;
-    ric_pub_timer_.start();
-}
-
-void RicboardPub::stopPublish()
-{
-    if (!load_ric_hw_)
-        return;
-    ric_pub_timer_.stop();
 }
 
 void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
@@ -126,6 +129,16 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
     pos_handles_.push_back(hardware_interface::JointHandle (joint_state_interface.getHandle(torso_.joint_name),
                                                             &torso_.command_pos));
     position_interface.registerHandle(pos_handles_.back());
+}
+
+void RicboardPub::write()
+{
+
+}
+
+void RicboardPub::read()
+{
+
 }
 
 

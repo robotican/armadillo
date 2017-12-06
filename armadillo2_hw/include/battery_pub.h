@@ -33,8 +33,6 @@ namespace armadillo2_hw
 
     public:
         BatteryPub(ros::NodeHandle nh);
-        void startPublish();
-        void stopPublish();
     };
 }
 

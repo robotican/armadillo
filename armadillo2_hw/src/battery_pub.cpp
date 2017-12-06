@@ -79,18 +79,4 @@ namespace armadillo2_hw
                 ROS_WARN("[armadillo2_hw/battery_pub]: %s", exp.what());
         }
     }
-
-    void BatteryPub::startPublish()
-    {
-        if (!load_battery_hw_)
-            return;
-        bat_pub_timer_.start();
-    }
-
-    void BatteryPub::stopPublish()
-    {
-        if (!load_battery_hw_)
-            return;
-        bat_pub_timer_.stop();
-    }
 }
