@@ -28,9 +28,14 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         }
         nh_->getParam(TORSO_JOINT_PARAM, torso_.joint_name);
 
-        /* try connect. if connection fails, exception will be thrown */
-        ric_.connect(ric_port_);
-        ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard port opened successfully \nport name: %s \nbaudrate: 115200", ric_port_.c_str());
+        try{
+            ric_.connect(ric_port_);
+            ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard port opened successfully \nport name: %s \nbaudrate: 115200", ric_port_.c_str());
+        }catch (ric_interface::ConnectionExeption e) {
+            ROS_ERROR("[armadillo2_hw/ricboard_pub]: can't open ricboard port. make sure that ricboard is connected. shutting down...");
+            ros::shutdown();
+            exit(1);
+        }
 
         /* ric publishers */
         ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("gps", 10);
@@ -47,15 +52,18 @@ void RicboardPub::loop()
 {
     if (!load_ric_hw_)
         return;
+
+    ric_.loop();
     if (ric_.isBoardAlive())
     {
-        ric_.loop();
         ric_dead_timer_.stop();
+        ric_pub_timer_.start();
     }
     else
     {
         ROS_ERROR("STARTING RIC TIMER");
         ric_dead_timer_.start();
+        ric_pub_timer_.stop();
     }
 }
 
@@ -63,7 +71,7 @@ void RicboardPub::ricDeadTimerCB(const ros::TimerEvent &event)
 {
     if (!load_ric_hw_)
         return;
-    //throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
+    throw ric_interface::ConnectionExeption("[armadillo2_hw/ricboard_pub]: ricboard disconnected");
 }
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)

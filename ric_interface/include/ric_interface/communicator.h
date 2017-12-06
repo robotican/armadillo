@@ -24,6 +24,7 @@ namespace ric_interface
 
 
     public:
+        ~Communicator(){ ::close(file_handle_); }
         void connect(std::string port, int baudrate);
         bool send(const byte buff[], size_t size);
         int read(byte buff[], size_t size);
