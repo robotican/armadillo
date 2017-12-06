@@ -74,26 +74,33 @@ void sendReadings()
   if (send_readings_timer.finished())
   {
     /* ULTRASONIC */
+    protocol::header ultrasonic_header;
+    ultrasonic_header.type = protocol::Type:: ULTRASONIC;
     protocol::ultrasonic ultrasonic_pkg;
     ultrasonic_pkg.distance_mm = ultrasonic.readDistanceMm();
-    communicator::ric::sendUltrasonic(ultrasonic_pkg);
+    communicator::ric::sendPkg(ultrasonic_header, ultrasonic_pkg, sizeof(ultrasonic_pkg));
 
     /* IMU */
     if (valid_imu)
     {
-      communicator::ric::sendImu(imu_pkg);
-        //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
-        //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
-        //Serial.print("yaw: "); Serial.println(imu_pkg.yaw * 180 / M_PI);
+      protocol::header imu_header;
+      imu_header.type = protocol::Type:: IMU;
+      communicator::ric::sendPkg(imu_header, imu_pkg, sizeof(imu_pkg));
+      
+      //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
+      //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
+      //Serial.print("yaw: "); Serial.println(imu_pkg.yaw * 180 / M_PI);
     }
 
     /* LASER */
     uint16_t laser_read = laser.read();
     if (laser_read != (uint16_t)Laser::Code::ERROR)
     {
+      protocol::header laser_header;
+      laser_header.type = protocol::Type:: LASER;
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
-      communicator::ric::sendLaser(laser_pkg);
+      communicator::ric::sendPkg(laser_header, laser_pkg, sizeof(laser_pkg));
     }
     
     send_readings_timer.startOver();
@@ -106,7 +113,12 @@ void keepAliveAndRead()
 {
   if (send_keepalive_timer.finished())
   {
-    communicator::ric::sendKeepAlive();
+    /* send keep alive */
+    protocol::header ka_header;
+    ka_header.type = protocol::Type:: KEEP_ALIVE;
+    protocol::keepalive ka_pkg;
+    communicator::ric::sendPkg(ka_header, ka_pkg, sizeof(ka_pkg));
+    
     send_keepalive_timer.startOver();
   }
 
@@ -123,7 +135,7 @@ void keepAliveAndRead()
   }
 
   protocol::header incoming_header;
-  if (communicator::ric::readHeader(incoming_header))
+  if (communicator::ric::readPkg(incoming_header, sizeof(incoming_header)))
   {
     handleHeader(incoming_header);
   }
@@ -138,15 +150,18 @@ void handleHeader(const protocol::header &h)
         case protocol::Type::KEEP_ALIVE:
             got_keepalive = true;
             break;
+        //TODO: handle other cases. if pkg header arrive, read pkg
     }
 }
 
 /******************************************************/
 void log(const char* msg_str, protocol::logger::Code code)
 {
+    protocol::header logger_header;
+    logger_header.type = protocol::Type::LOGGER;
     protocol::logger logger_pkg;
     strcpy(logger_pkg.msg, msg_str);
     
     logger_pkg.code = code;
-    communicator::ric::sendLogger(logger_pkg);
+    communicator::ric::sendPkg(logger_header, logger_pkg, sizeof(logger_pkg));
 }

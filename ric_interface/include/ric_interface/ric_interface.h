@@ -25,14 +25,12 @@ namespace ric_interface
         Communicator comm_;
         sensors_state sensors_state_;
 
-        bool readHeader(protocol::header &h);
-        void sendKeepAlive();
+        bool readPkg(protocol::package &pkg, size_t size);
+        bool sendPkg(const protocol::header &header_pkg,
+                     const protocol::package &pkg,
+                     size_t pkg_size);
         void handleHeader(const protocol::header &h);
         void keepAliveAndRead();
-        bool readLoggerPkg(protocol::logger &logger_pkg);
-        bool readUltrasonicPkg(protocol::ultrasonic &ultrasonic_pkg);
-        bool readImuPkg(protocol::imu &imu_pkg);
-        bool readLaserPkg(protocol::laser &laser_pkg);
 
     public:
         RicInterface();

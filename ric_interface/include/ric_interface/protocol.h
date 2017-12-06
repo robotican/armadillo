@@ -16,12 +16,17 @@ namespace ric_interface
             IMU = 5
         };
 
-        struct header
+        struct package
+        {
+
+        };
+
+        struct header : package
         {
             Type type;
         };
 
-        struct package
+        struct keepalive : package
         {
 
         };
