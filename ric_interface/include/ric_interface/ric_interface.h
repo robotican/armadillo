@@ -26,9 +26,7 @@ namespace ric_interface
         sensors_state sensors_state_;
 
         bool readPkg(protocol::package &pkg, size_t size);
-        bool sendPkg(const protocol::header &header_pkg,
-                     const protocol::package &pkg,
-                     size_t pkg_size);
+        bool sendPkg(const protocol::package &pkg, size_t pkg_size);
         void handleHeader(const protocol::header &h);
         void keepAliveAndRead();
 

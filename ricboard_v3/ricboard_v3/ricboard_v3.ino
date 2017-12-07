@@ -7,7 +7,7 @@
 #include "imu.h"
 #include "laser.h"
 #include "gps.h"
-
+#include <Servo.h>
 /* this cpp acts as board manager */
 
 /* DO NOT use Serial.print, because */
@@ -20,6 +20,7 @@ bool got_keepalive;
 Strober strober;
 
 /* front ultrasonic */
+Servo servo;
 Ultrasonic ultrasonic;
 Imu imu;
 Laser laser;
@@ -29,12 +30,12 @@ Gps gps;
 
 void setup() 
 {
-  
   communicator::init(BAUDRATE);
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
-  
+
+  servo.attach(SERVO_PIN, SRVO_MIN, SRVO_MAX);
   ultrasonic.init(ULTRASONIC_PIN);
   if (!imu.init())
     Serial.println("imu failed");//log("imu failed", protocol::logger::Code::ERROR);
@@ -75,7 +76,6 @@ void sendReadings()
   if (imu.read(imu_pkg)) //if imu ready, send it
     valid_imu = true;
   
-     
   if (send_readings_timer.finished())
   {
     /* ULTRASONIC */
@@ -83,14 +83,16 @@ void sendReadings()
     ultrasonic_header.type = protocol::Type:: ULTRASONIC;
     protocol::ultrasonic ultrasonic_pkg;
     ultrasonic_pkg.distance_mm = ultrasonic.readDistanceMm();
-    communicator::ric::sendPkg(ultrasonic_header, ultrasonic_pkg, sizeof(ultrasonic_pkg));
+    communicator::ric::sendPkg(ultrasonic_header, sizeof(ultrasonic_header));
+    communicator::ric::sendPkg(ultrasonic_pkg, sizeof(ultrasonic_pkg));
 
     /* IMU */
     if (valid_imu)
     {
       protocol::header imu_header;
       imu_header.type = protocol::Type:: IMU;
-      communicator::ric::sendPkg(imu_header, imu_pkg, sizeof(imu_pkg));
+      communicator::ric::sendPkg(imu_header, sizeof(imu_header));
+      communicator::ric::sendPkg(imu_pkg, sizeof(imu_pkg));
       
       //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
       //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
@@ -105,7 +107,8 @@ void sendReadings()
       laser_header.type = protocol::Type:: LASER;
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
-      communicator::ric::sendPkg(laser_header, laser_pkg, sizeof(laser_pkg));
+      communicator::ric::sendPkg(laser_header, sizeof(laser_header));
+      communicator::ric::sendPkg(laser_pkg, sizeof(laser_pkg));
     }
 
     /* GPS */
@@ -115,10 +118,10 @@ void sendReadings()
     {
       protocol::header gps_header;
       gps_header.type = protocol::Type::GPS;
-      communicator::ric::sendPkg(gps_header, gps_pkg, sizeof(gps_pkg));
+      communicator::ric::sendPkg(gps_header, sizeof(gps_header));
+      communicator::ric::sendPkg(gps_pkg, sizeof(gps_pkg));
     }
 
-    
     send_readings_timer.startOver();
   }
 }
@@ -133,7 +136,8 @@ void keepAliveAndRead()
     protocol::header ka_header;
     ka_header.type = protocol::Type:: KEEP_ALIVE;
     protocol::keepalive ka_pkg;
-    communicator::ric::sendPkg(ka_header, ka_pkg, sizeof(ka_pkg));
+    communicator::ric::sendPkg(ka_header, sizeof(ka_header));
+    communicator::ric::sendPkg(ka_pkg, sizeof(ka_pkg));
     
     send_keepalive_timer.startOver();
   }
@@ -149,7 +153,7 @@ void keepAliveAndRead()
       strober.setNotes(Strober::Notes::BLINK_SLOW);
     get_keepalive_timer.startOver();
   }
-
+  
   protocol::header incoming_header;
   if (communicator::ric::readPkg(incoming_header, sizeof(incoming_header)))
   {
@@ -165,18 +169,19 @@ void handleHeader(const protocol::header &h)
     {
         case protocol::Type::KEEP_ALIVE:
             got_keepalive = true;
+            //log("got header", 3);
             break;
         case protocol::Type::SERVO:
             protocol::servo servo_pkg;
             communicator::ric::readPkg(servo_pkg, sizeof(servo_pkg));
-            log("got servo", (protocol::logger::Code)servo_pkg.cmd);
-            //TODO: SEND SERVO CMD PKG TO SERVO CLASS --------------------------
+            servo.writeMicroseconds(servo_pkg.cmd);
+            //log("got servo", servo_pkg.cmd);
             break;
     }
 }
 
 /******************************************************/
-void log(const char* msg_str, protocol::logger::Code code)
+void log(const char* msg_str, uint8_t code)
 {
     protocol::header logger_header;
     logger_header.type = protocol::Type::LOGGER;
@@ -184,5 +189,7 @@ void log(const char* msg_str, protocol::logger::Code code)
     strcpy(logger_pkg.msg, msg_str);
     
     logger_pkg.code = code;
-    communicator::ric::sendPkg(logger_header, logger_pkg, sizeof(logger_pkg));
+    
+    communicator::ric::sendPkg(logger_header, sizeof(protocol::header));
+    communicator::ric::sendPkg(logger_pkg, sizeof(protocol::logger));
 }

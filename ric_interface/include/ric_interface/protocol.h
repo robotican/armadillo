@@ -18,6 +18,13 @@ namespace ric_interface
             SERVO = 7
         };
 
+        enum class Code
+        {
+            INFO = 1,
+            WARNING = 2,
+            ERROR = 3
+        };
+
         struct package
         {
 
@@ -35,14 +42,8 @@ namespace ric_interface
 
         struct logger : package
         {
-            enum Code
-            {
-                INFO = 1,
-                WARNING = 2,
-                ERROR = 3
-            };
             char msg[128];
-            Code code;
+            uint8_t code;
         };
 
         struct sensor : package

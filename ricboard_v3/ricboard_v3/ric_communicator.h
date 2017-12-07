@@ -20,16 +20,9 @@ namespace communicator
         }
         
         /* send header and then sensor state pkg content to pc */
-        void sendPkg(const protocol::header &header_pkg,
-                     const protocol::package &pkg, 
+        void sendPkg(const protocol::package &pkg, 
                      size_t pkg_size)
         {
-          /* send header */
-          size_t header_size = sizeof(protocol::header);
-          byte header_buff[header_size];
-          memcpy(header_buff, &header_pkg, header_size);
-          send(header_buff, header_size);
-
           /* send pkg */
           byte pkg_buff[pkg_size];
           memcpy(pkg_buff, &pkg, pkg_size);

@@ -19,6 +19,8 @@ namespace ric_interface
     void RicInterface::loop()
     {
         keepAliveAndRead();
+
+
     }
 
     void RicInterface::keepAliveAndRead()
@@ -31,15 +33,14 @@ namespace ric_interface
                 is_board_alive_ = true;
                 got_keepalive_ = false;
                 //printf("board alive ! \n");
-                get_keepalive_timer_.reset();
             }
             else
             {
-                //puts("RIC DEAD");
+                puts("RIC DEAD");
                 is_board_alive_ = false;
                 //printf("board dead ! \n");
-                get_keepalive_timer_.reset();
             }
+            get_keepalive_timer_.reset();
         }
 
         send_keepalive_timer_.startTimer(SEND_KA_TIMEOUT);
@@ -48,7 +49,8 @@ namespace ric_interface
             protocol::header ka_header;
             ka_header.type = protocol::Type::KEEP_ALIVE;
             protocol::keepalive ka_pkg;
-            sendPkg(ka_header, ka_pkg, sizeof(ka_pkg));
+            sendPkg(ka_header, sizeof(ka_header));
+            sendPkg(ka_pkg, sizeof(ka_pkg));
             send_keepalive_timer_.reset();
         }
 
@@ -78,10 +80,10 @@ namespace ric_interface
             case protocol::Type::LOGGER:
             {
                 protocol::logger logger_pkg;
-                if (readPkg(logger_pkg, sizeof(logger_pkg)))
+                if (readPkg(logger_pkg, sizeof(protocol::logger)))
                 {
                     sensors_state_.logger = logger_pkg;
-                    printf("logger: %s\n", logger_pkg.msg);
+                    printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.code);
                 }
                 break;
             }
@@ -142,18 +144,8 @@ namespace ric_interface
     }
 
     /* send header and then state (i.e. keep alive) pkg content to ricboard */
-    bool RicInterface::sendPkg(const protocol::header &header_pkg,
-                               const protocol::package &pkg,
-                               size_t pkg_size)
+    bool RicInterface::sendPkg(const protocol::package &pkg, size_t pkg_size)
     {
-        /* send header */
-        size_t header_size = sizeof(protocol::header);
-        byte header_buff[header_size];
-        memcpy(header_buff, &header_pkg, header_size);
-        if (!comm_.send(header_buff, header_size))
-            return false;
-
-        /* send pkg */
         byte pkg_buff[pkg_size];
         memcpy(pkg_buff, &pkg, pkg_size);
         if (!comm_.send(pkg_buff, pkg_size))
@@ -165,6 +157,11 @@ namespace ric_interface
     {
         protocol::header header_pkg;
         header_pkg.type = type;
-        sendPkg(header_pkg, actu_pkg, size);
+        /* send header */
+        sendPkg(header_pkg, sizeof(header_pkg));
+        /* send pkg content */
+        sendPkg(actu_pkg, size);
     }
+
+
 }

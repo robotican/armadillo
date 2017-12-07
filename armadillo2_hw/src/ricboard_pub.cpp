@@ -150,7 +150,7 @@ void RicboardPub::write()
     if (duration >= ros::Duration(RIC_WRITE_INTERVAL)) //make sure ric have some time to breath
     {
         ric_interface::protocol::servo torso_pkg;
-        //torso_pkg.cmd = //get pid cmd --------------------------------------------------------------------------------------
+        //torso_pkg.cmd = 55;//get pid cmd --------------------------------------------------------------------------------------
         ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
         last_read_time_ = ros::Time::now();
     }
