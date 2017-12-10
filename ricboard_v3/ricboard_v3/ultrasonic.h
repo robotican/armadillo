@@ -2,6 +2,8 @@
 #define ULTRASONIC_H
 
 #include <Arduino.h>
+#define ULTRASONICE_TIMEOUT 1 //micro sec
+
 
 class Ultrasonic
 {
@@ -20,7 +22,7 @@ public:
   uint16_t readDistanceMm()
   {
     /* each micro second of pulse lenght is 1 mm */
-    return (uint16_t)pulseIn(pin_, HIGH);
+    return (uint16_t)pulseIn(pin_, HIGH, ULTRASONICE_TIMEOUT);
   }
 };
 #endif //ULTRASONIC_H

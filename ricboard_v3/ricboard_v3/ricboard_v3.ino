@@ -83,8 +83,8 @@ void sendReadings()
     ultrasonic_header.type = protocol::Type:: ULTRASONIC;
     protocol::ultrasonic ultrasonic_pkg;
     ultrasonic_pkg.distance_mm = ultrasonic.readDistanceMm();
-    communicator::ric::sendPkg(ultrasonic_header, sizeof(ultrasonic_header));
-    communicator::ric::sendPkg(ultrasonic_pkg, sizeof(ultrasonic_pkg));
+    communicator::ric::sendPkg(ultrasonic_header, sizeof(protocol::header));
+    communicator::ric::sendPkg(ultrasonic_pkg, sizeof(protocol::ultrasonic));
 
     /* IMU */
     if (valid_imu)
@@ -136,8 +136,8 @@ void keepAliveAndRead()
     protocol::header ka_header;
     ka_header.type = protocol::Type:: KEEP_ALIVE;
     protocol::keepalive ka_pkg;
-    communicator::ric::sendPkg(ka_header, sizeof(ka_header));
-    communicator::ric::sendPkg(ka_pkg, sizeof(ka_pkg));
+    communicator::ric::sendPkg(ka_header, sizeof(protocol::header));
+    communicator::ric::sendPkg(ka_pkg, sizeof(protocol::keepalive));
     
     send_keepalive_timer.startOver();
   }
@@ -155,7 +155,7 @@ void keepAliveAndRead()
   }
   
   protocol::header incoming_header;
-  if (communicator::ric::readPkg(incoming_header, sizeof(incoming_header)))
+  if (communicator::ric::readPkg(incoming_header, sizeof(protocol::header)))
   {
     handleHeader(incoming_header);
   }
