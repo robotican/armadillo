@@ -30,6 +30,8 @@ sudo apt-get -y install ros-kinetic-ros-controllers
 sudo apt-get -y install ros-kinetic-ros-control 
 sudo apt-get install ros-kinetic-moveit
 sudo apt-get install ros-kinetic-pid
+sudo apt-get install ros-kinetic-joy
+sudo apt-get install joystick 
 
 # install softkinetic drivers #
 cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/

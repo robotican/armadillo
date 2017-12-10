@@ -10,6 +10,8 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED
              roscpp
              actionlib
+        moveit_ros_planning_interface
+
         )
 
 ## System dependencies are found with CMake's conventions
@@ -118,6 +120,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
+        ${EIGEN_INCLUDE_DIRS}
  ${catkin_INCLUDE_DIRS}
 )
 
@@ -134,7 +137,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(${PROJECT_NAME}_node src/arm_joy_node.cpp)
+ add_executable(${PROJECT_NAME}_node src/arm_joy_teleop_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

@@ -17,3 +17,5 @@ drive_joy_teleop_angular_axis: 2
 drive_joy_teleop_deadman_button: 7
 drive_joy_teleop_linear_max_vel: 0.4
 drive_joy_teleop_angular_max_vel: 0.5
+
+constraints/goal_time: 5
