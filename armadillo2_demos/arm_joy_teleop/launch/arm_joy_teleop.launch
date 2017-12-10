@@ -1,0 +1,3 @@
+<launch>
+	<node name="arm_joy_node" output="screen" pkg="arm_joy_teleop" type="arm_joy_node" />
+</launch>

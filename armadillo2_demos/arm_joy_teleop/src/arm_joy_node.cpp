@@ -4,10 +4,10 @@
 
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <trajectory_msgs/JointTrajectory.h>
+#include <control_msgs/JointTrajectoryAction.h>
 #include <control_msgs/GripperCommandAction.h>
 #include <actionlib/client/simple_action_client.h>
-#include <control_msgs/GripperCommandAction.h>
 
 #define DEBUG_JOY_ARM
 
@@ -18,7 +18,7 @@ class ArmJoyNode {
 private:
     ros::NodeHandle _nodeHandle;
     ros::AsyncSpinner _spinner;
-    moveit::planning_interface::MoveGroup _group;
+    //moveit::planning_interface::MoveGroup _group;
     float _rotation1IncreamentValue;
     float _rotation2IncreamentValue;
     float _shoulder1IncreamentValue;
@@ -112,7 +112,7 @@ private:
                || _gripperState == 1 || _gripperState == -1;
     }
 public:
-    ArmJoyNode(): _nodeHandle(),  _spinner(2), _group("arm")  {
+    ArmJoyNode(): _nodeHandle(),  _spinner(2)  {
         ROS_INFO("[%s]: Arm joy node is active", ros::this_node::getName().c_str());
         _rotation1State = 0;
         _rotation2State = 0;
@@ -123,7 +123,7 @@ public:
         _gripperState = 0;
         _gripperWorking = false;
         _joySub = _nodeHandle.subscribe<sensor_msgs::Joy>("joy", 10, &ArmJoyNode::joyCallback, this);
-        _group.setPlannerId("RRTConnectkConfigDefault");
+        //_group.setPlannerId("RRTConnectkConfigDefault");
 
 
 
@@ -153,9 +153,9 @@ public:
     void run() {
         ros::Rate loopRate(40);
         std::vector<double> group_variable_values;
-        _group.getCurrentState()->copyJointGroupPositions(
+        /* _group.getCurrentState()->copyJointGroupPositions(
                         _group.getCurrentState()->getRobotModel()->getJointModelGroup(_group.getName()),
-                        group_variable_values);
+                        group_variable_values); */
 
 GripperClient ac("/gripper_controller/gripper_cmd", true);
   ROS_INFO("Waiting for action server to start.");
@@ -164,6 +164,17 @@ GripperClient ac("/gripper_controller/gripper_cmd", true);
 
   ROS_INFO("Action server started.");
  control_msgs::GripperCommandGoal goal;
+
+        actionlib::SimpleActionClient< control_msgs::JointTrajectoryAction > traj_ac("follow_joint_trajectory", true);
+        ROS_INFO("Waiting for JointTrajectory action server to start.");
+        // wait for the action server to start
+        traj_ac.waitForServer(); //will wait for infinite time
+
+        ROS_INFO("Action server started, sending goal.");
+        control_msgs::JointTrajectoryGoal joint_traj_goal;
+        trajectory_msgs::JointTrajectory joint_traj_msg;
+
+
         while(ros::ok()) {
             if(haveMoveGoal()) {
                 if(_rotation1State == -1) {
@@ -241,7 +252,52 @@ goal.command.max_effort=5;
 
                 }
 
-                _group.setJointValueTarget(group_variable_values);
+                joint_traj_msg.joint_names.push_back("rotation1_joint");
+                joint_traj_msg.joint_names.push_back("shoulder1_joint");
+                joint_traj_msg.joint_names.push_back("shoulder2_joint");
+                joint_traj_msg.joint_names.push_back("rotation2_joint");
+                joint_traj_msg.joint_names.push_back("shoulder3_joint");
+                joint_traj_msg.joint_names.push_back("wrist_joint");
+
+                trajectory_msgs::JointTrajectoryPoint rotation1_point;
+                rotation1_point.positions.push_back(group_variable_values[0]);
+                joint_traj_msg.points.push_back(rotation1_point);
+
+                trajectory_msgs::JointTrajectoryPoint shoulder1_joint;
+                shoulder1_joint.positions.push_back(group_variable_values[1]);
+                joint_traj_msg.points.push_back(shoulder1_joint);
+
+                trajectory_msgs::JointTrajectoryPoint shoulder2_joint;
+                shoulder2_joint.positions.push_back(group_variable_values[2]);
+                joint_traj_msg.points.push_back(shoulder2_joint);
+
+                trajectory_msgs::JointTrajectoryPoint rotation2_joint;
+                rotation2_joint.positions.push_back(group_variable_values[3]);
+                joint_traj_msg.points.push_back(rotation2_joint);
+
+                trajectory_msgs::JointTrajectoryPoint shoulder3_joint;
+                shoulder3_joint.positions.push_back(group_variable_values[4]);
+                joint_traj_msg.points.push_back(shoulder3_joint);
+
+                trajectory_msgs::JointTrajectoryPoint wrist_joint;
+                wrist_joint.positions.push_back(group_variable_values[5]);
+                joint_traj_msg.points.push_back(wrist_joint);
+
+                joint_traj_goal.trajectory = joint_traj_msg;
+
+                traj_ac.sendGoal(joint_traj_goal);
+                bool finished_before_timeout = traj_ac.waitForResult(ros::Duration(5.0));
+
+                if (finished_before_timeout)
+                {
+                    actionlib::SimpleClientGoalState state = traj_ac.getState();
+                    ROS_INFO("Action finished: %s",state.toString().c_str());
+                }
+                else
+                    ROS_INFO("Action did not finish before the time out.");
+
+
+               /* _group.setJointValueTarget(group_variable_values);
                 moveit::planning_interface::MoveGroup::Plan my_plan;
                 bool success = _group.plan(my_plan);
                 if (success) {
@@ -249,7 +305,7 @@ goal.command.max_effort=5;
                 }
                 else {
                     ROS_WARN("[%s]: Invalid goal", ros::this_node::getName().c_str());
-                }
+                }*/
             }
 
             loopRate.sleep();
