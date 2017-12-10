@@ -31,6 +31,10 @@ sudo apt-get -y install ros-kinetic-ros-control
 sudo apt-get install ros-kinetic-moveit
 sudo apt-get install ros-kinetic-pid
 
+# install softkinetic drivers #
+cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
+sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
+sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # usb rules #

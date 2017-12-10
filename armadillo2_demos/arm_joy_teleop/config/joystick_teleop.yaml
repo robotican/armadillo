@@ -1,0 +1,19 @@
+
+pan_tilt_topic: 'pan_tilt_trajectory_controller/command'
+joy_sub_topic: 'joy'
+joy_pan_axis: 6
+joy_tilt_axis: 7
+increament_pan: 0.01
+increament_tilt: 0.01
+zero_button: 3
+joy_deadman_button: 7
+
+torso_increment: 0.1
+torso_up_button: 4
+torso_down_button: 0 
+
+drive_joy_teleop_linear_axis: 3
+drive_joy_teleop_angular_axis: 2
+drive_joy_teleop_deadman_button: 7
+drive_joy_teleop_linear_max_vel: 0.4
+drive_joy_teleop_angular_max_vel: 0.5
