@@ -20,16 +20,16 @@ namespace communicator
     {
       bool no_bytes = true;
       int indx=0;
-              while (indx<size && Serial.available()>0)
-              {
-          no_bytes = false;
-          int incoming_byte = Serial.read();
-          if (incoming_byte != -1) 
-                      buff[indx++] = (byte)incoming_byte;
-              };
+      while (indx<size && Serial.available()>0)
+      {
+        no_bytes = false;
+        int incoming_byte = Serial.read();
+        if (incoming_byte != -1) 
+          buff[indx++] = (byte)incoming_byte;
+      };
       if (no_bytes)
           return -1;
-              return indx;
+      return indx;
     }
 }
 

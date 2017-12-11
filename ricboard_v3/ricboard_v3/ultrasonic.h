@@ -2,6 +2,7 @@
 #define ULTRASONIC_H
 
 #include <Arduino.h>
+#define USONIC_SCALE_FACT 5
 
 class Ultrasonic
 {
@@ -14,13 +15,13 @@ public:
   {
     pin_ = pin;
     pinMode(pin_, INPUT);
+    analogReadResolution(10);
   }
 
   /* returns distance in mm */
   uint16_t readDistanceMm()
   {
-    /* each micro second of pulse lenght is 1 mm */
-    return (uint16_t)pulseIn(pin_, HIGH);
+    return (uint16_t)analogRead(pin_) * USONIC_SCALE_FACT;
   }
 };
 #endif //ULTRASONIC_H

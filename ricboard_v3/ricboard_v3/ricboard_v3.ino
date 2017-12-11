@@ -83,16 +83,16 @@ void sendReadings()
     ultrasonic_header.type = protocol::Type:: ULTRASONIC;
     protocol::ultrasonic ultrasonic_pkg;
     ultrasonic_pkg.distance_mm = ultrasonic.readDistanceMm();
-    communicator::ric::sendPkg(ultrasonic_header, sizeof(ultrasonic_header));
-    communicator::ric::sendPkg(ultrasonic_pkg, sizeof(ultrasonic_pkg));
+    communicator::ric::sendPkg(ultrasonic_header, sizeof(protocol::header));
+    communicator::ric::sendPkg(ultrasonic_pkg, sizeof(protocol::ultrasonic));
 
     /* IMU */
     if (valid_imu)
     {
       protocol::header imu_header;
       imu_header.type = protocol::Type:: IMU;
-      communicator::ric::sendPkg(imu_header, sizeof(imu_header));
-      communicator::ric::sendPkg(imu_pkg, sizeof(imu_pkg));
+      communicator::ric::sendPkg(imu_header, sizeof(protocol::header));
+      communicator::ric::sendPkg(imu_pkg, sizeof(protocol::imu));
       
       //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
       //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
@@ -107,8 +107,8 @@ void sendReadings()
       laser_header.type = protocol::Type:: LASER;
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
-      communicator::ric::sendPkg(laser_header, sizeof(laser_header));
-      communicator::ric::sendPkg(laser_pkg, sizeof(laser_pkg));
+      communicator::ric::sendPkg(laser_header, sizeof(protocol::header));
+      communicator::ric::sendPkg(laser_pkg, sizeof(protocol::laser));
     }
 
     /* GPS */
@@ -118,8 +118,8 @@ void sendReadings()
     {
       protocol::header gps_header;
       gps_header.type = protocol::Type::GPS;
-      communicator::ric::sendPkg(gps_header, sizeof(gps_header));
-      communicator::ric::sendPkg(gps_pkg, sizeof(gps_pkg));
+      communicator::ric::sendPkg(gps_header, sizeof(protocol::header));
+      communicator::ric::sendPkg(gps_pkg, sizeof(protocol::gps));
     }
 
     send_readings_timer.startOver();
@@ -136,8 +136,8 @@ void keepAliveAndRead()
     protocol::header ka_header;
     ka_header.type = protocol::Type:: KEEP_ALIVE;
     protocol::keepalive ka_pkg;
-    communicator::ric::sendPkg(ka_header, sizeof(ka_header));
-    communicator::ric::sendPkg(ka_pkg, sizeof(ka_pkg));
+    communicator::ric::sendPkg(ka_header, sizeof(protocol::header));
+    communicator::ric::sendPkg(ka_pkg, sizeof(protocol::keepalive));
     
     send_keepalive_timer.startOver();
   }
@@ -155,7 +155,7 @@ void keepAliveAndRead()
   }
   
   protocol::header incoming_header;
-  if (communicator::ric::readPkg(incoming_header, sizeof(incoming_header)))
+  if (communicator::ric::readPkg(incoming_header, sizeof(protocol::header)))
   {
     handleHeader(incoming_header);
   }
@@ -168,12 +168,17 @@ void handleHeader(const protocol::header &h)
     switch (h.type)
     {
         case protocol::Type::KEEP_ALIVE:
-            got_keepalive = true;
-            //log("got header", 3);
+            protocol::keepalive ka_pkg;
+            if (communicator::ric::readPkg(ka_pkg, sizeof(protocol::keepalive)))
+            {
+                //ka pkg is empty
+                //log("got ka", 3);
+                got_keepalive = true;
+            }
             break;
         case protocol::Type::SERVO:
             protocol::servo servo_pkg;
-            communicator::ric::readPkg(servo_pkg, sizeof(servo_pkg));
+            communicator::ric::readPkg(servo_pkg, sizeof(protocol::servo));
             servo.writeMicroseconds(servo_pkg.cmd);
             //log("got servo", servo_pkg.cmd);
             break;

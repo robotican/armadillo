@@ -4,10 +4,7 @@
 
 namespace ric_interface
 {
-    RicInterface::RicInterface()
-    {
-        connect("/dev/armadillo2/RICBOARD");
-    }
+    RicInterface::RicInterface() {}
 
     /* open connection to serial port                */
     /* if conncetion fails, exception will be thrown */
@@ -19,8 +16,6 @@ namespace ric_interface
     void RicInterface::loop()
     {
         keepAliveAndRead();
-
-
     }
 
     void RicInterface::keepAliveAndRead()
@@ -36,7 +31,6 @@ namespace ric_interface
             }
             else
             {
-                puts("RIC DEAD");
                 is_board_alive_ = false;
                 //printf("board dead ! \n");
             }
@@ -49,14 +43,14 @@ namespace ric_interface
             protocol::header ka_header;
             ka_header.type = protocol::Type::KEEP_ALIVE;
             protocol::keepalive ka_pkg;
-            sendPkg(ka_header, sizeof(ka_header));
-            sendPkg(ka_pkg, sizeof(ka_pkg));
+            sendPkg(ka_header, sizeof(protocol::header));
+            sendPkg(ka_pkg, sizeof(protocol::keepalive));
             send_keepalive_timer_.reset();
         }
 
         /* try to read header */
         protocol::header incoming_header;
-        if (readPkg(incoming_header, sizeof(incoming_header)))
+        if (readPkg(incoming_header, sizeof(protocol::header)))
         {
             //printf("INCOMMING header type: %d\n", (int)incoming_header.type);
             handleHeader(incoming_header);
@@ -69,11 +63,12 @@ namespace ric_interface
         {
             case protocol::Type::KEEP_ALIVE:
             {
-                got_keepalive_ = true;
                 protocol::keepalive ka_pkg;
-                if (readPkg(ka_pkg, sizeof(ka_pkg)))
+                if (readPkg(ka_pkg, sizeof(protocol::keepalive)))
                 {
                     //ka pkg is empty
+                    //puts("GOT KA");
+                    got_keepalive_ = true;
                 }
                 break;
             }
@@ -90,7 +85,7 @@ namespace ric_interface
             case protocol::Type::ULTRASONIC:
             {
                 protocol::ultrasonic ultrasonic_pkg;
-                if (readPkg(ultrasonic_pkg, sizeof(ultrasonic_pkg)))
+                if (readPkg(ultrasonic_pkg, sizeof(protocol::ultrasonic)))
                 {
                     sensors_state_.ultrasonic = ultrasonic_pkg;
                     //printf("ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
@@ -100,7 +95,7 @@ namespace ric_interface
             case protocol::Type::IMU:
             {
                 protocol::imu imu_pkg;
-                if (readPkg(imu_pkg, sizeof(imu_pkg)))
+                if (readPkg(imu_pkg, sizeof(protocol::imu)))
                 {
                     sensors_state_.imu = imu_pkg;
                     /* fprintf(stderr, "imu: roll: %f, pitch: %f, yaw: %f \n", sensors_state_.imu.roll_rad * 180 / M_PI,
@@ -112,17 +107,17 @@ namespace ric_interface
             case protocol::Type::LASER:
             {
                 protocol::laser laser_pkg;
-                if (readPkg(laser_pkg, sizeof(laser_pkg)))
+                if (readPkg(laser_pkg, sizeof(protocol::laser)))
                 {
                     sensors_state_.laser = laser_pkg;
-                    //printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
+                    printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
                 }
                 break;
             }
             case protocol::Type::GPS:
             {
                 protocol::gps gps_pkg;
-                if (readPkg(gps_pkg, sizeof(gps_pkg)))
+                if (readPkg(gps_pkg, sizeof(protocol::gps)))
                 {
                     sensors_state_.gps = gps_pkg;
                     //printf("gps lat: %f, lon: %f\n", sensors_state_.gps.lat, sensors_state_.gps.lon);
@@ -158,7 +153,7 @@ namespace ric_interface
         protocol::header header_pkg;
         header_pkg.type = type;
         /* send header */
-        sendPkg(header_pkg, sizeof(header_pkg));
+        sendPkg(header_pkg, sizeof(protocol::header));
         /* send pkg content */
         sendPkg(actu_pkg, size);
     }
