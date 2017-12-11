@@ -110,7 +110,7 @@ namespace ric_interface
                 if (readPkg(laser_pkg, sizeof(protocol::laser)))
                 {
                     sensors_state_.laser = laser_pkg;
-                    printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
+                    //printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
                 }
                 break;
             }
