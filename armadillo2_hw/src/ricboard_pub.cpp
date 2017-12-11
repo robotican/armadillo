@@ -48,6 +48,8 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
     }
+    /* give ricboard time to send first keepalive package */
+    ros::Duration(2).sleep();
 }
 
 void RicboardPub::loop()

@@ -152,4 +152,5 @@
     <disable_collisions link1="shoulder3_link" link2="softkinetic_link" reason="Never" />
     <disable_collisions link1="shoulder3_link" link2="wrist_link" reason="Adjacent" />
     <disable_collisions link1="softkinetic_link" link2="wrist_link" reason="Adjacent" />
+    <disable_collisions link1="left_finger_link" link2="right_finger_link" reason="Adjacent" />
 </robot>

@@ -27,12 +27,12 @@ namespace ric_interface
             {
                 is_board_alive_ = true;
                 got_keepalive_ = false;
-                //printf("board alive ! \n");
+                //fprintf(stderr,"board alive ! \n");
             }
             else
             {
                 is_board_alive_ = false;
-                //printf("board dead ! \n");
+                //fprintf(stderr,"board dead ! \n");
             }
             get_keepalive_timer_.reset();
         }
@@ -78,7 +78,7 @@ namespace ric_interface
                 if (readPkg(logger_pkg, sizeof(protocol::logger)))
                 {
                     sensors_state_.logger = logger_pkg;
-                    printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.code);
+                    //printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.code);
                 }
                 break;
             }
@@ -134,7 +134,6 @@ namespace ric_interface
         if (bytes_read != pkg_size)
             return false;
         memcpy(&pkg, buff, pkg_size);
-        //printf("header type: %i, h size: %i, bytes_read: %i\n", h.type, sizeof(h), bytes_read);
         return true;
     }
 

@@ -17,7 +17,7 @@ namespace ric_interface
     {
     private:
         const int SEND_KA_TIMEOUT = 300; //ms
-        const int GET_KA_TIMEOUT = 2000; //ms
+        const int GET_KA_TIMEOUT = 1000; //ms
 
         /* is board sent keep alive on time */
         bool is_board_alive_, got_keepalive_;

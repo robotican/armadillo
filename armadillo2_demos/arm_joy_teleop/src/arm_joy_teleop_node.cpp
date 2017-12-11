@@ -127,6 +127,8 @@ public:
         _gripperWorking = false;
         _joySub = _nodeHandle.subscribe<sensor_msgs::Joy>("joy", 10, &ArmJoyNode::joyCallback, this);
         _group.setPlannerId("RRTConnectkConfigDefault");
+        _group.setPlanningTime(3.0);
+        _group.setNumPlanningAttempts(10);
 
 
 
@@ -140,22 +142,32 @@ public:
         ros::param::param<int>("arm_joy_node_up_down_index", _upDownAxis, 7);
         ros::param::param<int>("arm_joy_node_left_right_index", _rightLeftAxis, 6);
 
-        ros::param::param<float>("arm_joy_node_rotation1", _rotation1IncreamentValue, 0.05);
+        ros::param::param<float>("arm_joy_node_rotation1", _rotation1IncreamentValue, 0.025);
         ros::param::param<float>("arm_joy_node_rotation2", _rotation2IncreamentValue, 0.1);
         ros::param::param<float>("arm_joy_node_shoulder1", _shoulder1IncreamentValue, 0.05);
         ros::param::param<float>("arm_joy_node_shoulder2", _shoulder2IncreamentValue, 0.05);
         ros::param::param<float>("arm_joy_node_shoulder3", _shoulder3IncreamentValue, 0.05);
         ros::param::param<float>("arm_joy_node_wrist", _wristIncreamentValue, 0.1);
 
-
-
-
         _spinner.start();
     }
 
     void run() {
         ros::Rate loopRate(40);
+
+        ROS_INFO("Trying to move arm to 90 deg pos");
+        _group.setNamedTarget("ninety_deg");
+        moveit::planning_interface::MoveGroupInterface::Plan start_plan;
+        if(_group.plan(start_plan))  //Check if plan is valid
+        {
+            ROS_INFO("valid pos");
+            _group.execute(start_plan);
+        }
+        ROS_INFO("continueing...");
+
+
         std::vector<double> group_variable_values;
+        group_variable_values.reserve(6);
         _group.getCurrentState()->copyJointGroupPositions(
                 _group.getCurrentState()->getRobotModel()->getJointModelGroup(_group.getName()),
                 group_variable_values);
@@ -169,6 +181,10 @@ public:
         control_msgs::GripperCommandGoal goal;
         while(ros::ok()) {
             if(haveMoveGoal()) {
+
+                std::vector<double> prev_group_variable_values;
+                prev_group_variable_values.reserve(6);
+
                 if(_rotation1State == -1) {
                     _rotation1State = 0;
                     group_variable_values[0] -= _rotation1IncreamentValue;
@@ -244,6 +260,10 @@ public:
 
                 }
 
+                for (int i=0; i<6; i++)
+                    prev_group_variable_values[i] = group_variable_values[i];
+
+
                 _group.setJointValueTarget(group_variable_values);
                 moveit::planning_interface::MoveGroupInterface::Plan my_plan;
                 bool success = _group.plan(my_plan);
@@ -252,6 +272,9 @@ public:
                 }
                 else {
                     ROS_WARN("[%s]: Invalid goal", ros::this_node::getName().c_str());
+                    //if fail, revert to prev values
+                    for (int i=0; i<6; i++)
+                        group_variable_values[i] = prev_group_variable_values[i];
                 }
             }
 
