@@ -9,6 +9,7 @@
 #include <sensor_msgs/Range.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Imu.h>
+#include <std_msgs/Float64.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
@@ -17,15 +18,15 @@
 #define RIC_PORT_PARAM "ric_port"
 #define TORSO_JOINT_PARAM "torso_joint"
 #define RIC_PUB_INTERVAL 0.1 //secs
-#define RIC_WRITE_INTERVAL 0.1 //secs
-#define RIC_DEAD_TIMEOUT 3 //secs
+#define RIC_WRITE_INTERVAL 0.05 //secs
+#define RIC_DEAD_TIMEOUT 2 //secs
 
 struct torso_joint
 {
     double pos = 0;
     double vel = 0;
     double prev_pos = 0;
-    double effort = 0; /* effort stub - not implemented */
+    double effort = 0; /* effort stub - not used */
     double command_pos = 0;
     double command_vel = 0;
     std::string joint_name;
@@ -41,6 +42,9 @@ private:
     ros::Publisher ric_gps_pub_;
     ros::Publisher ric_ultrasonic_pub_;
     ros::Publisher ric_imu_pub_;
+    ros::Publisher torso_setpoint_,
+                   torso_state_;
+    ros::Subscriber torso_cmd_sub_;
     ros::Timer ric_pub_timer_;
     ros::Timer ric_dead_timer_;
     ros::Time last_read_time_;
@@ -54,6 +58,7 @@ private:
 
     void pubTimerCB(const ros::TimerEvent& event);
     void ricDeadTimerCB(const ros::TimerEvent& event);
+    void torsoSubCB(const std_msgs::Float64& msg);
 
 public:
     RicboardPub(ros::NodeHandle &nh);

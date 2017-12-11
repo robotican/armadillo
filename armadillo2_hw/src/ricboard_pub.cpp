@@ -44,6 +44,11 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("ultrasonic", 10);
         ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("imu", 10);
 
+        /* publish and sub to torso pid controller */
+        torso_setpoint_ = nh.advertise<std_msgs::Float64>("torso/pid_controller/setpoint", 10);
+        torso_state_ = nh.advertise<std_msgs::Float64>("torso/pid_controller/state", 10);
+        torso_cmd_sub_ = nh.subscribe("torso/pid_controller/effort", 10, torsoSubCB);
+
         ric_pub_timer_ = nh.createTimer(ros::Duration(RIC_PUB_INTERVAL), &RicboardPub::pubTimerCB, this);
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
@@ -126,6 +131,11 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     }
 }
 
+void RicboardPub::torsoSubCB(const std_msgs::Float64 &msg)
+{
+    torso_.command_pos = msg.data;
+}
+
 void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
                                        hardware_interface::PositionJointInterface &position_interface)
 {
@@ -147,12 +157,11 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 
 void RicboardPub::write()
 {
-    //ros::Duration(0.05).sleep();
     ros::Duration duration = ros::Time::now() - last_read_time_;
-    if (duration >= ros::Duration(RIC_WRITE_INTERVAL)) //make sure ric have some time to breath
+    if (duration >= ros::Duration(RIC_WRITE_INTERVAL))
     {
         ric_interface::protocol::servo torso_pkg;
-        //torso_pkg.cmd = 55;//get pid cmd --------------------------------------------------------------------------------------
+        torso_pkg.cmd = torso_.command_pos;
         ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
         last_read_time_ = ros::Time::now();
     }
@@ -167,6 +176,11 @@ void RicboardPub::read(const ros::Duration elapsed)
     torso_.pos =  sensors.laser.distance_mm / 1000.0;
     torso_.vel = (torso_.pos - torso_.prev_pos) / elapsed.sec;
     torso_.prev_pos = torso_.pos;
+
+    /* publish torso state to pid controller */
+    std_msgs::Float64 torso_pos_msg;
+    torso_pos_msg.data = torso_.pos;
+    torso_state_.publish(torso_pos_msg);
 }
 
 

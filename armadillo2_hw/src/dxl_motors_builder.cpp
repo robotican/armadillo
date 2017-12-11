@@ -385,13 +385,11 @@ namespace armadillo2_hw
                 success = false;
                 ROS_WARN("[dxl_motors_builder]: failed set torque of motor id %d to %s", motor.id, str_flag.c_str());
             }
-            else
-                motor.in_torque = flag;
         }
 
         if (success)
         {
-            ROS_INFO("[dxl_motors_builder]: arm torque is %s", str_flag.c_str());
+            ROS_INFO("[dxl_motors_builder]: motors torque is %s", str_flag.c_str());
             return true;
         }
         return false;
@@ -468,7 +466,7 @@ namespace armadillo2_hw
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(DXL_PORT_PARAM, arm_port_);
+        nh_->getParam(DXL_PORT_PARAM, dxl_port_);
 
         /* DXL_PORT_BAUD_PARAM */
         if (!nh_->hasParam(DXL_PORT_BAUD_PARAM))
@@ -491,7 +489,7 @@ namespace armadillo2_hw
             /* feed motor with user defined settings */
             if(dxl_joints_config_[i].getType() != XmlRpc::XmlRpcValue::TypeStruct)
             {
-                ROS_ERROR("[dxl_motors_builder]: arm motor id at index %d param data type is invalid or missing. "
+                ROS_ERROR("[dxl_motors_builder]: dxl motor id at index %d param data type is invalid or missing. "
                                   "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
@@ -507,7 +505,7 @@ namespace armadillo2_hw
 
             if(dxl_joints_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid id field
             {
-                ROS_ERROR("[dxl_motors_builder]: arm motor id at index %d: invalid data type or missing. "
+                ROS_ERROR("[dxl_motors_builder]: dxl motor id at index %d: invalid data type or missing. "
                                   "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
@@ -516,7 +514,7 @@ namespace armadillo2_hw
 
             if (dxl_joints_config_[i]["joint_name"].getType() != XmlRpc::XmlRpcValue::TypeString) //invalid joint_name field
             {
-                ROS_ERROR("[dxl_motors_builder]: arm motor joint_name at index %d: invalid data type or missing. "
+                ROS_ERROR("[dxl_motors_builder]: dxl motor joint_name at index %d: invalid data type or missing. "
                                   "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
@@ -525,7 +523,7 @@ namespace armadillo2_hw
 
             if (dxl_joints_config_[i]["interface"].getType() != XmlRpc::XmlRpcValue::TypeString) //invalid interface field
             {
-                ROS_ERROR("[dxl_motors_builder]: arm motor interface_type at index %d: invalid data type or missing. "
+                ROS_ERROR("[dxl_motors_builder]: dxl motor interface_type at index %d: invalid data type or missing. "
                                   "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
@@ -577,18 +575,18 @@ namespace armadillo2_hw
     {
         if (!load_dxl_hw_)
             return;
-        dxl::DxlInterface::PortState port_state = dxl_interface_.openPort(arm_port_,
+        dxl::DxlInterface::PortState port_state = dxl_interface_.openPort(dxl_port_,
                                                                           dxl_baudrate_,
                                                                           protocol_);
         switch (port_state)
         {
             case dxl::DxlInterface::PORT_FAIL:
-                ROS_ERROR("[dxl_motors_builder]: open arm port %s failed. "
-                                  "make sure cable is connected and port has the right permissions. shutting down...", arm_port_.c_str());
+                ROS_ERROR("[dxl_motors_builder]: open dxl port %s failed. "
+                                  "make sure cable is connected and port has the right permissions. shutting down...", dxl_port_.c_str());
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             case dxl::DxlInterface::BAUDRATE_FAIL:
-                ROS_ERROR("[dxl_motors_builder]: setting arm baudrate to %d failed. shutting down...", dxl_baudrate_);
+                ROS_ERROR("[dxl_motors_builder]: setting dxl baudrate to %d failed. shutting down...", dxl_baudrate_);
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             case dxl::DxlInterface::INVALID_PROTOCOL:
@@ -596,7 +594,7 @@ namespace armadillo2_hw
                 ros::shutdown();
                 exit (EXIT_FAILURE);
             case dxl::DxlInterface::SUCCESS:
-                ROS_INFO("[dxl_motors_builder]: arm port opened successfully \nport name: %s \nbaudrate: %d", arm_port_.c_str(), dxl_baudrate_);
+                ROS_INFO("[dxl_motors_builder]: dxl port opened successfully \nport name: %s \nbaudrate: %d", dxl_port_.c_str(), dxl_baudrate_);
         }
     }
 }

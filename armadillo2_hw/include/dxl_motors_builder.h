@@ -55,11 +55,11 @@ namespace armadillo2_hw
         std::vector<hardware_interface::JointHandle> pos_handles_;
 
         int dxl_baudrate_;
+        std::string dxl_port_;
         int failed_reads_, failed_writes_;
         float protocol_;
         bool load_dxl_hw_ = true;
         std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */
-        std::string arm_port_;
         dxl::DxlInterface dxl_interface_;
         XmlRpc::XmlRpcValue dxl_joints_config_, dxl_spec_config_;
         std::vector<dxl::motor> motors_;
