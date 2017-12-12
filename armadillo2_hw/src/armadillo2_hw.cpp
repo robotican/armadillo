@@ -14,7 +14,7 @@ namespace armadillo2_hw
                                     position_interface_,
                                     posvel_interface_);
         ric_.registerHandles(joint_state_interface_,
-                             position_interface_);
+                             effort_interface_);
         roboteq_.registerHandles(joint_state_interface_,
                                  velocity_interface_);
 
@@ -23,8 +23,12 @@ namespace armadillo2_hw
         registerInterface(&posvel_interface_);
         registerInterface(&position_interface_);
         registerInterface(&velocity_interface_);
+        registerInterface(&effort_interface_);
 
         prev_time_ = ros::Time::now();
+
+        ric_.startLoop();
+
         ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
     }
 
@@ -42,11 +46,6 @@ namespace armadillo2_hw
         dxl_motors_.write();
         roboteq_.write(period);
         ric_.write();
-    }
-
-    void ArmadilloHW::loop()
-    {
-        ric_.loop();
         prev_time_ = ros::Time::now();
     }
 }

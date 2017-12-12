@@ -20,7 +20,7 @@ namespace ric_interface
         const int GET_KA_TIMEOUT = 1000; //ms
 
         /* is board sent keep alive on time */
-        bool is_board_alive_, got_keepalive_;
+        bool is_board_alive_ = true, got_keepalive_ = false;
         Timer send_keepalive_timer_, get_keepalive_timer_;
         Communicator comm_;
         sensors_state sensors_state_;

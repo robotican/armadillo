@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     ros::AsyncSpinner asyncSpinner(THREADS_NUM);
     asyncSpinner.start();
 
-    bm.connect("/dev/ttyACM0");
+    bm.connect("/dev/armadillo2/RICBOARD");
 
     while (ros::ok())
     {

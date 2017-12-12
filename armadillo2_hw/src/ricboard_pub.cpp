@@ -37,7 +37,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
             exit(1);
         }
 
-        last_read_time_ = ros::Time::now();
+        last_write_time_ = ros::Time::now();
 
         /* ric publishers */
         ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("gps", 10);
@@ -45,33 +45,49 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("imu", 10);
 
         /* publish and sub to torso pid controller */
-        torso_setpoint_ = nh.advertise<std_msgs::Float64>("torso/pid_controller/setpoint", 10);
-        torso_state_ = nh.advertise<std_msgs::Float64>("torso/pid_controller/state", 10);
-        torso_cmd_sub_ = nh.subscribe("torso/pid_controller/effort", 10, torsoSubCB);
+        //torso_setpoint_pub_ = nh.advertise<std_msgs::Float64>("/torso/pid_controller/setpoint", 10);
+        //torso_state_pub_ = nh.advertise<std_msgs::Float64>("/torso/pid_controller/state", 10);
+        //torso_cmd_sub_ = nh.subscribe("/torso/pid_controller/effort", 10, &RicboardPub::torsoCmdSub, this);
 
         ric_pub_timer_ = nh.createTimer(ros::Duration(RIC_PUB_INTERVAL), &RicboardPub::pubTimerCB, this);
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
     }
-    /* give ricboard time to send first keepalive package */
-    ros::Duration(2).sleep();
+}
+
+void RicboardPub::startLoop()
+{
+    if (!load_ric_hw_)
+        return;
+    t = new boost::thread(boost::bind(&RicboardPub::loop, this));
+}
+
+void RicboardPub::stopLoop()
+{
+    if (!load_ric_hw_)
+        return;
+    t->interrupt();
 }
 
 void RicboardPub::loop()
 {
     if (!load_ric_hw_)
         return;
-
-    ric_.loop();
-    if (ric_.isBoardAlive())
+    while (ros::ok() && !t->interruption_requested())
     {
-        ric_dead_timer_.stop();
-        ric_pub_timer_.start();
-    }
-    else
-    {
-        ric_dead_timer_.start();
-        ric_pub_timer_.stop();
+        ric_.loop();
+        if (ric_.isBoardAlive())
+        {
+            ric_disconnections_counter_ = 0;
+            ric_dead_timer_.stop();
+            ric_pub_timer_.start();
+        }
+        else
+        {
+            ric_dead_timer_.start();
+            ric_pub_timer_.stop();
+        }
+        boost::this_thread::sleep_for(boost::chrono::milliseconds(RIC_LOOP_INTERVAL));
     }
 }
 
@@ -79,9 +95,13 @@ void RicboardPub::ricDeadTimerCB(const ros::TimerEvent &event)
 {
     if (!load_ric_hw_)
         return;
-    ROS_ERROR("[armadillo2_hw/ricboard_pub]: ricboard disconnected. shutting down...");
-    //ros::shutdown();
-    //exit(EXIT_FAILURE);
+    ric_disconnections_counter_++;
+    if (ric_disconnections_counter_ >= MAX_RIC_DISCONNECTIONS)
+    {
+        ROS_ERROR("[armadillo2_hw/ricboard_pub]: ricboard disconnected. shutting down...");
+        ros::shutdown();
+        exit(EXIT_FAILURE);
+    }
 }
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
@@ -90,7 +110,6 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
         return;
 
     ric_interface::sensors_state sensors = ric_.getSensorsState();
-    //sensors
 
     /* publish ultrasonic */
     sensor_msgs::Range range_msg;
@@ -131,13 +150,16 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     }
 }
 
-void RicboardPub::torsoSubCB(const std_msgs::Float64 &msg)
+/* get torso cmd from ros pid controller */
+/*void RicboardPub::torsoCmdSub(const std_msgs::Float64 &msg)
 {
-    torso_.command_pos = msg.data;
-}
+    if (!load_ric_hw_)
+        return;
+    torso_.torso_pid_cmd = msg.data;
+}*/
 
 void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
-                                       hardware_interface::PositionJointInterface &position_interface)
+                                  hardware_interface::EffortJointInterface &effort_interface_)
 {
     if (!load_ric_hw_)
         return;
@@ -151,36 +173,53 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 
     /* joint command registration */
     pos_handles_.push_back(hardware_interface::JointHandle (joint_state_interface.getHandle(torso_.joint_name),
-                                                            &torso_.command_pos));
-    position_interface.registerHandle(pos_handles_.back());
+                                                            &torso_.command_effort));
+    effort_interface_.registerHandle(pos_handles_.back());
 }
 
 void RicboardPub::write()
 {
-    ros::Duration duration = ros::Time::now() - last_read_time_;
+    if (!load_ric_hw_)
+        return;
+
+
+    /* publish torso state to pid controller
+    ROS_WARN("TORSO CONTRO STATE: %f: ", torso_.pos);
+    std_msgs::Float64 torso_pos_msg;
+    torso_pos_msg.data = torso_.pos;
+    torso_state_pub_.publish(torso_pos_msg);
+
+    send controller cmd as setpoint to torso pid controller
+    ROS_WARN("TORSO CONTRO CMD: %f: ", torso_.command_pos);
+    std_msgs::Float64 torso_sp_msg;
+    torso_sp_msg.data = torso_.command_pos;
+    torso_setpoint_pub_.publish(torso_sp_msg);*/
+
+
+    ros::Duration duration = ros::Time::now() - last_write_time_;
     if (duration >= ros::Duration(RIC_WRITE_INTERVAL))
     {
+        ROS_WARN("SENDING EFFORT TO RIC: %f: ", torso_.command_effort);
         ric_interface::protocol::servo torso_pkg;
-        torso_pkg.cmd = torso_.command_pos;
+        torso_pkg.cmd = torso_.command_effort;
         ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
-        last_read_time_ = ros::Time::now();
+        last_write_time_ = ros::Time::now();
     }
 }
 
 void RicboardPub::read(const ros::Duration elapsed)
 {
-   //get torso feedback from ric and send to controller
-    ric_interface::sensors_state sensors = ric_.getSensorsState();
+    if (!load_ric_hw_)
+        return;
 
-    /* update robot state according to ric sensor for joints_states */
+    /* update robot state according to ric sensor for controller use */
+    ric_interface::sensors_state sensors = ric_.getSensorsState();
     torso_.pos =  sensors.laser.distance_mm / 1000.0;
     torso_.vel = (torso_.pos - torso_.prev_pos) / elapsed.sec;
+    torso_.effort = torso_.command_effort;
     torso_.prev_pos = torso_.pos;
 
-    /* publish torso state to pid controller */
-    std_msgs::Float64 torso_pos_msg;
-    torso_pos_msg.data = torso_.pos;
-    torso_state_.publish(torso_pos_msg);
+    ROS_WARN("TORSO POS: %f: ", torso_.pos);
 }
 
 

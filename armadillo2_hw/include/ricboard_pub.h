@@ -13,13 +13,17 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
+#include <boost/thread/thread.hpp>
+#include <boost/chrono/chrono.hpp>
 
 
 #define RIC_PORT_PARAM "ric_port"
 #define TORSO_JOINT_PARAM "torso_joint"
 #define RIC_PUB_INTERVAL 0.1 //secs
 #define RIC_WRITE_INTERVAL 0.05 //secs
-#define RIC_DEAD_TIMEOUT 2 //secs
+#define RIC_DEAD_TIMEOUT 1 //secs
+#define RIC_LOOP_INTERVAL 20 //millis
+#define MAX_RIC_DISCONNECTIONS 5
 
 struct torso_joint
 {
@@ -27,7 +31,7 @@ struct torso_joint
     double vel = 0;
     double prev_pos = 0;
     double effort = 0; /* effort stub - not used */
-    double command_pos = 0;
+    double command_effort = 0;
     double command_vel = 0;
     std::string joint_name;
 };
@@ -38,19 +42,19 @@ class RicboardPub
 private:
 
     bool  load_ric_hw_ = true;
+    int ric_disconnections_counter_ = 0;
     std::string ric_port_;
     ros::Publisher ric_gps_pub_;
     ros::Publisher ric_ultrasonic_pub_;
     ros::Publisher ric_imu_pub_;
-    ros::Publisher torso_setpoint_,
-                   torso_state_;
-    ros::Subscriber torso_cmd_sub_;
-    ros::Timer ric_pub_timer_;
-    ros::Timer ric_dead_timer_;
-    ros::Time last_read_time_;
+
+    ros::Timer ric_pub_timer_,
+               ric_dead_timer_;
+    ros::Time last_write_time_;
     torso_joint torso_;
     ric_interface::RicInterface ric_;
     ros::NodeHandle *nh_;
+    boost::thread* t;
 
     /* handles */
     std::vector<hardware_interface::JointStateHandle> joint_state_handles_;
@@ -58,15 +62,18 @@ private:
 
     void pubTimerCB(const ros::TimerEvent& event);
     void ricDeadTimerCB(const ros::TimerEvent& event);
-    void torsoSubCB(const std_msgs::Float64& msg);
+    void loop();
 
 public:
     RicboardPub(ros::NodeHandle &nh);
-    void loop();
+    void startLoop();
+    void stopLoop();
+
+    /* functions for ros controller use */
     void read(const ros::Duration elapsed);
     void write();
     void registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
-                         hardware_interface::PositionJointInterface &position_interface);
+                         hardware_interface::EffortJointInterface &position_interface);
 };
 
 

@@ -4,7 +4,10 @@
 
 namespace ric_interface
 {
-    RicInterface::RicInterface() {}
+    RicInterface::RicInterface()
+    {
+
+    }
 
     /* open connection to serial port                */
     /* if conncetion fails, exception will be thrown */
@@ -78,7 +81,7 @@ namespace ric_interface
                 if (readPkg(logger_pkg, sizeof(protocol::logger)))
                 {
                     sensors_state_.logger = logger_pkg;
-                    //printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.code);
+                    printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.code);
                 }
                 break;
             }
@@ -110,7 +113,7 @@ namespace ric_interface
                 if (readPkg(laser_pkg, sizeof(protocol::laser)))
                 {
                     sensors_state_.laser = laser_pkg;
-                    //printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
+                    printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
                 }
                 break;
             }

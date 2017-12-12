@@ -1,11 +1,12 @@
+torso_controller:
+  type: effort_controllers/JointPositionController
+  joint: torso_joint
+  pid: {p: 1.0, i: 0.00, d: 0.0, i_clamp: 10}
+
 robot_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 50  
 
-torso_controller:
-  type: position_controllers/JointPositionController
-  joint: torso_joint
-  
 pan_tilt_trajectory_controller:
   type: pos_vel_controllers/JointTrajectoryController
   joints: ['head_pan_joint', 'head_tilt_joint']

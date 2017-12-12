@@ -35,7 +35,10 @@ void setup()
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
 
+  /* torso servo */
   servo.attach(SERVO_PIN, SRVO_MIN, SRVO_MAX);
+  servo.writeMicroseconds(SRVO_NEUTRAL);
+  
   ultrasonic.init(ULTRASONIC_PIN);
   if (!imu.init())
     Serial.println("imu failed");//log("imu failed", protocol::logger::Code::ERROR);
@@ -70,7 +73,7 @@ void sendReadings()
 {
   
   /* read IMU if available. IMU read must be called */
-  /* as fast as possible (no delays*                */
+  /* as fast as possible (no delays)                */
   protocol::imu imu_pkg;
   bool valid_imu = false;
   if (imu.read(imu_pkg)) //if imu ready, send it
@@ -178,9 +181,11 @@ void handleHeader(const protocol::header &h)
             break;
         case protocol::Type::SERVO:
             protocol::servo servo_pkg;
-            communicator::ric::readPkg(servo_pkg, sizeof(protocol::servo));
-            servo.writeMicroseconds(servo_pkg.cmd);
-            //log("got servo", servo_pkg.cmd);
+            if (communicator::ric::readPkg(servo_pkg, sizeof(protocol::servo)))
+            {
+               servo.writeMicroseconds(servo_pkg.cmd);
+               log("got servo", servo_pkg.cmd);
+            }
             break;
     }
 }

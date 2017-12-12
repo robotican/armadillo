@@ -11,6 +11,7 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
 
+
 namespace armadillo2_hw
 {
     class ArmadilloHW : public hardware_interface::RobotHW
@@ -25,6 +26,7 @@ namespace armadillo2_hw
         hardware_interface::PositionJointInterface position_interface_;
         hardware_interface::PosVelJointInterface posvel_interface_;
         hardware_interface::VelocityJointInterface velocity_interface_;
+        hardware_interface::EffortJointInterface effort_interface_;
 
         /* robot close loop components */
         DxlMotorsBuilder dxl_motors_;
@@ -39,7 +41,6 @@ namespace armadillo2_hw
         ArmadilloHW(ros::NodeHandle &nh);
         void read();
         void write();
-        void loop();
     };
 }
 
