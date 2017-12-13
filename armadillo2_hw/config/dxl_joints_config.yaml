@@ -1,15 +1,15 @@
 load_dxl_hw: true
 dxl_joints_config: [
-{id: 1, joint_name: rotation1_joint, interface: PosVel},
-{id: 2, joint_name: shoulder1_joint, interface: PosVel},
-{id: 3, joint_name: shoulder2_joint, interface: PosVel},
-{id: 4, joint_name: rotation2_joint, interface: PosVel},
-{id: 5, joint_name: shoulder3_joint, interface: PosVel},
-{id: 6, joint_name: wrist_joint,     interface: PosVel},
-{id: 7, joint_name: left_finger_joint,  interface: PosVel},
-{id: 8, joint_name: right_finger_joint, interface: PosVel},
-{id: 9, joint_name: head_pan_joint, interface: PosVel},
-{id: 10, joint_name: head_tilt_joint, interface: PosVel}
+{id: 1, joint_name: rotation1_joint, interface: PosVel, direction: 1},
+{id: 2, joint_name: shoulder1_joint, interface: PosVel, direction: 1},
+{id: 3, joint_name: shoulder2_joint, interface: PosVel, direction: 1},
+{id: 4, joint_name: rotation2_joint, interface: PosVel, direction: 1},
+{id: 5, joint_name: shoulder3_joint, interface: PosVel, direction: 1},
+{id: 6, joint_name: wrist_joint,     interface: PosVel, direction: 1},
+{id: 7, joint_name: left_finger_joint,  interface: PosVel, direction: 1},
+{id: 8, joint_name: right_finger_joint, interface: PosVel, direction: 1},
+{id: 9, joint_name: head_pan_joint, interface: PosVel, direction: -1},
+{id: 10, joint_name: head_tilt_joint, interface: PosVel, direction: -1}
 ]
 
 dxl_port_name: "/dev/armadillo2/USB2DYNAMIXEL"

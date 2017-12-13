@@ -139,7 +139,7 @@ namespace dxl
             uint32_t ticks = bulk_read.getData(motor.id,
                                                motor.spec.pos_read_addr,
                                                motor.spec.len_present_pos);
-            motor.position =  convertions::ticks2rads(ticks, motor, protocol_);
+            motor.position =  convertions::ticks2rads(ticks, motor, protocol_) * motor.direction;
 
             if (motor.first_pos_read)
             {
@@ -294,7 +294,7 @@ namespace dxl
         for (motor &motor : motors)
         {
             bool addparam_success = false;
-            int32_t motor_pos = convertions::rads2ticks(motor.command_position, motor, protocol_);
+            int32_t motor_pos = convertions::rads2ticks(motor.command_position * motor.direction, motor, protocol_);
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.pos_write_addr,
                                                    motor.spec.len_goal_pos,

@@ -464,7 +464,7 @@
     type="revolute">
     <origin
       xyz="0 0 0.041"
-      rpy="0 0 0" />
+        rpy="0 0 0" /> <!--${M_PI/2}-->
     <parent
       link="head_pan_link" />
     <child
@@ -473,7 +473,7 @@
       xyz="0 1 0" />
     <limit
     upper="${M_PI/3}"
-	  lower="${-M_PI/6}"
+    lower="${-M_PI/6}"
       effort="3.1"
       velocity="7.016223585" /> 
   </joint>

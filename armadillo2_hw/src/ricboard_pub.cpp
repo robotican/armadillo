@@ -44,7 +44,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("gps", 10);
         ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("ultrasonic", 10);
         ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("imu", 10);
-        
+
         ric_pub_timer_ = nh.createTimer(ros::Duration(RIC_PUB_INTERVAL), &RicboardPub::pubTimerCB, this);
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");

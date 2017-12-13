@@ -75,6 +75,7 @@ namespace dxl
         dxl::spec spec;
 
         uint8_t id;
+        int direction;
         bool in_torque;
         double position;
         double velocity; //rad/sec

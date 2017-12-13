@@ -531,6 +531,15 @@ namespace armadillo2_hw
             std::string string_interface_type = static_cast<std::string>(dxl_joints_config_[i]["interface"]);
             new_motor.interface_type = dxl::motor::stringToInterfaceType(string_interface_type);
 
+            if(dxl_joints_config_[i]["direction"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid direction field
+            {
+                ROS_ERROR("[dxl_motors_builder]: dxl motor direction at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            new_motor.direction = static_cast<int>(dxl_joints_config_[i]["direction"]);
+
             motors_.push_back(new_motor);
         }
     }
