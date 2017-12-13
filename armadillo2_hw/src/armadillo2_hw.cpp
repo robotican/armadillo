@@ -45,7 +45,7 @@ namespace armadillo2_hw
         ros::Duration period = ros::Time::now() - prev_time_;
         dxl_motors_.write();
         roboteq_.write(period);
-        ric_.write();
+        ric_.write(period);
         prev_time_ = ros::Time::now();
     }
 }

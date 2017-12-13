@@ -126,6 +126,7 @@ set(
         include/${PROJECT_NAME}/protocol.h
         include/${PROJECT_NAME}/ric_exception.h
         include/${PROJECT_NAME}/timer.h
+        include/${PROJECT_NAME}/sensors_state.h
         ric_interface_node.cpp
 )
 
@@ -133,7 +134,7 @@ set(
 add_library(
         ${PROJECT_NAME}
         ${PROJECT_FILES}
-        include/ric_interface/sensors_state.h)
+        )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

@@ -19,9 +19,9 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
         bm.loop();
-        /*ric_interface::protocol::servo actu_pkg;
-        actu_pkg.cmd = 1000;
-        bm.writeCmd(actu_pkg, sizeof(ric_interface::protocol::servo), ric_interface::protocol::Type::SERVO);*/
+        ric_interface::protocol::servo actu_pkg;
+        actu_pkg.cmd = 2000;
+        bm.writeCmd(actu_pkg, sizeof(ric_interface::protocol::servo), ric_interface::protocol::Type::SERVO);
         ros::Duration(1 / LOOP_HZ).sleep();
         ros::spinOnce;
     }

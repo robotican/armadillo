@@ -4,6 +4,7 @@
 
 #include <ric_interface/ric_interface.h>
 #include <ric_interface/ric_exception.h>
+#include <filters/low_pass_filter.h>
 #include <ros/ros.h>
 #include <tf/tf.h>
 #include <sensor_msgs/Range.h>
@@ -49,8 +50,8 @@ private:
 
     ros::Timer ric_pub_timer_,
                ric_dead_timer_;
-    ros::Time last_write_time_;
     torso_joint torso_;
+    LowPassFilter torso_lpf_;
     ric_interface::RicInterface ric_;
     ros::NodeHandle *nh_;
     boost::thread* t;
@@ -70,7 +71,7 @@ public:
 
     /* functions for ros controller use */
     void read(const ros::Duration elapsed);
-    void write();
+    void write(const ros::Duration elapsed);
     void registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
                          hardware_interface::EffortJointInterface &position_interface);
 };
