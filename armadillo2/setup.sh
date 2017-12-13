@@ -18,8 +18,7 @@ else
 fi
 
 # third party packages #
-printf "${WHITE_TXT}Installing dependencies and 3rd party packages...\n${NO_COLOR}"
-
+printf "${WHITE_TXT}Installing ros packages...\n${NO_COLOR}"
 sudo apt-get update 
 sudo apt-get -y install ros-kinetic-controller-manager 
 sudo apt-get -y install ros-kinetic-control-toolbox  
@@ -28,15 +27,33 @@ sudo apt-get -y install ros-kinetic-joint-limits-interface
 sudo apt-get -y install ros-kinetic-gazebo-ros-control 
 sudo apt-get -y install ros-kinetic-ros-controllers 
 sudo apt-get -y install ros-kinetic-ros-control 
-sudo apt-get install ros-kinetic-moveit
-sudo apt-get install ros-kinetic-pid
-sudo apt-get install ros-kinetic-joy
-sudo apt-get install joystick 
+sudo apt-get -y install ros-kinetic-moveit
+sudo apt-get -y install ros-kinetic-pid
+sudo apt-get -y install ros-kinetic-joy
+sudo apt-get -y install joystick 
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
 
 # install softkinetic drivers #
+printf "${WHITE_TXT}Installing softkinetic driver...\n${NO_COLOR}"
 cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
 sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
+
+# install kinect drivers #
+printf "${WHITE_TXT}Installing kinect driver...\n${NO_COLOR}"
+cd ~/catkin_ws/src/armadillo2/libfreenect2
+sudo apt-get -y install build-essential cmake pkg-config
+sudo apt-get -y install libusb-1.0-0-dev
+sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
+sudo apt-get -y install libglfw3-dev
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
+make
+make install
+sudo cp ../platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # usb rules #
@@ -46,15 +63,15 @@ sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/usb_to_dxl.rules /etc/udev/r
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/49-teensy.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
 sudo udevadm control --reload-rules && udevadm trigger
-
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # compiling #
-printf "${WHITE_TXT}Compiling...\n${NO_COLOR}"
+printf "${WHITE_TXT}Compiling armadillo2 package...\n${NO_COLOR}"
 
 cd ../../.. && catkin_make
 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+printf "${GREEN_TXT}Installation process finished.\n\n${NO_COLOR}"
 
 
 exit 0
