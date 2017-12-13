@@ -1,9 +1,8 @@
 #include <ros/ros.h>
-#define LOOP_HZ 100.0
+#define LOOP_HZ 50.0
 #define THREADS_NUM 2
 
 #include <ric_interface/ric_interface.h>
-#include <ric_interface/protocol.h>
 
 ric_interface::RicInterface bm;
 
@@ -21,7 +20,7 @@ int main(int argc, char **argv)
     {
         bm.loop();
         /*ric_interface::protocol::servo actu_pkg;
-        actu_pkg.cmd = 100;
+        actu_pkg.cmd = 1000;
         bm.writeCmd(actu_pkg, sizeof(ric_interface::protocol::servo), ric_interface::protocol::Type::SERVO);*/
         ros::Duration(1 / LOOP_HZ).sleep();
         ros::spinOnce;

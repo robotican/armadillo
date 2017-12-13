@@ -32,7 +32,6 @@ struct torso_joint
     double prev_pos = 0;
     double effort = 0; /* effort stub - not used */
     double command_effort = 0;
-    double command_vel = 0;
     std::string joint_name;
 };
 

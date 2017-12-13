@@ -184,21 +184,21 @@ void handleHeader(const protocol::header &h)
             if (communicator::ric::readPkg(servo_pkg, sizeof(protocol::servo)))
             {
                servo.writeMicroseconds(servo_pkg.cmd);
-               log("got servo", servo_pkg.cmd);
+               //log("got servo", servo_pkg.cmd);
             }
             break;
     }
 }
 
 /******************************************************/
-void log(const char* msg_str, uint8_t code)
+void log(const char* msg_str, int32_t value)
 {
     protocol::header logger_header;
     logger_header.type = protocol::Type::LOGGER;
     protocol::logger logger_pkg;
     strcpy(logger_pkg.msg, msg_str);
     
-    logger_pkg.code = code;
+    logger_pkg.value = value;
     
     communicator::ric::sendPkg(logger_header, sizeof(protocol::header));
     communicator::ric::sendPkg(logger_pkg, sizeof(protocol::logger));

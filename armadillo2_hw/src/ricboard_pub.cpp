@@ -199,9 +199,12 @@ void RicboardPub::write()
     ros::Duration duration = ros::Time::now() - last_write_time_;
     if (duration >= ros::Duration(RIC_WRITE_INTERVAL))
     {
-        ROS_WARN("SENDING EFFORT TO RIC: %f: ", torso_.command_effort);
         ric_interface::protocol::servo torso_pkg;
-        torso_pkg.cmd = torso_.command_effort;
+        /* add 1500 offset because torso limits in */
+        /* armadillo2 xacro are b/w -500 - 500,    */
+        /* and ric servo get value b/w 1000-2000   */
+        torso_pkg.cmd = torso_.command_effort + 1500;//servo_cmd;
+        ROS_WARN("torso_.command_effort: %f, RIC CMD: %d ", torso_.command_effort, torso_pkg.cmd);
         ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
         last_write_time_ = ros::Time::now();
     }
@@ -218,8 +221,6 @@ void RicboardPub::read(const ros::Duration elapsed)
     torso_.vel = (torso_.pos - torso_.prev_pos) / elapsed.sec;
     torso_.effort = torso_.command_effort;
     torso_.prev_pos = torso_.pos;
-
-    ROS_WARN("TORSO POS: %f: ", torso_.pos);
 }
 
 

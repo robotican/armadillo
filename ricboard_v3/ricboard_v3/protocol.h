@@ -13,13 +13,6 @@ namespace protocol
         SERVO = 7
     };
 
-    enum Code
-    {
-    INFO = 1,
-    WARNING = 2,
-    ERROR = 3
-    };
-
     struct package
     {
 
@@ -37,9 +30,8 @@ namespace protocol
 
     struct logger : package
     {
-
         char msg[128];
-        uint8_t code;
+        int32_t value;
     };
 
     struct sensor : package

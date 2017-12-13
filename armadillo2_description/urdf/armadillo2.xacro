@@ -356,9 +356,9 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="0.0"
-      upper="0.5"
-      effort="10.0"
+      lower="0.02"
+      upper="0.40"
+      effort="500.0"
       velocity="0.1" />
   </joint>
   <link
