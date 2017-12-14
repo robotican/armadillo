@@ -35,6 +35,7 @@ namespace armadillo2_hw
         RoboteqDiffDrive roboteq_;
 
         void registerInterfaces();
+        void straighHead();
 
     public:
 

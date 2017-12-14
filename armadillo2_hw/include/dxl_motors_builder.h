@@ -42,8 +42,13 @@ namespace armadillo2_hw
         void registerHandles(hardware_interface::JointStateInterface &joint_state_interface,
                              hardware_interface::PositionJointInterface &position_interface,
                              hardware_interface::PosVelJointInterface &posvel_interface);
+
+        /* read/write for controller use */
         void read();
         void write();
+
+        /* writing to single motor, if this motor was build by dxl_builder */
+        void writeToMotor(int motor_id, double position, double velocity);
 
     private:
 
@@ -74,7 +79,8 @@ namespace armadillo2_hw
         void pingMotors();
         bool setTorque(bool flag);
         void loadSpecs();
-
+        /* writing directly to motor hardware */
+        void write(std::vector<dxl::motor> &motors);
     };
 }
 #endif //ARMADILLO2_HW_DXL_MOTORS_BUILDER_H

@@ -65,18 +65,35 @@ namespace armadillo2_hw
         }
     }
 
-    void DxlMotorsBuilder::write()
+    void DxlMotorsBuilder::writeToMotor(int motor_id, double position, double velocity)
+    {
+        if (!load_dxl_hw_)
+            return;
+        for (dxl::motor motor : motors_)
+        {
+            if (motor.id == motor_id)
+            {
+                std::vector<dxl::motor> single_motor_vec;
+                motor.command_position = position;
+                motor.command_velocity = velocity;
+                single_motor_vec.push_back(motor);
+                write(single_motor_vec);
+            }
+        }
+    }
+
+    void DxlMotorsBuilder::write(std::vector<dxl::motor> &motors)
     {
         if (!load_dxl_hw_)
             return;
 
-        if (!dxl_interface_.bulkWriteVelocity(motors_))
+        if (!dxl_interface_.bulkWriteVelocity(motors))
         {
             //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
             failed_writes_++;
         }
 
-        if (!dxl_interface_.bulkWritePosition(motors_))
+        if (!dxl_interface_.bulkWritePosition(motors))
         {
             //ROS_ERROR("[dxl_motors_builder]: writing postision failed");
             failed_writes_++;
@@ -88,7 +105,11 @@ namespace armadillo2_hw
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
+    }
 
+    void DxlMotorsBuilder::write()
+    {
+        write(motors_);
     }
 
     void DxlMotorsBuilder::pingMotors()

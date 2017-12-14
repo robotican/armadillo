@@ -189,6 +189,7 @@ bool serial_controller::downloadScript()
 
 bool serial_controller::command(string msg, string params, string type)
 {
+
     // Lock the write mutex
     mWriteMutex.lock();
     // Build the string

@@ -73,8 +73,8 @@ arm_trajectory_controller:
      - wrist_joint 
   publish_rate: 50
   constraints:
-    goal_time: 15.5                   # Override default
-    stopped_velocity_tolerance: 0.05 # Override default
+    goal_time: 15.5                  
+    stopped_velocity_tolerance: 0.05 
     rotation1_joint: {trajectory: 10.2, goal: 10.2}
     shoulder1_joint: {trajectory: 10.2, goal: 10.2}
     shoulder2_joint: {trajectory: 10.2, goal: 10.2}
@@ -84,7 +84,7 @@ arm_trajectory_controller:
 
 
 gripper_controller:
- type: pos_vel_controllers/GripperActionController #gripper_controllers/PosVelGripperController
+ type: pos_vel_controllers/GripperActionController 
  left_finger_joint: 'left_finger_joint'
  right_finger_joint: 'right_finger_joint'
  goal_tolerance: 0.005

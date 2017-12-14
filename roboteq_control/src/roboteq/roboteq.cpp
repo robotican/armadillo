@@ -68,11 +68,11 @@ Roboteq::Roboteq(const ros::NodeHandle &nh, const ros::NodeHandle &private_nh, s
     // Disable Script and wait to load all parameters
     mSerial->script(false);
     // Stop motors
-    bool stop_motor = mSerial->command("EX"); //set emergency
+    /*bool stop_motor = mSerial->command("EX"); //set emergency
     mSerial->command("!C 1 0"); //reset counters
     mSerial->command("!C 2 0"); //reset counters
-    ros::Duration(2).sleep();
-    mSerial->command("MG"); //release emergency
+    ros::Duration(5).sleep();
+    mSerial->command("MG"); //release emergency*/
 
     //ROS_DEBUG_STREAM("Stop motor: " << (stop_motor ? "true" : "false"));
 
@@ -235,7 +235,7 @@ void Roboteq::initializeInterfaces(hardware_interface::JointStateInterface &join
         // reset position joint
         double position = 0;
         //ROS_DEBUG_STREAM("Motor [" << motor->getName() << "] reset position to: " << position);
-        motor->resetPosition(position);
+        //motor->resetPosition(position);
 
         //Add motor in diagnostic updater
         diagnostic_updater.add(*(motor));

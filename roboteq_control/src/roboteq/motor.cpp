@@ -327,7 +327,7 @@ void Motor::resetPosition(double position)
 {
     // Send reset position
     double enc_conv = to_encoder_ticks(position);
-    mSerial->command("C ", std::to_string(mNumber) + " " + std::to_string(enc_conv));
+    //mSerial->command("C ", std::to_string(mNumber) + " " + std::to_string(enc_conv));
 }
 
 void Motor::writeCommandsToHardware(ros::Duration period)
