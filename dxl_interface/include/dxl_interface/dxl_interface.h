@@ -18,27 +18,27 @@ namespace dxl
     struct spec
     {
         std::string name;
-        uint16_t model;
-        float torque_const_a;
-        float torque_const_b;
-        int cpr;
-        double rpm_scale_factor;
-        double current_ratio;
+        uint16_t model = 0;
+        float torque_const_a = 0;
+        float torque_const_b = 0;
+        int cpr = 0;
+        double rpm_scale_factor = 0;
+        double current_ratio = 0;
 
-        uint16_t pos_read_addr;
-        uint16_t vel_read_addr;
-        uint16_t current_read_addr;
-        uint16_t error_read_addr;
+        uint16_t pos_read_addr = 0;
+        uint16_t vel_read_addr = 0;
+        uint16_t current_read_addr = 0;
+        uint16_t error_read_addr = 0;
 
-        uint16_t torque_write_addr;
-        uint16_t vel_write_addr;
-        uint16_t pos_write_addr;
+        uint16_t torque_write_addr = 0;
+        uint16_t vel_write_addr = 0;
+        uint16_t pos_write_addr = 0;
 
-        uint16_t len_present_speed;
-        uint16_t len_present_pos;
-        uint16_t len_present_curr;
-        uint16_t len_goal_speed;
-        uint16_t len_goal_pos;
+        uint16_t len_present_speed = 0;
+        uint16_t len_present_pos = 0;
+        uint16_t len_present_curr = 0;
+        uint16_t len_goal_speed = 0;
+        uint16_t len_goal_pos = 0;
     };
 
     struct led_color
@@ -74,26 +74,36 @@ namespace dxl
 
         dxl::spec spec;
 
-        uint8_t id;
-        int direction;
-        bool in_torque;
-        double position;
-        double velocity; //rad/sec
-        double current;
-        double command_position;
-        double command_velocity;
+        uint8_t id = 0;
+        int direction = 0;
+        bool in_torque = false;
+        double position = 0;
+        double velocity = 0; /* rad/sec */
+        double current = 0;
+        double command_position = 0;
+        double command_velocity = 0.15;
         uint8_t error;
 
         std::string joint_name;
         InterfaceType interface_type;
 
-        /* dxl api interperate 0 velocity as the highest velocity. */
-        /* this field prevent it by setting velocity to the last   */
-        /* non-zero value                                          */
-        double pre_vel; //rad/sec
+        /*******************************************************************************/
+        /* dxl api interperate 0 ticks velocity as the highest velocity. */
+        /* set set_first_pos_write_to_curr_pos field to true  prevent it */
+        /* by setting velocity to the last non-zero value                */
+        int32_t prev_non_zero_velocity_ticks = 4; /* 4 ticks is very slow motor speed. */
+                                                  /* don't change this feild - it will */
+                                                  /* be updated automatically          */
+        bool dont_allow_zero_ticks_vel = true;
+        /*******************************************************************************/
 
-        bool first_pos_read = true;
-
+        /*******************************************************************************/
+        /* set set_first_pos_write_to_curr_pos to true        */
+        /* to write current position to motors on first write */
+        bool first_pos_read = true;/* don't change this feild - it will */
+                                   /* be updated automatically          */
+        bool set_first_pos_write_to_curr_pos = true;
+        /*******************************************************************************/
     };
 
     namespace convertions

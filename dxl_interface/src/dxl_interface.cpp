@@ -264,12 +264,19 @@ namespace dxl
         for (motor &motor : motors)
         {
             bool addparam_success = false;
-            if (motor.command_velocity == 0)
-                motor.command_velocity = motor.pre_vel;
-            else
-                motor.pre_vel = motor.command_velocity;
 
             int32_t motor_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
+            /* dxl api interperate 0 ticks velocity as the highest velocity. */
+            /* set set_first_pos_write_to_curr_pos field to true  prevent it */
+            /* by setting velocity to the last non-zero value                */
+            if (motor.dont_allow_zero_ticks_vel)
+            {
+                if (motor_vel == 0)
+                    motor_vel = motor.prev_non_zero_velocity_ticks;
+                else
+                    motor.prev_non_zero_velocity_ticks = motor_vel;
+            }
+
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.vel_write_addr,
                                                    motor.spec.len_goal_speed,
