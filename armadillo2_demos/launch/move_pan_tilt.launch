@@ -1,0 +1,15 @@
+<launch>
+
+    <arg name="pan_angle" default="0"/> <!-- degrees -->
+    <arg name="tilt_angle" default="0"/> <!-- degrees -->
+    <arg name="random_angle" default="false"/> <!-- if true, pan tilt angles will be generated randomly -->
+
+    <node name="move_pan_tilt_node" output="screen" pkg="armadillo2_demos" type="move_pan_tilt_node">
+        <param name="pan_angle" value="$(arg pan_angle)" />
+        <param name="tilt_angle" value="$(arg tilt_angle)" />
+        <param name="pan_vel" value="$(arg pan_angle)" />
+        <param name="tilt_vel" value="$(arg tilt_angle)" />
+        <param name="random" value="$(arg random_angle)" />
+    </node>
+
+</launch>
