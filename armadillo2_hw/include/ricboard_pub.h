@@ -23,7 +23,6 @@
 #define RIC_PUB_INTERVAL 0.1 //secs
 #define RIC_WRITE_INTERVAL 0.05 //secs
 #define RIC_DEAD_TIMEOUT 1 //secs
-#define RIC_LOOP_INTERVAL 20 //millis
 #define MAX_RIC_DISCONNECTIONS 5
 
 struct torso_joint

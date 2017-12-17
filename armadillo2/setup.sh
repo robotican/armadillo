@@ -33,6 +33,7 @@ sudo apt-get -y install ros-kinetic-joy
 sudo apt-get -y install joystick 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
+# install hokuyo #
 
 # install softkinetic drivers #
 printf "${WHITE_TXT}Installing softkinetic driver...\n${NO_COLOR}"
@@ -53,7 +54,10 @@ mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
 make
 make install
-sudo cp ../platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
+cd ~/catkin_ws/src/armadillo2/iai_kinect2/iai_kinect2
+rosdep install -r --from-paths .
+cd ~/catkin_ws
+catkin_make -DCMAKE_BUILD_TYPE="Release"
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # usb rules #
@@ -62,6 +66,8 @@ sudo apt -y install setserial #for setting port latency
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/usb_to_dxl.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/49-teensy.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
+sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
+sudo cp ~/catkin_ws/src/armadillo2/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && udevadm trigger
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
@@ -72,6 +78,8 @@ cd ../../.. && catkin_make
 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 printf "${GREEN_TXT}Installation process finished.\n\n${NO_COLOR}"
-
+printf "${GREEN_TXT}Rebooting PC...\n\n${NO_COLOR}"
+sleep(3)
+sudo reboot
 
 exit 0

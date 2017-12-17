@@ -83,7 +83,7 @@ void RicboardPub::loop()
             ric_dead_timer_.start();
             ric_pub_timer_.stop();
         }
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(RIC_LOOP_INTERVAL));
+        boost::this_thread::sleep_for(boost::chrono::milliseconds(5));
     }
 }
 
