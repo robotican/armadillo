@@ -30,6 +30,8 @@ private:
     std::string right_wheel_joint_, left_wheel_joint_;
     int roboteq_baud_;
     bool load_roboteq_hw_ = false;
+    /* if first time, subtract previous values */
+    bool first_time_ = true;
 
 
 public:

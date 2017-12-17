@@ -171,6 +171,9 @@ private:
     // Tempearture inside the Roboteq board
     double _temp_mcu, _temp_bridge;
 
+    bool first_read_ = true;
+    double first_read_pos_[2];
+
     // GPIO enable read
     bool _isGPIOreading;
     roboteq_control::Peripheral msg_peripheral;

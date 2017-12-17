@@ -175,6 +175,8 @@ protected:
    * @return Angular position in radians.
    */
   double from_encoder_ticks(double x);
+public:
+    double position;
 
 private:
     //Initialization object
@@ -185,7 +187,7 @@ private:
     // Serial controller communication
     serial_controller *mSerial;
     // State of the motor
-    double position, max_position;
+    double max_position;
     double velocity, max_velocity;
     double effort, max_effort;
     double command;

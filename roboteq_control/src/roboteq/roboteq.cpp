@@ -67,14 +67,7 @@ Roboteq::Roboteq(const ros::NodeHandle &nh, const ros::NodeHandle &private_nh, s
     mSerial->echo(false);
     // Disable Script and wait to load all parameters
     mSerial->script(false);
-    // Stop motors
-    /*bool stop_motor = mSerial->command("EX"); //set emergency
-    mSerial->command("!C 1 0"); //reset counters
-    mSerial->command("!C 2 0"); //reset counters
-    ros::Duration(5).sleep();
-    mSerial->command("MG"); //release emergency*/
 
-    //ROS_DEBUG_STREAM("Stop motor: " << (stop_motor ? "true" : "false"));
 
     // Initialize Joints
     for(unsigned i=0; i < joint_list.size(); ++i)
@@ -98,7 +91,7 @@ Roboteq::Roboteq(const ros::NodeHandle &nh, const ros::NodeHandle &private_nh, s
             private_nh.setParam(motor_name + "/number", number);
         }
 
-        //ROS_INFO_STREAM("Motor[" << number << "] name: " << motor_name);
+        ROS_INFO_STREAM("Motor[" << number << "] name: " << motor_name);
         //mMotor[motor_name] = new Motor(private_mNh, serial, motor_name, number);
         mMotor.push_back(new Motor(private_mNh, serial, motor_name, number));
     }
@@ -233,9 +226,18 @@ void Roboteq::initializeInterfaces(hardware_interface::JointStateInterface &join
         motor->setupLimits(model);
 
         // reset position joint
-        double position = 0;
+        //double position = 0;
         //ROS_DEBUG_STREAM("Motor [" << motor->getName() << "] reset position to: " << position);
         //motor->resetPosition(position);
+
+        // Stop motors
+        /*ROS_ERROR("HERE");
+        bool stop_motor = mSerial->command("EX"); //set emergency
+        mSerial->command("!C 1 0"); //reset counters
+        mSerial->command("!C 2 0"); //reset counters
+        mSerial->command("MG"); //release emergency*/
+
+        //ROS_DEBUG_STREAM("Stop motor: " << (stop_motor ? "true" : "false"));
 
         //Add motor in diagnostic updater
         diagnostic_updater.add(*(motor));
@@ -372,13 +374,22 @@ void Roboteq::read(const ros::Time& time, const ros::Duration& period) {
     for(int i = 0; i < fields.size(); ++i) {
         motors[i].push_back(fields[i]);
     }
+
+
     // send list
     for(int i = 0; i < mMotor.size(); ++i) {
         //get number motor initialization
         unsigned int idx = mMotor[i]->mNumber-1;
         // Read and decode vector
         mMotor[i]->readVector(motors[idx]);
+
+        if (first_read_)
+            first_read_pos_[i] = mMotor[i]->position;
+
+        mMotor[i]->position = mMotor[i]->position - first_read_pos_[i];
     }
+    if (first_read_)
+        first_read_ = false;
 
     // Read data from GPIO
     if(_isGPIOreading)
