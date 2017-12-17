@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     {
         bm.loop();
         ric_interface::protocol::servo actu_pkg;
-        actu_pkg.cmd = 2000;
+        actu_pkg.cmd = 1500;
         bm.writeCmd(actu_pkg, sizeof(ric_interface::protocol::servo), ric_interface::protocol::Type::SERVO);
         ros::Duration(1 / LOOP_HZ).sleep();
         ros::spinOnce;

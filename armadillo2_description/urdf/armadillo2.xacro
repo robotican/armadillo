@@ -3,7 +3,8 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo2_robot" description="ARMadillo Robot">
 
  <xacro:property name="M_PI" value="3.1415926535897931" />
-
+ 
+ <xacro:include filename="$(find softkinetic_camera)/urdf/sofkinetic_ds325.xacro"/>
 
 <link name="base_footprint"/>
   
@@ -967,7 +968,7 @@
       velocity="2.0" /> <!--7.016223585-->
   </joint>
   <link
-    name="softkinetic_link">
+    name="softkinetic_camera_link">
     <inertial>
       <origin
         xyz="-0.00023051 -1.5096E-05 -0.00085913"
@@ -1015,39 +1016,14 @@
     <parent
       link="wrist_link" />
     <child
-      link="softkinetic_link" />
+      link="softkinetic_camera_link" />
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="softkinetic_left_link" />
-  <joint
-    name="softkinetic_left_joint"
-    type="fixed">
-    <origin
-      xyz="0.0083 0.0135 0"
-      rpy="0 0 0" />
-    <parent
-      link="softkinetic_link" />
-    <child
-      link="softkinetic_left_link" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="softkinetic_right_link" />
-  <joint
-    name="softkinetic_right_joint"
-    type="fixed">
-    <origin
-      xyz="0.0083 -0.0135 0"
-      rpy="-8.0779E-28 0 1.3535E-11" />
-    <parent
-      link="softkinetic_link" />
-    <child
-      link="softkinetic_right_link" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
+ 
+  
+<softkinetic_camera name="softkinetic_camera" >
+    <origin xyz="-0.05905 0 0.0753" rpy="0.0 -${M_PI/2} 0.0"/>
+</softkinetic_camera>
 
 </robot>

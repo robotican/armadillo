@@ -13,7 +13,7 @@ namespace ric_interface
     /* if conncetion fails, exception will be thrown */
     void RicInterface::connect(std::string port)
     {
-        comm_.connect(port, 1000000);
+        comm_.connect(port, 115200);
     }
 
     void RicInterface::loop()
