@@ -51,6 +51,7 @@ namespace armadillo2_hw
             bms::data bms_data =  bms_.read();
 
             sensor_msgs::BatteryState msg;
+            msg.header.stamp = ros::Time::now();
             msg.present = true;
             msg.voltage = bms_data.vbat;
             msg.percentage = bms_data.soc;

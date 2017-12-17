@@ -109,10 +109,13 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 
     /* publish ultrasonic */
     sensor_msgs::Range range_msg;
+    range_msg.header.stamp = ros::Time::now();
+    range_msg.header.frame_id = "front_urf_link";
     range_msg.min_range = 0.3;
     range_msg.max_range = 3.0;
     range_msg.radiation_type = sensor_msgs::Range::ULTRASOUND;
     range_msg.range = sensors.ultrasonic.distance_mm / 1000.0;
+    range_msg.field_of_view = 0.7f;
     ric_ultrasonic_pub_.publish(range_msg);
 
     /* publish imu */
@@ -128,6 +131,7 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     q_msg.w = orientation_q.w();
 
     imu_msg.orientation = q_msg;
+    imu_msg.header.stamp = ros::Time::now();
     ric_imu_pub_.publish(imu_msg);
 
     /* publish gps if data is available */
@@ -141,6 +145,7 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
         gps_msg.latitude = sensors.gps.lat;
         gps_msg.longitude = sensors.gps.lon;
         gps_msg.status = gps_status;
+        gps_msg.header.stamp = ros::Time::now();
 
         ric_gps_pub_.publish(gps_msg);
     }
