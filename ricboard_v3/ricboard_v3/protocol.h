@@ -4,13 +4,13 @@ namespace protocol
 {
     enum class Type
     {
-        KEEP_ALIVE = 1,
-        LOGGER = 2,
-        ULTRASONIC = 3,
-        LASER = 4,
-        IMU = 5,
-        GPS = 6,
-        SERVO = 7
+        KEEP_ALIVE = 100,
+        LOGGER = 101,
+        ULTRASONIC = 103,
+        LASER = 104,
+        IMU = 105,
+        GPS = 106,
+        SERVO = 107
     };
 
     struct package

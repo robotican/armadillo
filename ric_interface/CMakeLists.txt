@@ -120,7 +120,6 @@ set(
         PROJECT_FILES
         src/ric_interface.cpp
         src/communicator.cpp
-        src/timer.cpp
         include/${PROJECT_NAME}/ric_interface.h
         include/${PROJECT_NAME}/communicator.h
         include/${PROJECT_NAME}/protocol.h
