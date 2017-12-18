@@ -28,6 +28,18 @@ namespace communicator
           memcpy(pkg_buff, &pkg, pkg_size);
           send(pkg_buff, pkg_size);
         }
+
+        bool sendHeaderAndPkg(protocol::Type header_type,
+                              const protocol::package &pkg,
+                              size_t pkg_size)
+        {
+            protocol::header header_pkg;
+            header_pkg.type = header_type;
+            /* send header */
+            sendPkg(header_pkg, sizeof(protocol::header));
+            /* send pkg with content */
+            sendPkg(pkg, pkg_size);
+        }
     }
 }
 #endif //RIC_COMMUNICATOR_H

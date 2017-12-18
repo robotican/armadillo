@@ -83,20 +83,21 @@ void sendReadings()
   if (send_readings_timer.finished())
   {
     /* ULTRASONIC */
-    protocol::header ultrasonic_header;
-    ultrasonic_header.type = protocol::Type:: ULTRASONIC;
     protocol::ultrasonic ultrasonic_pkg;
-    ultrasonic_pkg.distance_mm = ultrasonic.readDistanceMm();
-    communicator::ric::sendPkg(ultrasonic_header, sizeof(protocol::header));
-    communicator::ric::sendPkg(ultrasonic_pkg, sizeof(protocol::ultrasonic));
+    if (ultrasonic.readDistanceMm(ultrasonic_pkg.distance_mm))
+      communicator::ric::sendHeaderAndPkg(protocol::Type:: ULTRASONIC, 
+                                          ultrasonic_pkg, 
+                                          sizeof(protocol::ultrasonic));
 
     /* IMU */
     if (valid_imu)
     {
-      protocol::header imu_header;
-      imu_header.type = protocol::Type:: IMU;
-      communicator::ric::sendPkg(imu_header, sizeof(protocol::header));
-      communicator::ric::sendPkg(imu_pkg, sizeof(protocol::imu));
+      //protocol::header imu_header;
+      //imu_header.type = protocol::Type:: IMU;
+      //communicator::ric::sendPkg(imu_header, sizeof(protocol::header));
+      communicator::ric::sendHeaderAndPkg(protocol::Type:: IMU, 
+                                          imu_pkg, 
+                                          sizeof(protocol::imu));
       
       //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
       //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
@@ -107,12 +108,11 @@ void sendReadings()
     uint16_t laser_read = laser.read();
     if (laser_read != (uint16_t)Laser::Code::ERROR)
     {
-      protocol::header laser_header;
-      laser_header.type = protocol::Type:: LASER;
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
-      communicator::ric::sendPkg(laser_header, sizeof(protocol::header));
-      communicator::ric::sendPkg(laser_pkg, sizeof(protocol::laser));
+      communicator::ric::sendHeaderAndPkg(protocol::Type:: LASER,
+                                          laser_pkg, 
+                                          sizeof(protocol::laser));
     }
 
     /* GPS */
@@ -120,10 +120,9 @@ void sendReadings()
     bool valid_gps = gps.read(gps_pkg);
     if (valid_gps)
     {
-      protocol::header gps_header;
-      gps_header.type = protocol::Type::GPS;
-      communicator::ric::sendPkg(gps_header, sizeof(protocol::header));
-      communicator::ric::sendPkg(gps_pkg, sizeof(protocol::gps));
+      communicator::ric::sendHeaderAndPkg(protocol::Type::GPS, 
+                                          gps_pkg, 
+                                          sizeof(protocol::gps));
     }
 
     send_readings_timer.startOver();
@@ -137,11 +136,8 @@ void keepAliveAndRead()
   if (send_keepalive_timer.finished() && send_data)
   {
     /* send keep alive */
-    protocol::header ka_header;
-    ka_header.type = protocol::Type:: KEEP_ALIVE;
     protocol::keepalive ka_pkg;
-    communicator::ric::sendPkg(ka_header, sizeof(protocol::header));
-    communicator::ric::sendPkg(ka_pkg, sizeof(protocol::keepalive));
+    communicator::ric::sendHeaderAndPkg(protocol::Type:: KEEP_ALIVE, ka_pkg, sizeof(protocol::keepalive));
     
     send_keepalive_timer.startOver();
   }
@@ -198,13 +194,13 @@ void handleHeader(const protocol::header &h)
 /******************************************************/
 void log(const char* msg_str, int32_t value)
 {
-    protocol::header logger_header;
-    logger_header.type = protocol::Type::LOGGER;
+    //protocol::header logger_header;
+    //logger_header.type = protocol::Type::LOGGER;
     protocol::logger logger_pkg;
     strcpy(logger_pkg.msg, msg_str);
     
     logger_pkg.value = value;
     
-    communicator::ric::sendPkg(logger_header, sizeof(protocol::header));
-    communicator::ric::sendPkg(logger_pkg, sizeof(protocol::logger));
+    //communicator::ric::communicator::ric::sendHeaderAndPkg(logger_header, sizeof(protocol::header));
+    communicator::ric::sendHeaderAndPkg(protocol::Type::LOGGER, logger_pkg, sizeof(protocol::logger));
 }

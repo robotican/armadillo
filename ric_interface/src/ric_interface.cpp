@@ -35,7 +35,7 @@ namespace ric_interface
             else
             {
                 is_board_alive_ = false;
-                fprintf(stderr,"board dead ! \n");
+                //fprintf(stderr,"board dead ! \n");
             }
             get_keepalive_timer_.reset();
         }
@@ -43,11 +43,8 @@ namespace ric_interface
         send_keepalive_timer_.startTimer(SEND_KA_TIMEOUT);
         if (send_keepalive_timer_.isFinished())
         {
-            protocol::header ka_header;
-            ka_header.type = protocol::Type::KEEP_ALIVE;
             protocol::keepalive ka_pkg;
-            sendPkg(ka_header, sizeof(protocol::header));
-            sendPkg(ka_pkg, sizeof(protocol::keepalive));
+            sendHeaderAndPkg(protocol::Type::KEEP_ALIVE, ka_pkg , sizeof(protocol::keepalive));
             send_keepalive_timer_.reset();
         }
 
@@ -81,7 +78,7 @@ namespace ric_interface
                 if (readPkg(logger_pkg, sizeof(protocol::logger)))
                 {
                     sensors_state_.logger = logger_pkg;
-                    printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.value);
+                    //printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.value);
                 }
                 break;
             }
@@ -140,7 +137,7 @@ namespace ric_interface
         return true;
     }
 
-    /* send header and then state (i.e. keep alive) pkg content to ricboard */
+
     bool RicInterface::sendPkg(const protocol::package &pkg, size_t pkg_size)
     {
         byte pkg_buff[pkg_size];
@@ -152,13 +149,20 @@ namespace ric_interface
 
     void RicInterface::writeCmd(const protocol::actuator &actu_pkg, size_t size, protocol::Type type)
     {
-        protocol::header header_pkg;
-        header_pkg.type = type;
-        /* send header */
-        sendPkg(header_pkg, sizeof(protocol::header));
-        /* send pkg content */
-        sendPkg(actu_pkg, size);
+        sendHeaderAndPkg(type, actu_pkg, size);
     }
 
 
+    /* send header and then state (i.e. keep alive) pkg content to ricboard */
+    bool RicInterface::sendHeaderAndPkg(protocol::Type header_type,
+                                        const protocol::package &pkg,
+                                        size_t pkg_size)
+    {
+        protocol::header header_pkg;
+        header_pkg.type = header_type;
+        /* send header */
+        sendPkg(header_pkg, sizeof(protocol::header));
+        /* send pkg with content */
+        sendPkg(pkg, pkg_size);
+    }
 }

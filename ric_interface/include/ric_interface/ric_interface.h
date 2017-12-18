@@ -17,7 +17,7 @@ namespace ric_interface
     {
     private:
         const int SEND_KA_TIMEOUT = 300; //ms
-        const int GET_KA_TIMEOUT = 1000; //ms
+        const int GET_KA_TIMEOUT = 3000; //ms
 
         /* is board sent keep alive on time */
         bool is_board_alive_ = true, got_keepalive_ = false;
@@ -27,6 +27,8 @@ namespace ric_interface
 
         bool readPkg(protocol::package &pkg, size_t size);
         bool sendPkg(const protocol::package &pkg, size_t pkg_size);
+        bool sendHeaderAndPkg(protocol::Type header_type,
+                              const protocol::package &pkg, size_t pkg_size);
         void handleHeader(const protocol::header &h);
         void keepAliveAndRead();
 
