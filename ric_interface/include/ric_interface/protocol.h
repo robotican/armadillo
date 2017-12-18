@@ -11,11 +11,11 @@ namespace ric_interface
         {
             KEEP_ALIVE = 100,
             LOGGER = 101,
-            ULTRASONIC = 103,
-            LASER = 104,
-            IMU = 105,
-            GPS = 106,
-            SERVO = 107
+            ULTRASONIC = 102,
+            LASER = 103,
+            IMU = 104,
+            GPS = 105,
+            SERVO = 106
         };
 
         struct package
@@ -100,7 +100,6 @@ namespace ric_interface
 
             bool fix;
         };
-
 
         struct servo : actuator
         {

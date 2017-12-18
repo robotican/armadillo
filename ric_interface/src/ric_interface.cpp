@@ -23,14 +23,6 @@ namespace ric_interface
 
     void RicInterface::keepAliveAndRead()
     {
-        /* try to read header */
-        protocol::header incoming_header;
-        if (readPkg(incoming_header, sizeof(protocol::header)))
-        {
-            printf("INCOMMING header type: %d\n", (int)incoming_header.type);
-            handleHeader(incoming_header);
-        }
-
         get_keepalive_timer_.startTimer(GET_KA_TIMEOUT);
         if (get_keepalive_timer_.isFinished())
         {
@@ -51,13 +43,20 @@ namespace ric_interface
         send_keepalive_timer_.startTimer(SEND_KA_TIMEOUT);
         if (send_keepalive_timer_.isFinished())
         {
-            //fprintf(stderr, "sending ka\n");
             protocol::header ka_header;
-            ka_header.type = protocol::Type:: KEEP_ALIVE;
+            ka_header.type = protocol::Type::KEEP_ALIVE;
             protocol::keepalive ka_pkg;
             sendPkg(ka_header, sizeof(protocol::header));
             sendPkg(ka_pkg, sizeof(protocol::keepalive));
             send_keepalive_timer_.reset();
+        }
+
+        /* try to read header */
+        protocol::header incoming_header;
+        if (readPkg(incoming_header, sizeof(protocol::header)))
+        {
+            //printf("INCOMMING header type: %d\n", (int)incoming_header.type);
+            handleHeader(incoming_header);
         }
     }
 

@@ -12,31 +12,19 @@ class Timer
 private:
     std::chrono::steady_clock::time_point begin_;
     std::chrono::steady_clock::time_point end_;
-    int trigger_millis_;
-    bool started_ = false;
+    int micro_secs_;
+    bool started_;
 
 public:
-    void reset() { started_ = false; }
-    void startTimer(int trigger_millis)
-    {
-        if (!started_)
-        {
-            trigger_millis_ = trigger_millis;
-            started_ = true;
-            begin_ = std::chrono::steady_clock::now();
-        }
-    }
-    bool isFinished()
-    {
-        end_ = std::chrono::steady_clock::now();
-        long long int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_ - begin_).count();
-        if (elapsed >= trigger_millis_)
-        {
-            started_ = false;
-            return true;
-        }
-        return false;
-    }
+    void reset();
+    void startMeasure();
+    void endMeasure();
+    void startTimer(int micro_secs);
+    bool isFinished();
+    long long int elaspedTimeSec();
+    long long int elapsedTimeMilliSec();
+    long long int elapsedTimeNanoSec();
+    long long int elapsedTimeMicroSec();
 };
 
 #endif //RIC_INTERFACE_TIMER_H
