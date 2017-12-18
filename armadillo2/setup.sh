@@ -34,6 +34,8 @@ sudo apt-get -y install joystick
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install hokuyo #
+sudo apt-get install ros-kinetic-urg-node
+
 
 # install softkinetic drivers #
 printf "${WHITE_TXT}Installing softkinetic driver...\n${NO_COLOR}"
