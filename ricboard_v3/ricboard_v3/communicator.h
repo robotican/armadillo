@@ -2,35 +2,96 @@
 #define COMMUNICATOR_H
 
 #include <Arduino.h>
+#include "protocol.h"
 
-namespace communicator
+class Communicator
 {
-    void init(int baudrate)
-    {
-      Serial.begin(baudrate);
-    }
 
-    void send(byte buff[], size_t size)
-    {
-      Serial.write(buff, size);
-    }
+  public:
+  
+  enum State 
+  {
+    HEADER_PART_A,
+    HEADER_PART_B,
+    PACKAGE
+  };
+  
+  void init(int baudrate)
+  {
+    Serial.begin(baudrate);
+  }
 
-    /* return: number of bytes read */
-    int read(byte buff[], size_t size)
+  /* return -1 for reading in process, or type of the incoming pkg */
+  int read(byte buff[]) 
+  {
+    switch (state_)
     {
-      bool no_bytes = true;
-      int indx=0;
-      while (indx<size && Serial.available()>0)
+      case HEADER_PART_A: //read header
       {
-        no_bytes = false;
-        int incoming_byte = Serial.read();
-        if (incoming_byte != -1) 
-          buff[indx++] = (byte)incoming_byte;
-      };
-      if (no_bytes)
-          return -1;
-      return indx;
-    }
-}
+        if (tryReadHeader())
+          state_ = HEADER_PART_B;
+        break;
+      }
+      case HEADER_PART_B: //read pkg size
+      {
+        Serial.println("B");
+        pkg_size_ = tryReadPkgSize();
+        if (pkg_size_ != -1)
+          state_ = PACKAGE;
+        break;
+      }
+      case PACKAGE:
+      {
+        int incoming = Serial.read();
+        if (incoming != -1)
+          buff[pkg_indx_++] = (byte)incoming;
 
+        if (pkg_indx_ >= pkg_size_) //done reading
+        {
+          protocol::package pkg;
+          fromBytes(buff, sizeof(protocol::package), pkg);
+          return (int)pkg.type;
+          reset();
+        }
+        break;
+      }
+    }
+    return -1;
+  }
+
+  static void fromBytes(byte buff[], size_t pkg_size, protocol::package &pkg)
+  {
+    memcpy(&pkg, buff, pkg_size);
+  }
+
+
+  private:
+  State state_ = HEADER_PART_A;
+  int pkg_indx_ = 0;
+  int pkg_size_ = 0;
+  
+  void reset()
+  {
+    state_ = HEADER_PART_A;
+    pkg_indx_ = 0;
+    pkg_size_ = 0;
+  }
+  
+  /* try to read valid header start */
+  bool tryReadHeader()
+  {
+    if (Serial.available()>0 && Serial.read() == protocol::HEADER_CODE)
+       return true;
+    return false;
+  }
+
+  /* return -1 for failure and pkg size as success */
+  int tryReadPkgSize()
+  {
+    if (Serial.available()>0)
+      return Serial.read();
+    return -1;
+  }
+};
+    
 #endif //COMMUNICATOR_H

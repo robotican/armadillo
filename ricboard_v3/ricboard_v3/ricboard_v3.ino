@@ -1,5 +1,5 @@
 #include "ric_settings.h"
-#include "ric_communicator.h"
+#include "communicator.h"
 #include "protocol.h"
 #include "strober.h"
 #include "timer.h"
@@ -10,7 +10,7 @@
 #include <Servo.h>
 /* this cpp acts as board manager */
 
-/* DO NOT use Serial.print, because */
+/* DO NOT use Serial.print, because              */
 /* communicator use it for communication with pc */
 
 Timer send_keepalive_timer, 
@@ -18,19 +18,21 @@ Timer send_keepalive_timer,
       send_readings_timer;
 bool got_keepalive, send_data;
 Strober strober;
-
-/* front ultrasonic */
+Communicator com;
+/* servo for controlling torso */
 Servo servo;
 Ultrasonic ultrasonic;
 Imu imu;
 Laser laser;
 Gps gps;
 
+byte pkg_buff[MAX_PKG_SIZE];
+
 /******************************************************/
 
 void setup() 
 {
-  communicator::init(BAUDRATE);
+  com.init(BAUDRATE);
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
@@ -63,14 +65,83 @@ void setup()
 void loop() 
 {
   strober.play(INDICATOR_LED);
-  keepAliveAndRead();  
-  if (send_data)
-    sendReadings();
+  
+  readFromPC();
+  
+  //sendKeepAliveToPC(); 
+  
+  getKeepAliveFromPC();
+   
+  //if (send_data)
+  //  sendReadingsToPC();
 }
 
 /******************************************************/
 
-void sendReadings()
+void readFromPC()
+{
+  int pkg_type = com.read(pkg_buff);
+  if(pkg_type != -1)
+  {
+    switch (pkg_type)
+    {
+      case (int)protocol::Type::KEEP_ALIVE:
+      {
+            strober.setNotes(Strober::Notes::STROBE);
+
+        protocol::keepalive ka_pkg;
+        Communicator::fromBytes(pkg_buff, sizeof(protocol::keepalive), ka_pkg);
+        send_data = true;
+        got_keepalive = true;
+        break;
+      }
+      case (int)protocol::Type::SERVO:
+      {
+        protocol::servo servo_pkg;
+        Communicator::fromBytes(pkg_buff, sizeof(protocol::servo), servo_pkg);
+        servo.writeMicroseconds(servo_pkg.cmd);
+        break;
+      }
+    }    
+    clearBuffer();
+  }
+}
+
+/******************************************************/
+
+/******************************************************/
+
+void sendKeepAliveToPC()
+{
+  /*if (send_keepalive_timer.finished() && send_data)
+  {
+    protocol::keepalive ka_pkg;    
+    send_keepalive_timer.startOver();
+  }*/
+}
+
+/******************************************************/
+
+void getKeepAliveFromPC() 
+{
+  if (get_keepalive_timer.finished())
+  {
+    if (got_keepalive) //connected to pc
+    {
+      got_keepalive = false;
+    }
+    else //disconnected from pc
+    {
+      send_data = false;
+      //strober.setNotes(Strober::Notes::BLINK_SLOW);
+    }
+    get_keepalive_timer.startOver();
+  }
+}
+
+/******************************************************/
+
+void sendReadingsToPC()
 {
   
   /* read IMU if available. IMU read must be called */
@@ -84,20 +155,17 @@ void sendReadings()
   {
     /* ULTRASONIC */
     protocol::ultrasonic ultrasonic_pkg;
-    if (ultrasonic.readDistanceMm(ultrasonic_pkg.distance_mm))
+    /*if (ultrasonic.readDistanceMm(ultrasonic_pkg.distance_mm))
       communicator::ric::sendHeaderAndPkg(protocol::Type:: ULTRASONIC, 
                                           ultrasonic_pkg, 
-                                          sizeof(protocol::ultrasonic));
+                                          sizeof(protocol::ultrasonic));*/
 
     /* IMU */
     if (valid_imu)
     {
-      //protocol::header imu_header;
-      //imu_header.type = protocol::Type:: IMU;
-      //communicator::ric::sendPkg(imu_header, sizeof(protocol::header));
-      communicator::ric::sendHeaderAndPkg(protocol::Type:: IMU, 
+      /*communicator::ric::sendHeaderAndPkg(protocol::Type:: IMU, 
                                           imu_pkg, 
-                                          sizeof(protocol::imu));
+                                          sizeof(protocol::imu));*/
       
       //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
       //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
@@ -110,9 +178,9 @@ void sendReadings()
     {
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
-      communicator::ric::sendHeaderAndPkg(protocol::Type:: LASER,
+      /*communicator::ric::sendHeaderAndPkg(protocol::Type:: LASER,
                                           laser_pkg, 
-                                          sizeof(protocol::laser));
+                                          sizeof(protocol::laser));*/
     }
 
     /* GPS */
@@ -120,75 +188,13 @@ void sendReadings()
     bool valid_gps = gps.read(gps_pkg);
     if (valid_gps)
     {
-      communicator::ric::sendHeaderAndPkg(protocol::Type::GPS, 
+      /*communicator::ric::sendHeaderAndPkg(protocol::Type::GPS, 
                                           gps_pkg, 
-                                          sizeof(protocol::gps));
+                                          sizeof(protocol::gps));*/
     }
 
     send_readings_timer.startOver();
   }
-}
-
-/******************************************************/
-
-void keepAliveAndRead()
-{
-  if (send_keepalive_timer.finished() && send_data)
-  {
-    /* send keep alive */
-    protocol::keepalive ka_pkg;
-    communicator::ric::sendHeaderAndPkg(protocol::Type:: KEEP_ALIVE, ka_pkg, sizeof(protocol::keepalive));
-    
-    send_keepalive_timer.startOver();
-  }
-
-  if (get_keepalive_timer.finished())
-  {
-    if (got_keepalive) //connected to pc
-    {
-      strober.setNotes(Strober::Notes::STROBE);
-      send_data = true;
-      got_keepalive = false;
-    }
-    else //disconnected from pc
-    {
-      send_data = false;
-      strober.setNotes(Strober::Notes::BLINK_SLOW);
-    }
-    get_keepalive_timer.startOver();
-  }
-  
-  protocol::header incoming_header;
-  if (communicator::ric::readPkg(incoming_header, sizeof(protocol::header)))
-  {
-    handleHeader(incoming_header);
-  }
-}
-
-/******************************************************/
-
-void handleHeader(const protocol::header &h)
-{
-    switch (h.type)
-    {
-        case protocol::Type::KEEP_ALIVE:
-            protocol::keepalive ka_pkg;
-            if (communicator::ric::readPkg(ka_pkg, sizeof(protocol::keepalive)))
-            {
-                //ka pkg is empty
-                //log("got ka", 3);
-                got_keepalive = true;
-            }
-            break;
-        case protocol::Type::SERVO:
-            protocol::servo servo_pkg;
-            if (communicator::ric::readPkg(servo_pkg, sizeof(protocol::servo)))
-            {
-               servo.writeMicroseconds(servo_pkg.cmd);
-               //log("got servo", servo_pkg.cmd);
-            }
-            break;
-    }
 }
 
 /******************************************************/
@@ -201,6 +207,13 @@ void log(const char* msg_str, int32_t value)
     
     logger_pkg.value = value;
     
-    //communicator::ric::communicator::ric::sendHeaderAndPkg(logger_header, sizeof(protocol::header));
-    communicator::ric::sendHeaderAndPkg(protocol::Type::LOGGER, logger_pkg, sizeof(protocol::logger));
+    //communicator::ric::sendHeaderAndPkg(protocol::Type::LOGGER, logger_pkg, sizeof(protocol::logger));
 }
+
+/****************************************************/
+
+void clearBuffer() 
+{
+  memset(pkg_buff, 0, MAX_PKG_SIZE);
+}
+

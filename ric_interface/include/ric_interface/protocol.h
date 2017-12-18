@@ -18,19 +18,19 @@ namespace ric_interface
             SERVO = 106
         };
 
+        const uint8_t HEADER_CODE = 200;
+        const uint8_t HEADER_INDX = 0;
+        const uint8_t PKG_SIZE_INDX = 1;
+
         struct package
         {
-
-        };
-
-        struct header : package
-        {
-            Type type;
+            uint8_t type;
+            uint8_t checksum;
         };
 
         struct keepalive : package
         {
-
+            keepalive() { type = (uint8_t)Type::KEEP_ALIVE; }
         };
 
         struct logger : package
@@ -100,6 +100,7 @@ namespace ric_interface
 
             bool fix;
         };
+
 
         struct servo : actuator
         {

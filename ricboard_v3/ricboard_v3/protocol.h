@@ -1,5 +1,6 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
+
 namespace protocol
 {
     enum class Type
@@ -13,14 +14,12 @@ namespace protocol
         SERVO = 106
     };
 
+    const uint8_t HEADER_CODE = 200;
+
     struct package
     {
-
-    };
-
-    struct header : package
-    {
-        Type type;
+      Type type;
+      uint8_t checksum;
     };
 
     struct keepalive : package

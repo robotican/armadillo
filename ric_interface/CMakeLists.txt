@@ -119,10 +119,11 @@ include_directories(
 set(
         PROJECT_FILES
         src/ric_interface.cpp
-        src/communicator.cpp
+        src/serial_com.cpp
         src/timer.cpp
         include/${PROJECT_NAME}/ric_interface.h
         include/${PROJECT_NAME}/communicator.h
+        include/${PROJECT_NAME}/serial_com.h
         include/${PROJECT_NAME}/protocol.h
         include/${PROJECT_NAME}/ric_exception.h
         include/${PROJECT_NAME}/timer.h

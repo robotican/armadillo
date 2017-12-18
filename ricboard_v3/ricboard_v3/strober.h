@@ -43,10 +43,65 @@ public:
     BLINK_SLOW,
     STROBE
   };
-  Strober();
-  void play(uint16_t pin);
-  void setNotes(uint16_t* notes, size_t notes_size);
-  void setNotes(Notes notes);
+
+  /**************************************************************
+  * Goal: Play notes (blink led accordingly). This method must
+  * be invoked in loop for continuouse play.
+  * Param: pin of led to blink
+  **************************************************************/
+  void play(uint16_t pin)
+  {
+    if (index_ < notes_size_)
+    {
+      if (timer_.finished())
+      {
+        if (index_ % 2 == 0)
+        {
+          if (notes_[index_] == 0)
+            digitalWrite(pin, LOW);
+          else
+            digitalWrite(pin, HIGH);
+        }
+        else
+          timer_.start(notes_[index_]);
+        index_++;
+      }
+    }
+    else
+      index_ = 0;
+  }
+  void setNotes(uint16_t* notes, size_t notes_size)
+  {
+    if (notes_ != notes)
+    {
+      notes_ = notes;
+      notes_size_ = notes_size;
+      timer_.reset();
+    }
+  }
+  void setNotes(Notes notes)
+  {
+    if (curr_notes_ != notes)
+    {
+      curr_notes_ = notes;
+      timer_.reset();
+      switch (notes)
+      {
+        case BLINK_SLOW:
+          notes_ = (uint16_t*)SLOW_BLINK_ARR;
+          notes_size_ = SLOW_BLINK_SIZE;
+          break;
+        case BLINK_FAST:
+          notes_ = (uint16_t*)FAST_BLINK_ARR;
+          notes_size_ = FAST_BLINK_SIZE;
+          break;
+        case STROBE:
+          notes_ = (uint16_t*)STROBE_BLINK_ARR;
+          notes_size_ = STROBE_BLINK_SIZE;
+          break;
+      }
+    }
+  }
 
   const static size_t SLOW_BLINK_SIZE = 4;
   const static size_t FAST_BLINK_SIZE = 4;
@@ -57,12 +112,12 @@ private:
   int16_t pin_;
   uint16_t* notes_;
   size_t notes_size_;
-  uint16_t index_;
+  uint16_t index_ = 0;
   Notes curr_notes_;
 
-  const static uint16_t SLOW_BLINK_ARR[SLOW_BLINK_SIZE];
-  const static uint16_t FAST_BLINK_ARR[FAST_BLINK_SIZE];
-  const static uint16_t STROBE_BLINK_ARR[STROBE_BLINK_SIZE];
+  const uint16_t SLOW_BLINK_ARR[SLOW_BLINK_SIZE] = {1, 500, 0, 500};
+  const uint16_t FAST_BLINK_ARR[FAST_BLINK_SIZE] = {1, 300, 0, 300};
+  const uint16_t STROBE_BLINK_ARR[STROBE_BLINK_SIZE] = {1, 70, 0, 70, 1, 70, 0, 70, 1, 70, 0, 500};
 
   
 };

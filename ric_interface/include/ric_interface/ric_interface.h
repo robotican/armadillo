@@ -10,6 +10,7 @@
 #include "protocol.h"
 #include "sensors_state.h"
 #include <string.h>
+#include <iostream>
 
 namespace ric_interface
 {
@@ -29,8 +30,9 @@ namespace ric_interface
         bool sendPkg(const protocol::package &pkg, size_t pkg_size);
         bool sendHeaderAndPkg(protocol::Type header_type,
                               const protocol::package &pkg, size_t pkg_size);
-        void handleHeader(const protocol::header &h);
+        void handleHeader(const protocol::package &h);
         void keepAliveAndRead();
+        void sendKeepAlive();
 
     public:
         RicInterface();

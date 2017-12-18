@@ -18,7 +18,20 @@ namespace ric_interface
 
     void RicInterface::loop()
     {
-        keepAliveAndRead();
+        //keepAliveAndRead();
+        sendKeepAlive();
+    }
+
+    void RicInterface::sendKeepAlive()
+    {
+        send_keepalive_timer_.startTimer(SEND_KA_TIMEOUT);
+        if (send_keepalive_timer_.isFinished())
+        {
+            puts("sending ka");
+            protocol::keepalive ka_pkg;
+            comm_.write(ka_pkg, sizeof(protocol::keepalive));
+            send_keepalive_timer_.reset();
+        }
     }
 
     void RicInterface::keepAliveAndRead()
@@ -40,28 +53,22 @@ namespace ric_interface
             get_keepalive_timer_.reset();
         }
 
-        send_keepalive_timer_.startTimer(SEND_KA_TIMEOUT);
-        if (send_keepalive_timer_.isFinished())
-        {
-            protocol::keepalive ka_pkg;
-            sendHeaderAndPkg(protocol::Type::KEEP_ALIVE, ka_pkg , sizeof(protocol::keepalive));
-            send_keepalive_timer_.reset();
-        }
+
 
         /* try to read header */
-        protocol::header incoming_header;
-        if (readPkg(incoming_header, sizeof(protocol::header)))
-        {
+        //protocol::header incoming_header;
+        //if (readPkg(incoming_header, sizeof(protocol::header)))
+        //{
             //printf("INCOMMING header type: %d\n", (int)incoming_header.type);
-            handleHeader(incoming_header);
-        }
+            //handleHeader(incoming_header);
+        //}
     }
 
-    void RicInterface::handleHeader(const protocol::header &h)
+    void RicInterface::handleHeader(const protocol::package &h)
     {
         switch (h.type)
         {
-            case protocol::Type::KEEP_ALIVE:
+            case (int)protocol::Type::KEEP_ALIVE:
             {
                 protocol::keepalive ka_pkg;
                 if (readPkg(ka_pkg, sizeof(protocol::keepalive)))
@@ -72,7 +79,7 @@ namespace ric_interface
                 }
                 break;
             }
-            case protocol::Type::LOGGER:
+            case (int)protocol::Type::LOGGER:
             {
                 protocol::logger logger_pkg;
                 if (readPkg(logger_pkg, sizeof(protocol::logger)))
@@ -82,7 +89,7 @@ namespace ric_interface
                 }
                 break;
             }
-            case protocol::Type::ULTRASONIC:
+            case (int)protocol::Type::ULTRASONIC:
             {
                 protocol::ultrasonic ultrasonic_pkg;
                 if (readPkg(ultrasonic_pkg, sizeof(protocol::ultrasonic)))
@@ -92,7 +99,7 @@ namespace ric_interface
                 }
                 break;
             }
-            case protocol::Type::IMU:
+            case (int)protocol::Type::IMU:
             {
                 protocol::imu imu_pkg;
                 if (readPkg(imu_pkg, sizeof(protocol::imu)))
@@ -104,7 +111,7 @@ namespace ric_interface
                 }
                 break;
             }
-            case protocol::Type::LASER:
+            case (int)protocol::Type::LASER:
             {
                 protocol::laser laser_pkg;
                 if (readPkg(laser_pkg, sizeof(protocol::laser)))
@@ -114,7 +121,7 @@ namespace ric_interface
                 }
                 break;
             }
-            case protocol::Type::GPS:
+            case (int)protocol::Type::GPS:
             {
                 protocol::gps gps_pkg;
                 if (readPkg(gps_pkg, sizeof(protocol::gps)))
@@ -129,22 +136,12 @@ namespace ric_interface
 
     bool RicInterface::readPkg(protocol::package &pkg, size_t pkg_size)
     {
-        byte buff[pkg_size];
+        /*byte buff[pkg_size];
         int bytes_read = comm_.read(buff, pkg_size);
         if (bytes_read != pkg_size)
             return false;
         memcpy(&pkg, buff, pkg_size);
-        return true;
-    }
-
-
-    bool RicInterface::sendPkg(const protocol::package &pkg, size_t pkg_size)
-    {
-        byte pkg_buff[pkg_size];
-        memcpy(pkg_buff, &pkg, pkg_size);
-        if (!comm_.send(pkg_buff, pkg_size))
-            return false;
-        return true;
+        return true;*/
     }
 
     void RicInterface::writeCmd(const protocol::actuator &actu_pkg, size_t size, protocol::Type type)
@@ -158,11 +155,9 @@ namespace ric_interface
                                         const protocol::package &pkg,
                                         size_t pkg_size)
     {
-        protocol::header header_pkg;
-        header_pkg.type = header_type;
-        /* send header */
-        sendPkg(header_pkg, sizeof(protocol::header));
-        /* send pkg with content */
-        sendPkg(pkg, pkg_size);
+
+        //sendPkg(header_pkg, sizeof(protocol::header));
+
+        //sendPkg(pkg, pkg_size);
     }
 }
