@@ -15,7 +15,8 @@
 
 Timer send_keepalive_timer, 
       get_keepalive_timer,
-      send_readings_timer;
+      send_readings_timer,
+      ultrasonic_timer;
 bool got_keepalive, send_data;
 Strober strober;
 Communicator com;
@@ -37,6 +38,7 @@ void setup()
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
+  ultrasonic_timer.start(UTLRASONICE_INTERVAL);
 
   /* torso servo */
   servo.attach(SERVO_PIN, SRVO_MIN, SRVO_MAX);
@@ -74,8 +76,8 @@ void loop()
   sendKeepAliveToPC(); 
 
    
-  //if (send_data)
-  //  sendReadingsToPC();
+  if (send_data)
+    sendReadingsToPC();
 }
 
 /******************************************************/
@@ -115,7 +117,7 @@ void readFromPC()
 
 void sendKeepAliveToPC()
 {
-  if (send_keepalive_timer.finished()/* && send_data*/)
+  if (send_keepalive_timer.finished() && send_data)
   {
     protocol::keepalive ka_pkg;    
     com.write(ka_pkg, sizeof(protocol::keepalive));
@@ -149,31 +151,32 @@ void sendReadingsToPC()
   
   /* read IMU if available. IMU read must be called */
   /* as fast as possible (no delays)                */
-  protocol::imu imu_pkg;
+  /*protocol::imu imu_pkg;
   bool valid_imu = false;
   if (imu.read(imu_pkg)) //if imu ready, send it
-    valid_imu = true;
+    valid_imu = true;*/
   
   if (send_readings_timer.finished())
   {
     /* ULTRASONIC */
-    protocol::ultrasonic ultrasonic_pkg;
-    /*if (ultrasonic.readDistanceMm(ultrasonic_pkg.distance_mm))
-      communicator::ric::sendHeaderAndPkg(protocol::Type:: ULTRASONIC, 
-                                          ultrasonic_pkg, 
-                                          sizeof(protocol::ultrasonic));*/
+    if (ultrasonic_timer.finished())
+    {
+       protocol::ultrasonic ultrasonic_pkg;
+       if (ultrasonic.readDistanceMm(ultrasonic_pkg.distance_mm))
+          com.write(ultrasonic_pkg, sizeof(protocol::ultrasonic));
+       ultrasonic_timer.startOver();
+    }
+   
 
     /* IMU */
-    if (valid_imu)
-    {
-      /*communicator::ric::sendHeaderAndPkg(protocol::Type:: IMU, 
-                                          imu_pkg, 
-                                          sizeof(protocol::imu));*/
-      
-      //Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
-      //Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
-      //Serial.print("yaw: "); Serial.println(imu_pkg.yaw * 180 / M_PI);
-    }
+    /*if (valid_imu)
+      com.write(imu_pkg, sizeof(protocol::imu));*/
+
+    /*
+    Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
+    Serial.print("pitch: "); Serial.println(imu_pkg.pitch * 180 / M_PI);
+    Serial.print("yaw: "); Serial.println(imu_pkg.yaw * 180 / M_PI);
+    */
 
     /* LASER */
     uint16_t laser_read = laser.read();
@@ -181,20 +184,15 @@ void sendReadingsToPC()
     {
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
-      /*communicator::ric::sendHeaderAndPkg(protocol::Type:: LASER,
-                                          laser_pkg, 
-                                          sizeof(protocol::laser));*/
+      Serial3.println(laser_read);
+      com.write(laser_pkg, sizeof(protocol::laser));
     }
 
     /* GPS */
     protocol::gps gps_pkg;
     bool valid_gps = gps.read(gps_pkg);
     if (valid_gps)
-    {
-      /*communicator::ric::sendHeaderAndPkg(protocol::Type::GPS, 
-                                          gps_pkg, 
-                                          sizeof(protocol::gps));*/
-    }
+      com.write(gps_pkg, sizeof(protocol::gps));
 
     send_readings_timer.startOver();
   }

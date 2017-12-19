@@ -61,7 +61,7 @@ namespace ric_interface
                     Communicator::fromBytes(pkg_buff_, sizeof(protocol::keepalive), ka_pkg);
                     if (ka_pkg.type == (uint8_t)protocol::Type::KEEP_ALIVE)
                     {
-                        fprintf(stderr, "got keep alive\n");
+                        //fprintf(stderr, "got keep alive\n");
                         got_keepalive_ = true;
                     }
                     break;
@@ -73,7 +73,7 @@ namespace ric_interface
                     if (logger_pkg.type == (uint8_t)protocol::Type::LOGGER)
                     {
                         sensors_state_.logger = logger_pkg;
-                        fprintf(stderr, "logger: %d\n", logger_pkg.value);
+                        //fprintf(stderr, "logger: %d\n", logger_pkg.value);
                     }
 
                     break;

@@ -10,6 +10,7 @@
 #define SEND_KA_INTERVAL 300 //ms
 #define GET_KA_INTERVAL 1000 //ms
 #define SEND_READINGS_INTERVAL 20 //ms
+#define UTLRASONICE_INTERVAL 80 //ms - this is the fastest update rate of urf according to datasheet
 #define SERVO_PIN 3
 #define ULTRASONIC_PIN 14
 
