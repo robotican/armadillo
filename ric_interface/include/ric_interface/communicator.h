@@ -60,8 +60,8 @@ namespace ric_interface
                     {
                         protocol::package pkg;
                         fromBytes(buff, sizeof(protocol::package), pkg);
-                        return (int)pkg.type;
                         reset();
+                        return (int)pkg.type;
                     }
                     break;
                 }
@@ -74,12 +74,12 @@ namespace ric_interface
             memcpy(&pkg, buff, pkg_size);
         }
 
-        static void toBytes(protocol::package &pkg, size_t pkg_size, byte buff[])
+        static void toBytes(const protocol::package &pkg, size_t pkg_size, byte buff[])
         {
             memcpy(buff, &pkg, pkg_size);
         }
 
-        bool write(protocol::package &pkg, size_t pkg_size)
+        bool write(const protocol::package &pkg, size_t pkg_size)
         {
             byte header_buff[2];
             header_buff[protocol::HEADER_INDX] = protocol::HEADER_CODE;

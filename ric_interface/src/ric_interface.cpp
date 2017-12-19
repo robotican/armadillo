@@ -16,25 +16,19 @@ namespace ric_interface
         comm_.connect(port, 115200);
     }
 
+    void RicInterface::clearBuffer()
+    {
+        memset(pkg_buff_, 0, protocol::MAX_PKG_SIZE);
+    }
+
     void RicInterface::loop()
     {
-        //keepAliveAndRead();
         sendKeepAlive();
+        readAndHandlePkg();
+        checkKeepAliveFromRic();
     }
 
-    void RicInterface::sendKeepAlive()
-    {
-        send_keepalive_timer_.startTimer(SEND_KA_TIMEOUT);
-        if (send_keepalive_timer_.isFinished())
-        {
-            puts("sending ka");
-            protocol::keepalive ka_pkg;
-            comm_.write(ka_pkg, sizeof(protocol::keepalive));
-            send_keepalive_timer_.reset();
-        }
-    }
-
-    void RicInterface::keepAliveAndRead()
+    void RicInterface::checkKeepAliveFromRic()
     {
         get_keepalive_timer_.startTimer(GET_KA_TIMEOUT);
         if (get_keepalive_timer_.isFinished())
@@ -52,112 +46,103 @@ namespace ric_interface
             }
             get_keepalive_timer_.reset();
         }
-
-
-
-        /* try to read header */
-        //protocol::header incoming_header;
-        //if (readPkg(incoming_header, sizeof(protocol::header)))
-        //{
-            //printf("INCOMMING header type: %d\n", (int)incoming_header.type);
-            //handleHeader(incoming_header);
-        //}
     }
 
-    void RicInterface::handleHeader(const protocol::package &h)
+    void RicInterface::readAndHandlePkg()
     {
-        switch (h.type)
+        int pkg_type = comm_.read(pkg_buff_);
+        if (pkg_type != -1)
         {
-            case (int)protocol::Type::KEEP_ALIVE:
+            switch (pkg_type)
             {
-                protocol::keepalive ka_pkg;
-                if (readPkg(ka_pkg, sizeof(protocol::keepalive)))
+                case (uint8_t) protocol::Type::KEEP_ALIVE:
                 {
-                    //ka pkg is empty
-                    //puts("GOT KA");
-                    got_keepalive_ = true;
+                    protocol::keepalive ka_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::keepalive), ka_pkg);
+                    if (ka_pkg.type == (uint8_t)protocol::Type::KEEP_ALIVE)
+                    {
+                        fprintf(stderr, "got keep alive\n");
+                        got_keepalive_ = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case (int)protocol::Type::LOGGER:
-            {
-                protocol::logger logger_pkg;
-                if (readPkg(logger_pkg, sizeof(protocol::logger)))
+                case (uint8_t) protocol::Type::LOGGER:
                 {
-                    sensors_state_.logger = logger_pkg;
-                    //printf("logger msg: %s, logger code: %d\n", logger_pkg.msg, logger_pkg.value);
+                    protocol::logger logger_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::logger), logger_pkg);
+                    if (logger_pkg.type == (uint8_t)protocol::Type::LOGGER)
+                    {
+                        sensors_state_.logger = logger_pkg;
+                        fprintf(stderr, "logger: %d\n", logger_pkg.value);
+                    }
+
+                    break;
                 }
-                break;
-            }
-            case (int)protocol::Type::ULTRASONIC:
-            {
-                protocol::ultrasonic ultrasonic_pkg;
-                if (readPkg(ultrasonic_pkg, sizeof(protocol::ultrasonic)))
+                case (int)protocol::Type::ULTRASONIC:
                 {
-                    sensors_state_.ultrasonic = ultrasonic_pkg;
-                    //printf("ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
+                    protocol::ultrasonic ultrasonic_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::ultrasonic), ultrasonic_pkg);
+                    if (ultrasonic_pkg.type == (uint8_t)protocol::Type::ULTRASONIC)
+                    {
+                        sensors_state_.ultrasonic = ultrasonic_pkg;
+                        fprintf(stderr, "ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
+                    }
+                    break;
                 }
-                break;
-            }
-            case (int)protocol::Type::IMU:
-            {
-                protocol::imu imu_pkg;
-                if (readPkg(imu_pkg, sizeof(protocol::imu)))
+                case (int)protocol::Type::IMU:
                 {
-                    sensors_state_.imu = imu_pkg;
-                    /* fprintf(stderr, "imu: roll: %f, pitch: %f, yaw: %f \n", sensors_state_.imu.roll_rad * 180 / M_PI,
-                                                                     sensors_state_.imu.pitch_rad * 180 / M_PI,
-                                                                     sensors_state_.imu.yaw_rad * 180 / M_PI);*/
+                    protocol::imu imu_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::imu), imu_pkg);
+                    if (imu_pkg.type == (uint8_t)protocol::Type::IMU)
+                    {
+                        sensors_state_.imu = imu_pkg;
+                        fprintf(stderr, "imu: roll: %f, pitch: %f, yaw: %f \n", sensors_state_.imu.roll_rad * 180 / M_PI,
+                                sensors_state_.imu.pitch_rad * 180 / M_PI,
+                                sensors_state_.imu.yaw_rad * 180 / M_PI);
+                    }
+                    break;
                 }
-                break;
-            }
-            case (int)protocol::Type::LASER:
-            {
-                protocol::laser laser_pkg;
-                if (readPkg(laser_pkg, sizeof(protocol::laser)))
+                case (int)protocol::Type::LASER:
                 {
-                    sensors_state_.laser = laser_pkg;
-                    //printf("laser dist: %d\n", sensors_state_.laser.distance_mm);
+                    protocol::laser laser_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::laser), laser_pkg);
+                    if (laser_pkg.type == (uint8_t)protocol::Type::LASER)
+                    {
+                        sensors_state_.laser = laser_pkg;
+                        fprintf(stderr, "laser dist: %d\n", sensors_state_.laser.distance_mm);
+                    }
+                    break;
                 }
-                break;
-            }
-            case (int)protocol::Type::GPS:
-            {
-                protocol::gps gps_pkg;
-                if (readPkg(gps_pkg, sizeof(protocol::gps)))
+                case (int)protocol::Type::GPS:
                 {
-                    sensors_state_.gps = gps_pkg;
-                    //printf("gps lat: %f, lon: %f\n", sensors_state_.gps.lat, sensors_state_.gps.lon);
+                    protocol::gps gps_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::gps), gps_pkg);
+                    if (gps_pkg.type == (uint8_t)protocol::Type::GPS)
+                    {
+                        sensors_state_.gps = gps_pkg;
+                        fprintf(stderr,"gps lat: %f, lon: %f\n", sensors_state_.gps.lat, sensors_state_.gps.lon);
+                    }
+                    break;
                 }
-                break;
             }
+            clearBuffer();
         }
     }
 
-    bool RicInterface::readPkg(protocol::package &pkg, size_t pkg_size)
+    void RicInterface::sendKeepAlive()
     {
-        /*byte buff[pkg_size];
-        int bytes_read = comm_.read(buff, pkg_size);
-        if (bytes_read != pkg_size)
-            return false;
-        memcpy(&pkg, buff, pkg_size);
-        return true;*/
+        send_keepalive_timer_.startTimer(SEND_KA_TIMEOUT);
+        if (send_keepalive_timer_.isFinished())
+        {
+            //puts("sending ka");
+            protocol::keepalive ka_pkg;
+            comm_.write(ka_pkg, sizeof(protocol::keepalive));
+            send_keepalive_timer_.reset();
+        }
     }
 
     void RicInterface::writeCmd(const protocol::actuator &actu_pkg, size_t size, protocol::Type type)
     {
-        sendHeaderAndPkg(type, actu_pkg, size);
-    }
-
-
-    /* send header and then state (i.e. keep alive) pkg content to ricboard */
-    bool RicInterface::sendHeaderAndPkg(protocol::Type header_type,
-                                        const protocol::package &pkg,
-                                        size_t pkg_size)
-    {
-
-        //sendPkg(header_pkg, sizeof(protocol::header));
-
-        //sendPkg(pkg, pkg_size);
+        comm_.write(actu_pkg, size);
     }
 }

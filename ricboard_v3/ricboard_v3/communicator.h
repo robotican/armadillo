@@ -34,7 +34,6 @@ class Communicator
       }
       case HEADER_PART_B: //read pkg size
       {
-        Serial.println("B");
         pkg_size_ = tryReadPkgSize();
         if (pkg_size_ != -1)
           state_ = PACKAGE;
@@ -50,8 +49,8 @@ class Communicator
         {
           protocol::package pkg;
           fromBytes(buff, sizeof(protocol::package), pkg);
-          return (int)pkg.type;
           reset();
+          return (uint8_t)pkg.type;
         }
         break;
       }
@@ -62,6 +61,25 @@ class Communicator
   static void fromBytes(byte buff[], size_t pkg_size, protocol::package &pkg)
   {
     memcpy(&pkg, buff, pkg_size);
+  }
+
+  static void toBytes(const protocol::package &pkg, size_t pkg_size, byte buff[])
+  {
+    memcpy(buff, &pkg, pkg_size);
+  }
+
+  bool write(const protocol::package &pkg, size_t pkg_size)
+  {
+      byte header_buff[2];
+      header_buff[protocol::HEADER_INDX] = protocol::HEADER_CODE;
+      header_buff[protocol::PKG_SIZE_INDX] = pkg_size;
+      if (Serial.write(header_buff, 2) != 2)
+          return false;
+      byte pkg_buff[pkg_size];
+      toBytes(pkg, pkg_size, pkg_buff);
+      if (Serial.write(pkg_buff, pkg_size) != pkg_size)
+          return false;
+      return true;
   }
 
 

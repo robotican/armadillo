@@ -18,6 +18,7 @@ namespace ric_interface
             SERVO = 106
         };
 
+        const uint16_t MAX_PKG_SIZE = 512;
         const uint8_t HEADER_CODE = 200;
         const uint8_t HEADER_INDX = 0;
         const uint8_t PKG_SIZE_INDX = 1;
@@ -35,6 +36,7 @@ namespace ric_interface
 
         struct logger : package
         {
+            logger() { type = (uint8_t)Type::LOGGER; }
             char msg[128];
             int32_t value;
         };
@@ -50,16 +52,19 @@ namespace ric_interface
 
         struct ultrasonic : sensor
         {
+            ultrasonic() { type = (uint8_t)Type::ULTRASONIC; }
             uint16_t distance_mm;
         };
 
         struct laser : sensor
         {
+            laser() { type = (uint8_t)Type::LASER; }
             uint16_t distance_mm;
         };
 
         struct imu : sensor
         {
+            imu() { type = (uint8_t)Type::IMU; }
             float roll_rad,
                     pitch_rad,
                     yaw_rad,
@@ -76,6 +81,7 @@ namespace ric_interface
 
         struct gps : sensor
         {
+            gps() { type = (uint8_t)Type::GPS; }
             float lat,
                     lon;
 
@@ -104,6 +110,7 @@ namespace ric_interface
 
         struct servo : actuator
         {
+            servo() { type = (uint8_t)Type::SERVO; }
             uint16_t cmd; //servo command 1000-2000
         };
     }

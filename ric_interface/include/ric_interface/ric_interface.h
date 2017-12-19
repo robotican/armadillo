@@ -9,6 +9,7 @@
 #include "timer.h"
 #include "protocol.h"
 #include "sensors_state.h"
+#include <math.h>
 #include <string.h>
 #include <iostream>
 
@@ -25,14 +26,12 @@ namespace ric_interface
         Timer send_keepalive_timer_, get_keepalive_timer_;
         Communicator comm_;
         sensors_state sensors_state_;
+        byte pkg_buff_[protocol::MAX_PKG_SIZE];
 
-        bool readPkg(protocol::package &pkg, size_t size);
-        bool sendPkg(const protocol::package &pkg, size_t pkg_size);
-        bool sendHeaderAndPkg(protocol::Type header_type,
-                              const protocol::package &pkg, size_t pkg_size);
-        void handleHeader(const protocol::package &h);
-        void keepAliveAndRead();
+        void readAndHandlePkg();
+        void checkKeepAliveFromRic();
         void sendKeepAlive();
+        void clearBuffer();
 
     public:
         RicInterface();

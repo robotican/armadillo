@@ -4,7 +4,6 @@
 #define SRVO_NEUTRAL 1500
 #define SRVO_MIN 1000
 #define SRVO_MAX 2000
-#define MAX_PKG_SIZE 512
 
 #define INDICATOR_LED 13
 #define BAUDRATE 115200

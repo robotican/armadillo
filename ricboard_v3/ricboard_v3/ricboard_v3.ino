@@ -26,13 +26,14 @@ Imu imu;
 Laser laser;
 Gps gps;
 
-byte pkg_buff[MAX_PKG_SIZE];
+byte pkg_buff[protocol::MAX_PKG_SIZE];
 
 /******************************************************/
 
 void setup() 
 {
   com.init(BAUDRATE);
+  Serial3.begin(9600);
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
@@ -67,10 +68,11 @@ void loop()
   strober.play(INDICATOR_LED);
   
   readFromPC();
-  
-  //sendKeepAliveToPC(); 
-  
-  getKeepAliveFromPC();
+   
+  checkKeepAliveFromPC();
+
+  sendKeepAliveToPC(); 
+
    
   //if (send_data)
   //  sendReadingsToPC();
@@ -80,14 +82,14 @@ void loop()
 
 void readFromPC()
 {
-  int pkg_type = com.read(pkg_buff);
-  if(pkg_type != -1)
+  int pkg_type = com.read(pkg_buff); //read incoming pkgs
+  if(pkg_type != -1) //incoming valid pkg
   {
     switch (pkg_type)
     {
-      case (int)protocol::Type::KEEP_ALIVE:
+      case (uint8_t)protocol::Type::KEEP_ALIVE:
       {
-            strober.setNotes(Strober::Notes::STROBE);
+        strober.setNotes(Strober::Notes::STROBE);
 
         protocol::keepalive ka_pkg;
         Communicator::fromBytes(pkg_buff, sizeof(protocol::keepalive), ka_pkg);
@@ -95,7 +97,7 @@ void readFromPC()
         got_keepalive = true;
         break;
       }
-      case (int)protocol::Type::SERVO:
+      case (uint8_t)protocol::Type::SERVO:
       {
         protocol::servo servo_pkg;
         Communicator::fromBytes(pkg_buff, sizeof(protocol::servo), servo_pkg);
@@ -103,7 +105,7 @@ void readFromPC()
         break;
       }
     }    
-    clearBuffer();
+    clearBuffer(); //prepare buff for next pkg
   }
 }
 
@@ -113,16 +115,17 @@ void readFromPC()
 
 void sendKeepAliveToPC()
 {
-  /*if (send_keepalive_timer.finished() && send_data)
+  if (send_keepalive_timer.finished()/* && send_data*/)
   {
     protocol::keepalive ka_pkg;    
+    com.write(ka_pkg, sizeof(protocol::keepalive));
     send_keepalive_timer.startOver();
-  }*/
+  }
 }
 
 /******************************************************/
 
-void getKeepAliveFromPC() 
+void checkKeepAliveFromPC() 
 {
   if (get_keepalive_timer.finished())
   {
@@ -133,7 +136,7 @@ void getKeepAliveFromPC()
     else //disconnected from pc
     {
       send_data = false;
-      //strober.setNotes(Strober::Notes::BLINK_SLOW);
+      strober.setNotes(Strober::Notes::BLINK_SLOW);
     }
     get_keepalive_timer.startOver();
   }
@@ -200,20 +203,17 @@ void sendReadingsToPC()
 /******************************************************/
 void log(const char* msg_str, int32_t value)
 {
-    //protocol::header logger_header;
-    //logger_header.type = protocol::Type::LOGGER;
     protocol::logger logger_pkg;
     strcpy(logger_pkg.msg, msg_str);
     
     logger_pkg.value = value;
-    
-    //communicator::ric::sendHeaderAndPkg(protocol::Type::LOGGER, logger_pkg, sizeof(protocol::logger));
+    com.write(logger_pkg, sizeof(protocol::logger));
 }
 
 /****************************************************/
 
 void clearBuffer() 
 {
-  memset(pkg_buff, 0, MAX_PKG_SIZE);
+  memset(pkg_buff, 0, protocol::MAX_PKG_SIZE);
 }
 
