@@ -27,6 +27,7 @@ public:
     if (timer.finished())
     {
       value = (uint16_t)analogRead(pin_) * USONIC_SCALE_FACT;
+      timer.startOver();
       return true;
     }
     return false;

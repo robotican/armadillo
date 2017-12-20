@@ -15,7 +15,8 @@ namespace ric_interface
             LASER = 103,
             IMU = 104,
             GPS = 105,
-            SERVO = 106
+            SERVO = 106,
+            EMERGENCY_ALARM = 107
         };
 
         const uint16_t MAX_PKG_SIZE = 512;
@@ -48,6 +49,12 @@ namespace ric_interface
 
         struct actuator : package
         {
+        };
+
+        struct emergency_alarm : sensor
+        {
+            emergency_alarm() { type = (uint8_t)Type::EMERGENCY_ALARM; }
+            bool is_on;
         };
 
         struct ultrasonic : sensor

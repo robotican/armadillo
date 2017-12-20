@@ -19,7 +19,7 @@ int main(int argc, char **argv)
         {
             //fprintf(stderr, "here\n");
             ric_interface::protocol::servo actu_pkg;
-            actu_pkg.cmd = 2000;
+            actu_pkg.cmd =1000;
             bm.writeCmd(actu_pkg, sizeof(ric_interface::protocol::servo), ric_interface::protocol::Type::SERVO);
             prev_time = ros::Time::now();
         }
