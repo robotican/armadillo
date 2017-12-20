@@ -235,7 +235,7 @@ namespace dxl
         int comm_result = bulk_read.txRxPacket();
         if (comm_result != COMM_SUCCESS)
         {
-            pkt_handler_->printTxRxResult(comm_result);
+            //pkt_handler_->printTxRxResult(comm_result);
             return false;
         }
 

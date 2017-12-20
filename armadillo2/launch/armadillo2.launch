@@ -38,7 +38,7 @@
     </group>
     
     <!--load controllers-->
-<!--    <include file="$(find armadillo2_control)/launch/armadillo2_control.launch" />-->
+    <include file="$(find armadillo2_control)/launch/armadillo2_control.launch" />
     
     <group if="$(arg moveit)">
 <!--        <include file="$(find armadillo2_moveit_config)/launch/move_group.launch" />-->

@@ -24,6 +24,7 @@
 #define RIC_WRITE_INTERVAL 0.05 //secs
 #define RIC_DEAD_TIMEOUT 1 //secs
 #define MAX_RIC_DISCONNECTIONS 5
+#define SERVO_NEUTRAL 1500
 
 struct torso_joint
 {

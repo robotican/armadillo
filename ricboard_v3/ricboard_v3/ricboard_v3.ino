@@ -18,7 +18,8 @@ Timer send_keepalive_timer,
       get_keepalive_timer,
       send_readings_timer;
      
-bool got_keepalive, send_data;
+bool got_keepalive = false, is_connected = false;
+bool is_emergency = false;
 Strober strober;
 Communicator com;
 /* servo for controlling torso */
@@ -79,8 +80,13 @@ void loop()
   sendKeepAliveToPC(); 
 
    
-  if (send_data)
+  if (is_connected)
     sendReadingsToPC();
+
+  /* stop torso in case of emergency or disconnected */
+  if (!is_connected || is_emergency)
+    servo.writeMicroseconds(SRVO_NEUTRAL);
+    
 }
 
 /******************************************************/
@@ -98,7 +104,7 @@ void readFromPC()
 
         protocol::keepalive ka_pkg;
         Communicator::fromBytes(pkg_buff, sizeof(protocol::keepalive), ka_pkg);
-        send_data = true;
+        is_connected = true;
         got_keepalive = true;
         break;
       }
@@ -106,7 +112,8 @@ void readFromPC()
       {
         protocol::servo servo_pkg;
         Communicator::fromBytes(pkg_buff, sizeof(protocol::servo), servo_pkg);
-        servo.writeMicroseconds(servo_pkg.cmd);
+        if (!is_emergency)
+          servo.writeMicroseconds(servo_pkg.cmd);
         break;
       }
     }    
@@ -120,7 +127,7 @@ void readFromPC()
 
 void sendKeepAliveToPC()
 {
-  if (send_keepalive_timer.finished() && send_data)
+  if (send_keepalive_timer.finished() && is_connected)
   {
     protocol::keepalive ka_pkg;    
     com.write(ka_pkg, sizeof(protocol::keepalive));
@@ -135,12 +142,10 @@ void checkKeepAliveFromPC()
   if (get_keepalive_timer.finished())
   {
     if (got_keepalive) //connected to pc
-    {
       got_keepalive = false;
-    }
     else //disconnected from pc
     {
-      send_data = false;
+      is_connected = false;
       strober.setNotes(Strober::Notes::BLINK_SLOW);
     }
     get_keepalive_timer.startOver();
@@ -197,7 +202,12 @@ void sendReadingsToPC()
     protocol::emergency_alarm emrg_pkg;
     emrg_pkg.is_on = !emergency_pin.readState();
     if (emrg_pkg.is_on) //send pkg only if pin disconnected
+    {
       com.write(emrg_pkg, sizeof(protocol::emergency_alarm));
+      is_emergency = true;
+    }
+    else
+      is_emergency = false;
     
 
     send_readings_timer.startOver();

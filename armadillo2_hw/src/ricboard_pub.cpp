@@ -186,7 +186,7 @@ void RicboardPub::write(const ros::Duration elapsed)
         /* add 1500 offset because torso limits in */
         /* armadillo2 xacro are b/w -500 - 500,    */
         /* and ric servo get value b/w 1000-2000   */
-        torso_pkg.cmd = torso_.command_effort + 1500;
+        torso_pkg.cmd = torso_.command_effort + SERVO_NEUTRAL;
         //ROS_WARN("torso_.command_effort: %f, RIC CMD: %d ", torso_.command_effort, torso_pkg.cmd);
         ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
     }
