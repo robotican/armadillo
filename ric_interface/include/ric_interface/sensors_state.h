@@ -16,6 +16,7 @@ namespace ric_interface
         protocol::imu imu;
         protocol::laser laser;
         protocol::gps gps;
+        protocol::emergency_alarm emrgcy_alarm;
     };
 }
 

@@ -7,6 +7,7 @@
 #include "imu.h"
 #include "laser.h"
 #include "gps.h"
+#include "pullup_pin.h"
 #include <Servo.h>
 /* this cpp acts as board manager */
 
@@ -15,8 +16,8 @@
 
 Timer send_keepalive_timer, 
       get_keepalive_timer,
-      send_readings_timer,
-      ultrasonic_timer;
+      send_readings_timer;
+     
 bool got_keepalive, send_data;
 Strober strober;
 Communicator com;
@@ -26,6 +27,7 @@ Ultrasonic ultrasonic;
 Imu imu;
 Laser laser;
 Gps gps;
+PullupPin emergency_pin;
 
 byte pkg_buff[protocol::MAX_PKG_SIZE];
 
@@ -37,25 +39,27 @@ void setup()
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
-  ultrasonic_timer.start(UTLRASONICE_INTERVAL);
 
   /* torso servo */
   servo.attach(SERVO_PIN, SRVO_MIN, SRVO_MAX);
   servo.writeMicroseconds(SRVO_NEUTRAL);
   
   ultrasonic.init(ULTRASONIC_PIN);
+
+  emergency_pin.init(EMERGENCY_PIN);
+  
   if (!imu.init())
     Serial.println("imu failed");//log("imu failed", protocol::logger::Code::ERROR);
 
-  delay(5);
+  delay(1);
 
   laser.init();
 
-  delay(5);
+  delay(1);
 
   gps.init();
 
-  delay(5);
+  delay(1);
 
   /* pin mode must be invoked after i2c devices (arduino bug) */
   pinMode(INDICATOR_LED, OUTPUT);
@@ -103,7 +107,6 @@ void readFromPC()
         protocol::servo servo_pkg;
         Communicator::fromBytes(pkg_buff, sizeof(protocol::servo), servo_pkg);
         servo.writeMicroseconds(servo_pkg.cmd);
-        log("got servo", (int32_t)servo_pkg.cmd);
         break;
       }
     }    
@@ -159,14 +162,11 @@ void sendReadingsToPC()
   if (send_readings_timer.finished())
   {
     /* ULTRASONIC */
-    if (ultrasonic_timer.finished())
-    {
+
        protocol::ultrasonic ultrasonic_pkg;
        if (ultrasonic.readDistanceMm(ultrasonic_pkg.distance_mm))
           com.write(ultrasonic_pkg, sizeof(protocol::ultrasonic));
-       ultrasonic_timer.startOver();
-    }
-   
+
     /* IMU */
     if (valid_imu)
       com.write(imu_pkg, sizeof(protocol::imu));
@@ -191,6 +191,14 @@ void sendReadingsToPC()
     bool valid_gps = gps.read(gps_pkg);
     //if (valid_gps)
       com.write(gps_pkg, sizeof(protocol::gps));
+
+
+    /* EMERGENCY PIN */
+    protocol::emergency_alarm emrg_pkg;
+    emrg_pkg.is_on = !emergency_pin.readState();
+    if (emrg_pkg.is_on) //send pkg only if pin disconnected
+      com.write(emrg_pkg, sizeof(protocol::emergency_alarm));
+    
 
     send_readings_timer.startOver();
   }

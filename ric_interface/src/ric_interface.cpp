@@ -85,7 +85,7 @@ namespace ric_interface
                     if (ultrasonic_pkg.type == (uint8_t)protocol::Type::ULTRASONIC)
                     {
                         sensors_state_.ultrasonic = ultrasonic_pkg;
-                        fprintf(stderr, "ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
+                        //fprintf(stderr, "ultrasonic: %d\n", ultrasonic_pkg.distance_mm);
                     }
                     break;
                 }
@@ -121,6 +121,17 @@ namespace ric_interface
                     {
                         sensors_state_.gps = gps_pkg;
                         //fprintf(stderr,"gps lat: %f, lon: %f\n", sensors_state_.gps.lat, sensors_state_.gps.lon);
+                    }
+                    break;
+                }
+                case (int)protocol::Type::EMERGENCY_ALARM:
+                {
+                    protocol::emergency_alarm emrg_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::emergency_alarm), emrg_pkg);
+                    if (emrg_pkg.type == (uint8_t)protocol::Type::EMERGENCY_ALARM)
+                    {
+                        sensors_state_.emrgcy_alarm = emrg_pkg;
+                        fprintf(stderr,"alarm state: %i\n", sensors_state_.emrgcy_alarm.is_on);
                     }
                     break;
                 }
