@@ -131,7 +131,7 @@ namespace ric_interface
                     if (emrg_pkg.type == (uint8_t)protocol::Type::EMERGENCY_ALARM)
                     {
                         sensors_state_.emrgcy_alarm = emrg_pkg;
-                        fprintf(stderr,"alarm state: %i\n", sensors_state_.emrgcy_alarm.is_on);
+                        //fprintf(stderr,"alarm state: %i\n", sensors_state_.emrgcy_alarm.is_on);
                     }
                     break;
                 }

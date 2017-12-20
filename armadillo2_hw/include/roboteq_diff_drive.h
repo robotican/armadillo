@@ -28,7 +28,7 @@ private:
 
     std::string roboteq_port_;
     std::string right_wheel_joint_, left_wheel_joint_;
-    int roboteq_baud_;
+    int roboteq_baud_ = 0;
     bool load_roboteq_hw_ = false;
     /* if first time, subtract previous values */
     bool first_time_ = true;

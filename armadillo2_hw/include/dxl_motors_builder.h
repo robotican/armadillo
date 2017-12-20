@@ -7,7 +7,6 @@
 
 #include <dxl_interface/dxl_interface.h>
 #include <std_srvs/SetBool.h>
-#include <yaml-cpp/yaml.h>
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -23,13 +22,6 @@
 #define DXL_PORT_PARAM "dxl_port_name"
 #define DXL_PORT_BAUD_PARAM "dxl_port_baudrate"
 
-/* The >> operator disappeared in yaml-cpp 0.5, so this function is     */
-/* added to provide support for code written under the yaml-cpp 0.3 API.*/
-template<typename T>
-void operator >> (const YAML::Node& node, T& i)
-{
-    i = node.as<T>();
-}
 
 namespace armadillo2_hw
 {
@@ -59,10 +51,10 @@ namespace armadillo2_hw
         std::vector<hardware_interface::PosVelJointHandle> posvel_handles_;
         std::vector<hardware_interface::JointHandle> pos_handles_;
 
-        int dxl_baudrate_;
+        int dxl_baudrate_ = 0;
         std::string dxl_port_;
-        int failed_reads_, failed_writes_;
-        float protocol_;
+        int failed_reads_ = 0, failed_writes_ = 0;
+        float protocol_ = 0;
         bool load_dxl_hw_ = true;
         std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */
         dxl::DxlInterface dxl_interface_;

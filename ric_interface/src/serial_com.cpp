@@ -9,6 +9,10 @@ void SerialCom::connect(std::string port, int baudrate) {
     if (file_handle_ < 0)
         throw ric_interface::ConnectionExeption("[ric_interface]: Failed to open RIC board port");
 
+    /* sleep for 10ms and then clear serial buffer */
+    usleep(10000);
+    tcflush(file_handle_,TCIOFLUSH);
+
     /* Check if the file descriptor is pointing to a TTY device or not */
     if (!isatty(file_handle_))
         throw ric_interface::ConnectionExeption("[ric_interface]: RIC Board port is not a tty device");

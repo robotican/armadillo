@@ -12,8 +12,8 @@ class Timer
 private:
     std::chrono::steady_clock::time_point begin_;
     std::chrono::steady_clock::time_point end_;
-    int micro_secs_;
-    bool started_;
+    int micro_secs_ = 0;
+    bool started_ = false;
 
 public:
     void reset();
