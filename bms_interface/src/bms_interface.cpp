@@ -188,7 +188,7 @@ namespace bms
             uint16_t raw_vcell = fetchParam(buff, BMS_PKG_CELLS_ARR_INDX + (cell_indx * BMS_PKG_CELL_SIZE),
                                             BMS_PKG_CELL_SIZE);
             pkg_data.vcells.push_back((float)raw_vcell / 1000.0);
-              fprintf(stderr, "cell num: %d volt: %f | ", cell_indx ,pkg_data.vcells[cell_indx]);
+            //fprintf(stderr, "cell num: %d volt: %f | ", cell_indx ,pkg_data.vcells[cell_indx]);
         }
         //fprintf(stderr, "\n");
 

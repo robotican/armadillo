@@ -42,7 +42,7 @@ namespace ric_interface
             else
             {
                 is_board_alive_ = false;
-                fprintf(stderr,"board dead ! \n");
+                //fprintf(stderr,"board dead ! \n");
             }
             get_keepalive_timer_.reset();
         }
