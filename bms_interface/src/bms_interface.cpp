@@ -173,7 +173,7 @@ namespace bms
         /****** fetch Vbat ******/
         uint16_t raw_vbat = fetchParam(buff, BMS_PKG_VBAT_INDX, BMS_PKG_VBAT_SIZE); //output is 0.5 of the total voltage
         pkg_data.vbat = (float)raw_vbat * 2.0 / 1000.0;
-        fprintf(stderr, "\nVbat: %f \n", pkg_data.vbat);
+        //fprintf(stderr, "\nVbat: %f \n", pkg_data.vbat);
 
         /****** fetch cells num ******/
         pkg_data.cell_num = fetchParam(buff, BMS_PKG_CELL_NUM_INDX, BMS_PKG_CELL_NUM_SIZE);
@@ -216,7 +216,7 @@ namespace bms
             if (temp > pkg_data.temp_max)
                 pkg_data.temp_max = temp;
             pkg_data.temps.push_back(temp);
-            fprintf(stderr, "temp num: %d temp: %d | ", temp_indx ,pkg_data.temps[temp_indx]);
+            //fprintf(stderr, "temp num: %d temp: %d | ", temp_indx ,pkg_data.temps[temp_indx]);
         }
         //fprintf(stderr, "\ntemp max: %d", pkg_data.temp_max);
         //fprintf(stderr, "\n");
@@ -224,54 +224,54 @@ namespace bms
         /****** fetch Vstate ******/
         pkg_data.vstate = fetchParam(buff, BMS_PKG_VSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_VSTATE_SIZE);
-        fprintf(stderr, "\nVSTATE: %d\n", pkg_data.vstate);
+        //fprintf(stderr, "\nVSTATE: %d\n", pkg_data.vstate);
 
         /****** fetch Cstate ******/
         pkg_data.cstate = fetchParam(buff, BMS_PKG_CSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_CSTATE_SIZE);
-        fprintf(stderr, "\nCSTATE: %d\n", pkg_data.cstate);
+        //fprintf(stderr, "\nCSTATE: %d\n", pkg_data.cstate);
         pkg_data.is_chrg = getBitInWord(pkg_data.cstate, 0);
         pkg_data.is_dchrg = getBitInWord(pkg_data.cstate, 1);
 
         /****** fetch Tstate ******/
         pkg_data.tstate = fetchParam(buff, BMS_PKG_TSTATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_TSTATE_SIZE);
-        fprintf(stderr, "\nTSTATE: %d\n", pkg_data.tstate);
+        //fprintf(stderr, "\nTSTATE: %d\n", pkg_data.tstate);
 
         /****** fetch Alarm ******/
         pkg_data.alarm = fetchParam(buff, BMS_PKG_ALARM_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                      BMS_PKG_ALARM_SIZE);
-        fprintf(stderr, "\nALARM: %d\n", pkg_data.alarm);
+        //fprintf(stderr, "\nALARM: %d\n", pkg_data.alarm);
 
         /****** fetch FetState ******/
         pkg_data.fet_state = fetchParam(buff, BMS_PKG_FET_STATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                     BMS_PKG_FET_STATE_SIZE);
-        fprintf(stderr, "\nFET-STATE: %d\n", pkg_data.fet_state);
+        //fprintf(stderr, "\nFET-STATE: %d\n", pkg_data.fet_state);
 
         /****** fetch WARN_VOV ******/
         pkg_data.warn_vov = fetchParam(buff, BMS_PKG_WARN_VOV_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                         BMS_PKG_WARN_VOV_SIZE);
-        fprintf(stderr, "\nWARN_VOV: %d\n", pkg_data.warn_vov);
+        //fprintf(stderr, "\nWARN_VOV: %d\n", pkg_data.warn_vov);
 
         /****** fetch WARN_VUV ******/
         pkg_data.warn_vuv = fetchParam(buff, BMS_PKG_WARN_VUV_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                        BMS_PKG_WARN_VUV_SIZE);
-        fprintf(stderr, "\nWARN_VUV: %d\n", pkg_data.warn_vuv);
+        //fprintf(stderr, "\nWARN_VUV: %d\n", pkg_data.warn_vuv);
 
         /****** fetch NUM_WARN_VHIGH ******/
         pkg_data.num_warn_vhigh = fetchParam(buff, BMS_PKG_NUM_WARN_VHIGH_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                        BMS_PKG_NUM_WARN_VHIGH_SIZE);
-        fprintf(stderr, "\nNUM_WARN_VHIGH: %d\n", pkg_data.num_warn_vhigh);
+        //fprintf(stderr, "\nNUM_WARN_VHIGH: %d\n", pkg_data.num_warn_vhigh);
 
         /****** fetch NUM_WARN_VLOW ******/
         pkg_data.num_warn_vlow = fetchParam(buff, BMS_PKG_NUM_WARN_VLOW_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                              BMS_PKG_NUM_WARN_VLOW_SIZE);
-        fprintf(stderr, "\nNUM_WARN_VLOW: %d\n", pkg_data.num_warn_vlow);
+        //fprintf(stderr, "\nNUM_WARN_VLOW: %d\n", pkg_data.num_warn_vlow);
 
         /****** fetch BalanceState ******/
         pkg_data.balance_state = fetchParam(buff, BMS_PKG_BALANCE_STATE_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                             BMS_PKG_BALANCE_STATE_SIZE);
-        fprintf(stderr, "\nBALANCE_STATE: %d\n", pkg_data.balance_state);
+        //fprintf(stderr, "\nBALANCE_STATE: %d\n", pkg_data.balance_state);
 
         /****** fetch DchgNum ******/
         pkg_data.dchg_num = fetchParam(buff, BMS_PKG_DCHG_NUM_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
@@ -291,7 +291,7 @@ namespace bms
         /****** fetch CapNow ******/
         pkg_data.cap_now = fetchParam(buff, BMS_PKG_CAP_NOW_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
                                       BMS_PKG_CAP_NOW_SIZE) / 10;
-        fprintf(stderr, "\nCAP_NOW: %d\n", pkg_data.cap_now);
+        //fprintf(stderr, "\nCAP_NOW: %d\n", pkg_data.cap_now);
 
         /****** fetch CapFull ******/
         pkg_data.cap_full = fetchParam(buff, BMS_PKG_CAP_FULL_INDX + temp_indx_offset + cells_indx_offset,  /////////////////////////////////TODO: FETCH ERROR BIT
