@@ -34,7 +34,6 @@ byte pkg_buff[protocol::MAX_PKG_SIZE];
 void setup() 
 {
   com.init(BAUDRATE);
-  Serial3.begin(9600);
   send_keepalive_timer.start(SEND_KA_INTERVAL);
   get_keepalive_timer.start(GET_KA_INTERVAL);
   send_readings_timer.start(SEND_READINGS_INTERVAL);
@@ -104,6 +103,7 @@ void readFromPC()
         protocol::servo servo_pkg;
         Communicator::fromBytes(pkg_buff, sizeof(protocol::servo), servo_pkg);
         servo.writeMicroseconds(servo_pkg.cmd);
+        log("got servo", (int32_t)servo_pkg.cmd);
         break;
       }
     }    
@@ -151,10 +151,10 @@ void sendReadingsToPC()
   
   /* read IMU if available. IMU read must be called */
   /* as fast as possible (no delays)                */
-  /*protocol::imu imu_pkg;
+  protocol::imu imu_pkg;
   bool valid_imu = false;
   if (imu.read(imu_pkg)) //if imu ready, send it
-    valid_imu = true;*/
+     valid_imu = true;
   
   if (send_readings_timer.finished())
   {
@@ -167,10 +167,9 @@ void sendReadingsToPC()
        ultrasonic_timer.startOver();
     }
    
-
     /* IMU */
-    /*if (valid_imu)
-      com.write(imu_pkg, sizeof(protocol::imu));*/
+    if (valid_imu)
+      com.write(imu_pkg, sizeof(protocol::imu));
 
     /*
     Serial.print("roll: "); Serial.println(imu_pkg.roll * 180 / M_PI);
@@ -184,14 +183,13 @@ void sendReadingsToPC()
     {
       protocol::laser laser_pkg;
       laser_pkg.distance_mm = laser_read;
-      Serial3.println(laser_read);
       com.write(laser_pkg, sizeof(protocol::laser));
     }
 
     /* GPS */
     protocol::gps gps_pkg;
     bool valid_gps = gps.read(gps_pkg);
-    if (valid_gps)
+    //if (valid_gps)
       com.write(gps_pkg, sizeof(protocol::gps));
 
     send_readings_timer.startOver();

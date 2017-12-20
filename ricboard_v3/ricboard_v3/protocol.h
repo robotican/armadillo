@@ -33,7 +33,7 @@ namespace protocol
     struct logger : package
     {
         logger() { type = (uint8_t)Type::LOGGER; }
-        char msg[128];
+        char msg[30];
         int32_t value;
     };
 

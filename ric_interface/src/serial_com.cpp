@@ -62,7 +62,6 @@ int SerialCom::read(byte buff[], size_t size) {
         else
         {
             bad_reads++;
-            //printf("fucked\n");
         }
     }
     if (bad_reads == max_bad_reads)

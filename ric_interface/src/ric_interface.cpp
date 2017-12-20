@@ -13,7 +13,7 @@ namespace ric_interface
     /* if conncetion fails, exception will be thrown */
     void RicInterface::connect(std::string port)
     {
-        comm_.connect(port, 115200);
+        comm_.connect(port, 500000);
     }
 
     void RicInterface::clearBuffer()
@@ -73,7 +73,7 @@ namespace ric_interface
                     if (logger_pkg.type == (uint8_t)protocol::Type::LOGGER)
                     {
                         sensors_state_.logger = logger_pkg;
-                        //fprintf(stderr, "logger: %d\n", logger_pkg.value);
+                        //fprintf(stderr, "logger msg: %s, code: %d\n", logger_pkg.msg, logger_pkg.value);
                     }
 
                     break;
@@ -96,9 +96,9 @@ namespace ric_interface
                     if (imu_pkg.type == (uint8_t)protocol::Type::IMU)
                     {
                         sensors_state_.imu = imu_pkg;
-                        fprintf(stderr, "imu: roll: %f, pitch: %f, yaw: %f \n", sensors_state_.imu.roll_rad * 180 / M_PI,
+                        /*fprintf(stderr, "imu: roll: %f, pitch: %f, yaw: %f \n", sensors_state_.imu.roll_rad * 180 / M_PI,
                                 sensors_state_.imu.pitch_rad * 180 / M_PI,
-                                sensors_state_.imu.yaw_rad * 180 / M_PI);
+                                sensors_state_.imu.yaw_rad * 180 / M_PI);*/
                     }
                     break;
                 }
@@ -109,7 +109,7 @@ namespace ric_interface
                     if (laser_pkg.type == (uint8_t)protocol::Type::LASER)
                     {
                         sensors_state_.laser = laser_pkg;
-                        fprintf(stderr, "laser dist: %d\n", sensors_state_.laser.distance_mm);
+                        //fprintf(stderr, "laser dist: %d\n", sensors_state_.laser.distance_mm);
                     }
                     break;
                 }
@@ -120,7 +120,7 @@ namespace ric_interface
                     if (gps_pkg.type == (uint8_t)protocol::Type::GPS)
                     {
                         sensors_state_.gps = gps_pkg;
-                        fprintf(stderr,"gps lat: %f, lon: %f\n", sensors_state_.gps.lat, sensors_state_.gps.lon);
+                        //fprintf(stderr,"gps lat: %f, lon: %f\n", sensors_state_.gps.lat, sensors_state_.gps.lon);
                     }
                     break;
                 }
