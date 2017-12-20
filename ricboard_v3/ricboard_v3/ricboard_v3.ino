@@ -189,7 +189,7 @@ void sendReadingsToPC()
     /* GPS */
     protocol::gps gps_pkg;
     bool valid_gps = gps.read(gps_pkg);
-    //if (valid_gps)
+    if (valid_gps)
       com.write(gps_pkg, sizeof(protocol::gps));
 
     send_readings_timer.startOver();
