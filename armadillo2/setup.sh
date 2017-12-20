@@ -28,6 +28,9 @@ sudo apt-get -y install ros-kinetic-gazebo-ros-control
 sudo apt-get -y install ros-kinetic-ros-controllers 
 sudo apt-get -y install ros-kinetic-ros-control 
 sudo apt-get -y install ros-kinetic-moveit
+sudo apt-get -y install ros-kinetic-move-base
+sudo apt-get -y install ros-kinetic-navigation
+sudo apt-get -y install ros-kinetic-gmapping
 sudo apt-get -y install ros-kinetic-pid
 sudo apt-get -y install ros-kinetic-joy
 sudo apt-get -y install joystick 

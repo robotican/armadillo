@@ -1,23 +1,18 @@
 <?xml version="1.0"?>
 
 <launch>
-
-
     <!-- rqt_plot is a resource hog, so if you're seeing high CPU usage, don't launch rqt_plot  -->
    <!-- <node name="rqt_plot" pkg="rqt_plot" type="rqt_plot"
     args="torso/pid_controller/effort torso/pid_controller/state torso/pid_controller/setpoint" />-->
 
     <!--<node name="rqt_robot_monitor" pkg="rqt_robot_monitor" type="rqt_robot_monitor" />-->
-<!--    <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" />-->
-    
-    
-    
-<node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
-<!--<node pkg="tf" type="static_transform_publisher" name="odom_base_broadcaster" args="0 0 0 0 0 0 /odom /base_footprint 20" />-->
+    <!--<node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" />-->
 
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
 
     <node name="armadillo2_hw_node" pkg="armadillo2_hw" type="armadillo2_hw_node" respawn="false" output="screen" />
+    
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
     
     <rosparam file="$(find armadillo2_hw)/config/dxl_joints_config.yaml" command="load"/>
     
@@ -29,7 +24,4 @@
     
     <rosparam file="$(find armadillo2_hw)/config/roboteq_config.yaml" command="load"/>
 
-
-<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
-	
 </launch>
