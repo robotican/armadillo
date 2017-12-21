@@ -18,9 +18,9 @@
 #define MAX_WRITE_ERRORS 10
 #define DXL_JOINTS_CONFIG_PARAM "dxl_joints_config"
 #define SPEC_CONFIG_PARAM "dxl_spec_config"
-#define DXL_PROTOCOL_PARAM "dxl_protocol"
-#define DXL_PORT_PARAM "dxl_port_name"
-#define DXL_PORT_BAUD_PARAM "dxl_port_baudrate"
+#define DXL_PROTOCOL_PARAM "~dxl_protocol"
+#define DXL_PORT_PARAM "~dxl_port_name"
+#define DXL_PORT_BAUD_PARAM "~dxl_port_baudrate"
 
 
 namespace armadillo2_hw

@@ -11,7 +11,7 @@
 
 //#define BATT_PORT "/dev/BMS"
 #define BATT_PUB_INTERVAL 1 //secs
-#define BATT_PORT_PARAM "batt_port"
+#define BATT_PORT_PARAM "~batt_port"
 
 namespace armadillo2_hw
 {

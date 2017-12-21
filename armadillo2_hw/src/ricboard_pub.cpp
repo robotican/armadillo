@@ -6,27 +6,25 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
     nh_ = &nh;
 
     /* get ric params */
-    nh_->getParam("load_ric_hw", load_ric_hw_);
+    ros::param::get("~load_ric_hw", load_ric_hw_);
 
     if (load_ric_hw_)
     {
-        if (!nh_->hasParam(RIC_PORT_PARAM))
+        if (!ros::param::get(RIC_PORT_PARAM, ric_port_))
         {
             ROS_ERROR("[armadillo2_hw/ricboard_pub]: %s param is missing on param server. make sure that you load this param exist in ricboard_config.yaml "
                               "and that your launch includes this param file. shutting down...", RIC_PORT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(RIC_PORT_PARAM, ric_port_);
 
-        if (!nh_->hasParam(TORSO_JOINT_PARAM))
+        if (!ros::param::get(TORSO_JOINT_PARAM, torso_.joint_name))
         {
             ROS_ERROR("[armadillo2_hw/ricboard_pub]: %s param is missing on param server. make sure that this param exist in controllers.yaml "
                               "and that your launch includes this param file. shutting down...", TORSO_JOINT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(TORSO_JOINT_PARAM, torso_.joint_name);
 
         try{
             ric_.connect(ric_port_);
@@ -49,6 +47,8 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
     }
+    else
+        ROS_WARN("[armadillo2_hw/ricboard_pub]: ric hardware is disabled");
 }
 
 void RicboardPub::startLoop()

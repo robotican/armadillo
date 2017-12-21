@@ -42,10 +42,4 @@
     
     <rosparam file="$(find armadillo2_hw)/config/dxl_spec_config.yaml" command="load"/>
 
-    <rosparam file="$(find armadillo2_hw)/config/battery_config.yaml" command="load"/>
-    
-    <rosparam file="$(find armadillo2_hw)/config/ricboard_config.yaml" command="load"/>
-    
-    <rosparam file="$(find armadillo2_hw)/config/roboteq_config.yaml" command="load"/>
-
 </launch>

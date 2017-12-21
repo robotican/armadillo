@@ -8,7 +8,7 @@ namespace armadillo2_hw
     DxlMotorsBuilder::DxlMotorsBuilder(ros::NodeHandle &nh)
     {
         nh_ = &nh;
-        nh_->getParam("load_dxl_hw", load_dxl_hw_);
+        ros::param::get("~load_dxl_hw", load_dxl_hw_);
         if (load_dxl_hw_)
         {
             /* the order of calling the following methods is important      */
@@ -22,7 +22,7 @@ namespace armadillo2_hw
 
             for (dxl::motor &motor :  motors_)
             {
-                ROS_INFO ("[dxl_motors_builder]: done building motor id: %d, model: %d",
+                ROS_INFO ("[armadillo2_hw/dxl_motors_builder]: done building motor id: %d, model: %d",
                           motor.id, motor.spec.model);
             }
 
@@ -31,6 +31,8 @@ namespace armadillo2_hw
 
             torque_srv_ = nh_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
         }
+        else
+            ROS_WARN("[armadillo2_hw/dxl_motors_builder]: dxl motors hardware is disabled");
     }
 
     void DxlMotorsBuilder::read()
@@ -472,35 +474,31 @@ namespace armadillo2_hw
         }
 
         /* DXL_PROTOCOL_PARAM */
-        if (!nh_->hasParam(DXL_PROTOCOL_PARAM))
+        if (!ros::param::get(DXL_PROTOCOL_PARAM, protocol_))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
                               "and that your launch includes this param file. shutting down...", DXL_PROTOCOL_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(DXL_PROTOCOL_PARAM, protocol_);
-
 
         /* DXL_PORT_PARAM */
-        if (!nh_->hasParam(DXL_PORT_PARAM))
+        if (!ros::param::get(DXL_PORT_PARAM, dxl_port_))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
                               "and that your launch includes this param file. shutting down...", DXL_PORT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(DXL_PORT_PARAM, dxl_port_);
 
         /* DXL_PORT_BAUD_PARAM */
-        if (!nh_->hasParam(DXL_PORT_BAUD_PARAM))
+        if (!ros::param::get(DXL_PORT_BAUD_PARAM, dxl_baudrate_))
         {
             ROS_ERROR("[dxl_motors_builder]: %s param is missing on param server. make sure that this param exist in dxl_joints_config.yaml "
                               "and that your launch includes this param file. shutting down...", DXL_PORT_BAUD_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh_->getParam(DXL_PORT_BAUD_PARAM, dxl_baudrate_);
     }
 
     void DxlMotorsBuilder::buildMotors()

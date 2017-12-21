@@ -9,21 +9,23 @@ namespace armadillo2_hw
     BatteryPub::BatteryPub(ros::NodeHandle nh)
     {
         /* get batt params */
-        nh.getParam("load_battery_hw", load_battery_hw_);
+        ros::param::get("~load_battery_hw", load_battery_hw_);
 
         if (!load_battery_hw_)
+        {
+            ROS_WARN("[armadillo2_hw/battery_pub]: battery hardware is disabled");
             return;
+        }
 
-        if (!nh.hasParam(BATT_PORT_PARAM))
+        if (!ros::param::get(BATT_PORT_PARAM, batt_port_))
         {
             ROS_ERROR("[armadillo2_hw/battery_pub]: %s param is missing on param server. make sure that this param exist in battery_config.yaml "
                               "and that your launch includes this param file. shutting down...", BATT_PORT_PARAM);
             ros::shutdown();
             exit (EXIT_FAILURE);
         }
-        nh.getParam(BATT_PORT_PARAM, batt_port_);
-        nh.getParam("low_batt_val", low_batt_val_);
-        nh.getParam("show_warnings", show_warnings_);
+        ros::param::get("~low_batt_val", low_batt_val_);
+        ros::param::get("~show_warnings", show_warnings_);
 
         /* connect to batt FTDI */
         try

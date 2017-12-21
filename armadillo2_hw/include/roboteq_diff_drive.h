@@ -10,10 +10,10 @@
 #include <roboteq/roboteq.h>
 #include <roboteq/serial_controller.h>
 
-#define ROBOTEQ_PORT_PARAM "roboteq_port"
-#define ROBOTEQ_BAUD_PARAM "roboteq_baud"
-#define RIGHT_WHEEL_JOINT_PARAM "right_wheel_joint"
-#define LEFT_WHEEL_JOINT_PARAM "left_wheel_joint"
+#define ROBOTEQ_PORT_PARAM "~roboteq_port"
+#define ROBOTEQ_BAUD_PARAM "~roboteq_baud"
+#define RIGHT_WHEEL_JOINT_PARAM "~right_wheel_joint"
+#define LEFT_WHEEL_JOINT_PARAM "~left_wheel_joint"
 
 typedef boost::chrono::steady_clock time_source;
 

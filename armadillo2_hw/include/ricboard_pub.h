@@ -18,8 +18,8 @@
 #include <boost/chrono/chrono.hpp>
 
 
-#define RIC_PORT_PARAM "ric_port"
-#define TORSO_JOINT_PARAM "torso_joint"
+#define RIC_PORT_PARAM "~ric_port"
+#define TORSO_JOINT_PARAM "~torso_joint"
 #define RIC_PUB_INTERVAL 0.1 //secs
 #define RIC_WRITE_INTERVAL 0.05 //secs
 #define RIC_DEAD_TIMEOUT 1 //secs

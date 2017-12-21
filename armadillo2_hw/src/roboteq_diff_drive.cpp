@@ -10,11 +10,11 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
     nh_ = &nh;
 
     /* get roboteq params */
-    nh_->getParam("load_roboteq_hw", load_roboteq_hw_);
+    ros::param::get("~load_roboteq_hw", load_roboteq_hw_);
 
     if (load_roboteq_hw_)
     {
-        if (!nh_->hasParam(ROBOTEQ_PORT_PARAM))
+        if (!ros::param::get(ROBOTEQ_PORT_PARAM, roboteq_port_))
         {
             ROS_ERROR(
                     "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
@@ -22,9 +22,8 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
-        nh_->getParam(ROBOTEQ_PORT_PARAM, roboteq_port_);
 
-        if (!nh_->hasParam(ROBOTEQ_BAUD_PARAM))
+        if (!ros::param::get(ROBOTEQ_BAUD_PARAM, roboteq_baud_))
         {
             ROS_ERROR(
                     "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
@@ -32,9 +31,8 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
-        nh_->getParam(ROBOTEQ_BAUD_PARAM, roboteq_baud_);
 
-        if (!nh_->hasParam(RIGHT_WHEEL_JOINT_PARAM))
+        if (!ros::param::get(RIGHT_WHEEL_JOINT_PARAM, right_wheel_joint_))
         {
             ROS_ERROR(
                     "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
@@ -42,9 +40,8 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
-        nh_->getParam(RIGHT_WHEEL_JOINT_PARAM, right_wheel_joint_);
 
-        if (!nh_->hasParam(LEFT_WHEEL_JOINT_PARAM))
+        if (!ros::param::get(LEFT_WHEEL_JOINT_PARAM, left_wheel_joint_))
         {
             ROS_ERROR(
                     "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
@@ -52,7 +49,6 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
-        nh_->getParam(LEFT_WHEEL_JOINT_PARAM, left_wheel_joint_);
 
         /* try connect to roboteq */
         roboteq_serial_ = new roboteq::serial_controller(roboteq_port_, roboteq_baud_);
@@ -75,6 +71,9 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
 
         ROS_INFO("[armadillo2_hw/roboteq_diff_drive]: roboteq is up");
     }
+    else
+        ROS_WARN("[armadillo2_hw/roboteq_diff_drive]: roboteq hardware is disabled");
+
 }
 
 void RoboteqDiffDrive::write(const ros::Duration elapsed)
