@@ -1,6 +1,0 @@
-load_battery_hw: true
-show_warnings: false
-low_batt_val: 15 #low battery warning value (precentage). -1 to disable
-batt_port: "/dev/armadillo2/BMS"
-
-

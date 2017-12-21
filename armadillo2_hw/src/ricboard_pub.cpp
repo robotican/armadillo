@@ -77,6 +77,7 @@ void RicboardPub::loop()
             ric_disconnections_counter_ = 0;
             ric_dead_timer_.stop();
             ric_pub_timer_.start();
+            /* if emergecy pin disconnected, shutdown. ric will also kill torso */
             if (ric_.getSensorsState().emrgcy_alarm.is_on)
             {
                 ROS_ERROR("[armadillo2_hw/ricboard_pub]: EMERGENCY PIN DISCONNECTED, shutting down...");

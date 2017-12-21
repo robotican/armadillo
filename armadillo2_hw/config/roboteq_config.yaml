@@ -1,5 +1,0 @@
-load_roboteq_hw: true
-left_wheel_joint: 'left_wheel_joint'
-right_wheel_joint: 'right_wheel_joint'
-roboteq_port: "/dev/armadillo2/ROBOTEQ"
-roboteq_baud: 115200

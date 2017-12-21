@@ -389,7 +389,9 @@ namespace armadillo2_hw
             else
             {
                 ROS_ERROR("[dxl_motors_builder]: couldn't locate model specification for motor %d, model %d. "
-                                  "make sure dxl_motor_data.yaml contains all the necessary specs", motor.id, motor.spec.model);
+                          "make sure dxl_motor_data.yaml contains all the necessary specs. shutting down...", motor.id, motor.spec.model);
+                ros::shutdown();
+                exit(EXIT_FAILURE);
             }
         }
     }

@@ -8,7 +8,33 @@
     <!--load robot description-->
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
     
-    <node name="armadillo2_hw_node" pkg="armadillo2_hw" type="armadillo2_hw_node" respawn="false" output="screen" />
+    <node name="armadillo2_hw_node" pkg="armadillo2_hw" type="armadillo2_hw_node" respawn="false" output="screen">
+        
+        <!--roboteq-->
+        <param name="load_roboteq_hw" value="true" />
+        <param name="left_wheel_joint" value="left_wheel_joint" />
+        <param name="right_wheel_joint" value="right_wheel_joint" />
+        <param name="roboteq_port" value="/dev/armadillo2/ROBOTEQ" />
+        <param name="roboteq_baud" value="115200" />
+        
+        <!--ricboard-->
+        <param name="load_ric_hw" value="true" />
+        <param name="torso_joint" value="torso_joint" />
+        <param name="ric_port" value="/dev/armadillo2/RICBOARD" />
+        
+        <!--battery management system-->
+        <param name="load_battery_hw" value="true" />
+        <param name="show_warnings" value="false" />
+        <param name="low_batt_val" value="15" /><!--low battery warning value (precentage). -1 to disable-->
+        <param name="batt_port" value="/dev/armadillo2/BMS" />
+        
+        <!--dxl motors-->
+        <param name="load_dxl_hw" value="true" />
+        <param name="dxl_port_name" value="/dev/armadillo2/USB2DYNAMIXEL" />
+        <param name="dxl_port_baudrate" value="1000000" />
+        <param name="dxl_protocol" value="2.0" />
+
+    </node>
     
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
     

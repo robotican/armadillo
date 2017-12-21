@@ -1,4 +1,3 @@
-load_dxl_hw: true
 dxl_joints_config: [
 {id: 1, joint_name: rotation1_joint, interface: PosVel, direction: 1},
 {id: 2, joint_name: shoulder1_joint, interface: PosVel, direction: 1},
@@ -11,6 +10,3 @@ dxl_joints_config: [
 {id: 9, joint_name: head_pan_joint, interface: Position, direction: -1},
 {id: 10, joint_name: head_tilt_joint, interface: Position, direction: -1}
 ]
-
-dxl_port_name: "/dev/armadillo2/USB2DYNAMIXEL"
-dxl_port_baudrate: 1000000
