@@ -10,13 +10,8 @@
     <arg name="softkinetic" default="true"/>
     <arg name="kinect" default="true"/>
     <arg name="lidar" default="true"/>
-    
-    <!--troublshooting settings-->
-    <arg name="bms" default="true" doc="enable battery managment system"/>
-    <arg name="dxl" default="true" doc="enable dynamixel motors"/>
-    <arg name="ricboard" default="true" doc="enable ricboard"/>
-    <arg name="roboteq" default="true" doc="enable roboteq driver"/>
-    
+    <arg name="gmapping" default="true"/>
+
     
     <!--load static tf-->
     <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
@@ -39,6 +34,10 @@
     
     <group if="$(arg lidar)">
         <include file="$(find lidar_urg_node)/launch/lidar.launch" />
+    </group>
+    
+    <group if="$(arg gmapping)">
+        <include file="$(find armadillo2_navigation)/launch/gmapping.launch" />
     </group>
     
     <!--load controllers-->
