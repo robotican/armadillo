@@ -37,6 +37,10 @@
         <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />
     </group>
     
+    <group if="$(arg lidar)">
+        <include file="$(find lidar_urg_node)/launch/lidar.launch" />
+    </group>
+    
     <!--load controllers-->
     <include file="$(find armadillo2_control)/launch/armadillo2_control.launch" />
     
