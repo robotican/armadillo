@@ -141,6 +141,9 @@ add_executable(arm_joy_teleop_node
 add_executable(move_pan_tilt_node
         src/move_pan_tilt/move_pan_tilt_node.cpp)
 
+add_executable(pick_and_place_node
+        src/pick_and_place/pick_and_place_node.cpp)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -161,6 +164,11 @@ add_dependencies(move_pan_tilt_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin
 
 target_link_libraries(
         move_pan_tilt_node
+        ${catkin_LIBRARIES}
+)
+
+target_link_libraries(
+        pick_and_place_node
         ${catkin_LIBRARIES}
 )
 
