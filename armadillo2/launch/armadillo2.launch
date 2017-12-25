@@ -17,13 +17,30 @@
     <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
     <!--<node pkg="tf" type="static_transform_publisher" name="odom_base_broadcaster" args="0 0 0 0 0 0 /odom /base_footprint 20" />-->
     
-    <!--if sim=true, exectute the following-->
+    <!--load simulation stuff-->
     <group if="$(arg sim)">
+        
         <include file="$(find armadillo2_gazebo)/launch/default_world.launch" />
+        
+        <include file="$(find armadillo2_control)/launch/armadillo2_gazebo_controllers.launch" />
+        
     </group>
     
+    <!--load hardware stuff-->
     <group unless="$(arg sim)">
+        
         <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />
+        
+        <group if="$(arg softkinetic)">
+            <include file="$(find softkinetic_camera)/launch/softkinetic_camera_ds325.launch" />
+        </group>
+    
+        <group if="$(arg kinect)">
+            <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" />
+        </group>
+        
+        <include file="$(find armadillo2_control)/launch/armadillo2_hw_controllers.launch" />
+        
     </group>
     
     <group if="$(arg lidar)">
@@ -34,19 +51,8 @@
         <include file="$(find armadillo2_navigation)/launch/gmapping.launch" />
     </group>
     
-    <!--load controllers-->
-    <include file="$(find armadillo2_control)/launch/armadillo2_control.launch" />
-    
     <group if="$(arg moveit)">
         <include file="$(find armadillo2_moveit_config)/launch/move_group.launch" />
-    </group>
-    
-    <group if="$(arg softkinetic)">
-       <include file="$(find softkinetic_camera)/launch/softkinetic_camera_ds325.launch" />
-    </group>
-    
-    <group if="$(arg kinect)">
-       <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" />
     </group>
     
     

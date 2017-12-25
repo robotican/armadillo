@@ -1,7 +1,11 @@
-torso_controller:
+torso_effort_controller:
   type: effort_controllers/JointPositionController
   joint: torso_joint
   pid: {p: 2000.0, i: 60, d: 200.0, i_clamp: 80} #, i_clamp: 10
+
+torso_position_controller:
+  type: position_controllers/JointPositionController
+  joint: torso_joint
 
 robot_state_controller:
     type: joint_state_controller/JointStateController
