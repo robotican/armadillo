@@ -32,6 +32,7 @@ sudo apt-get -y install ros-kinetic-moveit-ros-planning
 sudo apt-get -y install ros-kinetic-moveit-ros-planning-interface
 sudo apt-get -y install ros-kinetic-move-base
 sudo apt-get -y install ros-kinetic-navigation
+sudo apt-get -y install ros-kinetic-hector-slam
 sudo apt-get -y install ros-kinetic-gmapping
 sudo apt-get -y install ros-kinetic-pid
 sudo apt-get -y install ros-kinetic-joy
