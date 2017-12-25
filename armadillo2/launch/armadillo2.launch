@@ -12,6 +12,7 @@
     <arg name="lidar" default="false"/>
     <arg name="gmapping" default="false"/>
     <arg name="hector_slam" default="false"/>
+    <arg name="move_base" default="false"/>
     
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
 
@@ -67,6 +68,13 @@
         <include file="$(find armadillo2_navigation)/launch/hector_slam.launch" />
     </group>
     
-    
+    <group if="$(arg move_base)">
+        <include file="$(find armadillo2_navigation)/launch/move_base.launch" />
+        <rosparam file="$(find armadillo2_navigation)/config/move_base_params.yaml" command="load" ns="move_base"/>
+        <rosparam file="$(find armadillo2_navigation)/config/costmap_common_params.yaml" command="load" ns="move_base/global_costmap" />
+        <rosparam file="$(find armadillo2_navigation)/config/costmap_common_params.yaml" command="load" ns="move_base/local_costmap" />
+        <rosparam file="$(find armadillo2_navigation)/config/local_costmap_params.yaml" command="load" ns="move_base/local_costmap" />
+        <rosparam file="$(find armadillo2_navigation)/config/global_costmap_params.yaml" command="load" ns="move_base/global_costmap"/>
+    </group>
     
 </launch>
