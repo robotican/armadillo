@@ -262,7 +262,7 @@ public:
 
                 _group.setJointValueTarget(group_variable_values);
                 moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-                bool success = _group.plan(my_plan);
+                bool success = (_group.plan(my_plan)==moveit::planning_interface::MoveItErrorCode::SUCCESS);
                 if (success) {
                     _group.move();
                 }
