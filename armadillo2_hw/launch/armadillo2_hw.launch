@@ -4,10 +4,7 @@
 
     <!--<node name="rqt_robot_monitor" pkg="rqt_robot_monitor" type="rqt_robot_monitor" />-->
     <!--<node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" />-->
-    
-    <!--load robot description-->
-    <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
-    
+        
     <node name="armadillo2_hw_node" pkg="armadillo2_hw" type="armadillo2_hw_node" respawn="false" output="screen">
         
         <!--roboteq-->
