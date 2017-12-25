@@ -15,6 +15,9 @@
     <arg name="move_base" default="false"/>
     
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
+    
+    <!--center robot head on startup -->
+    <node name="center_head_node" pkg="armadillo2_utils" type="center_head_node" respawn="false" output="screen" />
 
     <!--load static tf-->
     <group unless="$(arg gmapping)">
