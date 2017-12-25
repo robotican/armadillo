@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- armadillo2 top-level launch -->
 
@@ -6,11 +6,11 @@
     
     <!--common settings-->
     <arg name="sim" default="false" doc="execute armadillo2 inside gazebo sim"/>
-    <arg name="moveit" default="true"/>
-    <arg name="softkinetic" default="true"/>
-    <arg name="kinect" default="true"/>
+    <arg name="moveit" default="false"/>
+    <arg name="softkinetic" default="false"/>
+    <arg name="kinect" default="false"/>
     <arg name="lidar" default="true"/>
-    <arg name="gmapping" default="true"/>
+<!--    <arg name="gmapping" default="true"/>-->
 
     
     <!--load static tf-->
@@ -44,11 +44,15 @@
     <include file="$(find armadillo2_control)/launch/armadillo2_control.launch" />
     
     <group if="$(arg moveit)">
-<!--        <include file="$(find armadillo2_moveit_config)/launch/move_group.launch" />-->
+        <include file="$(find armadillo2_moveit_config)/launch/move_group.launch" />
     </group>
     
     <group if="$(arg softkinetic)">
-<!--        <include file="$(find softkinetic_camera)/launch/softkinetic_camera_ds325.launch" />-->
+       <include file="$(find softkinetic_camera)/launch/softkinetic_camera_ds325.launch" />
+    </group>
+    
+    <group if="$(arg kinect)">
+       <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" />
     </group>
     
     
