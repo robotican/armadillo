@@ -28,18 +28,19 @@ sudo apt-get -y install ros-kinetic-gazebo-ros-control
 sudo apt-get -y install ros-kinetic-ros-controllers 
 sudo apt-get -y install ros-kinetic-ros-control 
 sudo apt-get -y install ros-kinetic-moveit
+sudo apt-get -y install ros-kinetic-moveit-ros-planning
+sudo apt-get -y install ros-kinetic-moveit-ros-planning-interface
 sudo apt-get -y install ros-kinetic-move-base
 sudo apt-get -y install ros-kinetic-navigation
 sudo apt-get -y install ros-kinetic-gmapping
 sudo apt-get -y install ros-kinetic-pid
 sudo apt-get -y install ros-kinetic-joy
-sudo apt-get -y install joystick 
+sudo apt-get -y install joystick
 sudo apt-get -y install espeak espeak-data libespeak-dev
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install hokuyo #
 sudo apt-get install ros-kinetic-urg-node
-
 
 # install softkinetic drivers #
 printf "${WHITE_TXT}Installing softkinetic driver...\n${NO_COLOR}"

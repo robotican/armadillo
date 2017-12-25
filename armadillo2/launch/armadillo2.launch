@@ -10,18 +10,12 @@
     <arg name="softkinetic" default="false"/>
     <arg name="kinect" default="false"/>
     <arg name="lidar" default="true"/>
-<!--    <arg name="gmapping" default="true"/>-->
+    <arg name="gmapping" default="true"/>
 
     
     <!--load static tf-->
     <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
     <!--<node pkg="tf" type="static_transform_publisher" name="odom_base_broadcaster" args="0 0 0 0 0 0 /odom /base_footprint 20" />-->
-    
-
-
-    
-    
-<!--    <param name="param" value="$(arg arg_name)"/>-->
     
     <!--if sim=true, exectute the following-->
     <group if="$(arg sim)">
