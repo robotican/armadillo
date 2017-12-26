@@ -12,6 +12,7 @@
     <arg name="lidar" default="false"/>
     <arg name="gmapping" default="false"/>
     <arg name="hector_slam" default="false"/>
+    <arg name="amcl" default="false"/>
     <arg name="move_base" default="false"/>
     
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
@@ -19,13 +20,15 @@
     <!--center robot head on startup -->
     <node name="center_head_node" pkg="armadillo2_utils" type="center_head_node" respawn="false" output="screen" />
 
-    <!--load static tf-->
+    <!--if no one publish map-odom tf, load static tf-->
     <group unless="$(arg gmapping)">
         <group unless="$(arg hector_slam)">
+            <group unless="$(arg amcl)">
             
-            <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
-            <!--<node pkg="tf" type="static_transform_publisher" name="odom_base_broadcaster" args="0 0 0 0 0 0 /odom /base_footprint 20" />-->
+                <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
+                <!--<node pkg="tf" type="static_transform_publisher" name="odom_base_broadcaster" args="0 0 0 0 0 0 /odom /base_footprint 20" />-->
             
+            </group>   
         </group>    
     </group>
     
@@ -63,13 +66,18 @@
         <include file="$(find armadillo2_navigation)/launch/gmapping.launch" />
     </group>
     
+    <group if="$(arg hector_slam)">
+        <include file="$(find armadillo2_navigation)/launch/hector_slam.launch" />
+    </group>
+    
+    <group if="$(arg amcl)">
+        <include file="$(find armadillo2_navigation)/launch/amcl.launch" />
+    </group>
+    
     <group if="$(arg moveit)">
         <include file="$(find armadillo2_moveit_config)/launch/move_group.launch" />
     </group>
     
-    <group if="$(arg hector_slam)">
-        <include file="$(find armadillo2_navigation)/launch/hector_slam.launch" />
-    </group>
     
     <group if="$(arg move_base)">
         <include file="$(find armadillo2_navigation)/launch/move_base.launch" />
