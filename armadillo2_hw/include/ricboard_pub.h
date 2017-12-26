@@ -11,6 +11,7 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Imu.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/String.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
@@ -56,6 +57,8 @@ private:
     ros::NodeHandle *nh_;
     boost::thread* t;
 
+    ros::Publisher espeak_pub_;
+
     /* handles */
     std::vector<hardware_interface::JointStateHandle> joint_state_handles_;
     std::vector<hardware_interface::JointHandle> pos_handles_;
@@ -63,6 +66,14 @@ private:
     void pubTimerCB(const ros::TimerEvent& event);
     void ricDeadTimerCB(const ros::TimerEvent& event);
     void loop();
+    void speakMsg(std::string msg, int sleep_time)
+    {
+        std_msgs::String speak_msg;
+        speak_msg.data = msg;
+        espeak_pub_.publish(speak_msg);
+        if (sleep_time > 0)
+            sleep(sleep_time);
+    }
 
 public:
     RicboardPub(ros::NodeHandle &nh);

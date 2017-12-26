@@ -39,6 +39,14 @@ namespace armadillo2_hw
 
         void registerInterfaces();
         void straighHead();
+        void speakMsg(std::string msg, int sleep_time)
+        {
+            std_msgs::String speak_msg;
+            speak_msg.data = msg;
+            espeak_pub_.publish(speak_msg);
+            if (sleep_time > 0)
+                sleep(sleep_time);
+        }
 
     public:
 

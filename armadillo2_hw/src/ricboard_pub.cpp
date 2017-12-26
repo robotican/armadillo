@@ -46,6 +46,8 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         ric_pub_timer_ = nh.createTimer(ros::Duration(RIC_PUB_INTERVAL), &RicboardPub::pubTimerCB, this);
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
         ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
+        espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
+        /*speakMsg("rik board is up", 1); */
     }
     else
         ROS_WARN("[armadillo2_hw/ricboard_pub]: ric hardware is disabled");
@@ -80,6 +82,7 @@ void RicboardPub::loop()
             /* if emergecy pin disconnected, shutdown. ric will also kill torso */
             if (ric_.getSensorsState().emrgcy_alarm.is_on)
             {
+                speakMsg("emergency, shutting down", 1);
                 ROS_ERROR("[armadillo2_hw/ricboard_pub]: EMERGENCY PIN DISCONNECTED, shutting down...");
                 ros::shutdown();
                 exit(EXIT_FAILURE);
@@ -100,6 +103,7 @@ void RicboardPub::ricDeadTimerCB(const ros::TimerEvent &event)
     ric_disconnections_counter_++;
     if (ric_disconnections_counter_ >= MAX_RIC_DISCONNECTIONS)
     {
+        speakMsg("rik board disconnected, shutting down", 1);
         ROS_ERROR("[armadillo2_hw/ricboard_pub]: ricboard disconnected. shutting down...");
         ros::shutdown();
         exit(EXIT_FAILURE);

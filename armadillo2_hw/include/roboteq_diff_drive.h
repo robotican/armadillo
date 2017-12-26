@@ -9,6 +9,7 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <roboteq/roboteq.h>
 #include <roboteq/serial_controller.h>
+#include <std_msgs/String.h>
 
 #define ROBOTEQ_PORT_PARAM "~roboteq_port"
 #define ROBOTEQ_BAUD_PARAM "~roboteq_baud"
@@ -32,6 +33,16 @@ private:
     bool load_roboteq_hw_ = false;
     /* if first time, subtract previous values */
     bool first_time_ = true;
+    ros::Publisher espeak_pub_;
+
+    void speakMsg(std::string msg, int sleep_time)
+    {
+        std_msgs::String speak_msg;
+        speak_msg.data = msg;
+        espeak_pub_.publish(speak_msg);
+        if (sleep_time > 0)
+            sleep(sleep_time);
+    }
 
 
 public:

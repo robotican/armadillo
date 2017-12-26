@@ -8,6 +8,7 @@
 #include <ros/ros.h>
 #include <bms_interface/bms_interface.h>
 #include <sensor_msgs/BatteryState.h>
+#include <std_msgs/String.h>
 
 //#define BATT_PORT "/dev/BMS"
 #define BATT_PUB_INTERVAL 1 //secs
@@ -27,9 +28,18 @@ namespace armadillo2_hw
         bool show_warnings_ = false;
         bool load_battery_hw_ = true;
 
-
+        ros::Publisher espeak_pub_;
 
         void pubTimerCB(const ros::TimerEvent& event);
+
+        void speakMsg(std::string msg, int sleep_time)
+        {
+            std_msgs::String speak_msg;
+            speak_msg.data = msg;
+            espeak_pub_.publish(speak_msg);
+            if (sleep_time > 0)
+                sleep(sleep_time);
+        }
 
     public:
         BatteryPub(ros::NodeHandle nh);

@@ -44,6 +44,8 @@ namespace armadillo2_hw
         bat_pub_ = nh.advertise<sensor_msgs::BatteryState>("battery", 10);
         bat_pub_timer_ = nh.createTimer(ros::Duration(BATT_PUB_INTERVAL), &BatteryPub::pubTimerCB, this);
         ROS_INFO("[armadillo2_hw/battery_pub]: battery publisher is up");
+        espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
+        /*speakMsg("battery management system is up",1);*/
     }
 
     void BatteryPub::pubTimerCB(const ros::TimerEvent &event)
@@ -66,7 +68,10 @@ namespace armadillo2_hw
 
             /* if battery low and not in charging print warning */
             if ((low_batt_val_ >=0 && msg.percentage <= low_batt_val_) && !bms_data.is_chrg)
+            {
                 ROS_WARN("[armadillo2_hw/battery_pub]: LOW BATTERY, please connect Armadillo2 to charger");
+                speakMsg("low battery", 0);
+            }
 
             bat_pub_.publish(msg);
         }

@@ -9,6 +9,7 @@
 #include <std_srvs/SetBool.h>
 #include <ros/ros.h>
 #include <ros/package.h>
+#include <std_msgs/String.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
@@ -61,6 +62,7 @@ namespace armadillo2_hw
         XmlRpc::XmlRpcValue dxl_joints_config_, dxl_spec_config_;
         std::vector<dxl::motor> motors_;
         ros::ServiceServer torque_srv_;
+        ros::Publisher espeak_pub_;
 
         bool torqueServiceCB(std_srvs::SetBool::Request  &req,
                              std_srvs::SetBool::Response &res);
@@ -73,6 +75,14 @@ namespace armadillo2_hw
         void loadSpecs();
         /* writing directly to motor hardware */
         void write(std::vector<dxl::motor> &motors);
+        void speakMsg(std::string msg, int sleep_time)
+        {
+            std_msgs::String speak_msg;
+            speak_msg.data = msg;
+            espeak_pub_.publish(speak_msg);
+            if (sleep_time > 0)
+                sleep(sleep_time);
+        }
     };
 }
 #endif //ARMADILLO2_HW_DXL_MOTORS_BUILDER_H

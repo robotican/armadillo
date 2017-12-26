@@ -30,6 +30,9 @@ namespace armadillo2_hw
             failed_writes_ = 0;
 
             torque_srv_ = nh_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
+            ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
+            espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
+            /*speakMsg("dxl motors manager is up", 1);*/
         }
         else
             ROS_WARN("[armadillo2_hw/dxl_motors_builder]: dxl motors hardware is disabled");
@@ -61,6 +64,7 @@ namespace armadillo2_hw
         }
         if (failed_reads_ >= MAX_READ_ERRORS)
         {
+            speakMsg("dxl motors read error", 1);
             ROS_ERROR("[dxl_motors_builder]: too many read errors, shutting down...");
             ros::shutdown();
             exit(EXIT_FAILURE);
@@ -103,6 +107,7 @@ namespace armadillo2_hw
 
         if (failed_writes_ >= MAX_WRITE_ERRORS)
         {
+            speakMsg("dxl motors write error", 1);
             ROS_ERROR("[dxl_motors_builder]: too many write errors, shutting down...");
             ros::shutdown();
             exit(EXIT_FAILURE);
@@ -128,6 +133,7 @@ namespace armadillo2_hw
                 ROS_WARN("[dxl_motors_builder]: pinging motor id: %d failed", motor.id);
                 if (error_counter > MAX_PING_ERRORS)
                 {
+                    speakMsg("too many dxl motor ping errors, shutting down", 1);
                     ROS_ERROR("[dxl_motors_builder]: too many ping errors, motor %d is not responding. \n"
                                       "check if motor crashed (red blink) and try to restart. \n"
                                       "also make sure LATENCY_TIMER is set to 1 in dynamixel_sdk, and that the appropriate"

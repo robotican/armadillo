@@ -31,10 +31,7 @@ namespace armadillo2_hw
 
         ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
         espeak_pub_ = node_handle_->advertise<std_msgs::String>("/espeak_node/speak_line", 10);
-        sleep(1);
-        std_msgs::String msg;
-        msg.data = "i am ready";
-        espeak_pub_.publish(msg);
+        speakMsg("i am ready", 1);
     }
 
     void ArmadilloHW::read()
