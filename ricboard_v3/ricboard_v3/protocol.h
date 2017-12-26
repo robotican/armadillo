@@ -23,7 +23,6 @@ namespace protocol
     struct package
     {
         uint8_t type = 0;
-        uint8_t checksum = 0;
     };
 
     struct keepalive : package

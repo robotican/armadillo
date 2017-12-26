@@ -9,6 +9,7 @@
 #include <ric_interface/serial_com.h>
 #include <string.h>
 #include <iostream>
+#include "crc8.h"
 
 
 
@@ -24,7 +25,8 @@ namespace ric_interface
         {
             HEADER_PART_A,
             HEADER_PART_B,
-            PACKAGE
+            PACKAGE,
+            CHECKSUM
         };
 
         void connect(std::string port, int baudrate)
@@ -56,12 +58,27 @@ namespace ric_interface
                     if (incoming != -1)
                         buff[pkg_indx_++] = (byte)incoming;
 
-                    if (pkg_indx_ >= pkg_size_) //done reading
+                    if (pkg_indx_ >= pkg_size_) //done reading pkg content
+                        state_ = CHECKSUM;
+                    break;
+                }
+                case CHECKSUM:
+                {
+                    int incoming = serial_.read();
+                    if (incoming != -1)
                     {
-                        protocol::package pkg;
-                        fromBytes(buff, sizeof(protocol::package), pkg);
-                        reset();
-                        return (int)pkg.type;
+                        byte incoming_checksum = (byte)incoming;
+                        byte computed_checksum = crc_.get_crc(buff, pkg_size_);
+                        if (incoming_checksum == computed_checksum)
+                        {
+                            //fprintf(stderr, "got chksum");
+                            protocol::package pkg;
+                            fromBytes(buff, sizeof(protocol::package), pkg);
+                            reset();
+                            return (uint8_t)pkg.type;
+                        }
+                        else
+                            return -2; //wrong checksum
                     }
                     break;
                 }
@@ -81,6 +98,7 @@ namespace ric_interface
 
         bool write(const protocol::package &pkg, size_t pkg_size)
         {
+            /* send pkg header */
             byte header_buff[2];
             header_buff[protocol::HEADER_INDX] = protocol::HEADER_CODE;
             header_buff[protocol::PKG_SIZE_INDX] = pkg_size;
@@ -88,7 +106,12 @@ namespace ric_interface
                 return false;
             byte pkg_buff[pkg_size];
             toBytes(pkg, pkg_size, pkg_buff);
+            byte checksum[1];
+            checksum[0] = crc_.get_crc(pkg_buff, pkg_size);
+            /* send pkg content and the checksum */
             if (!serial_.send(pkg_buff, pkg_size))
+                return false;
+            if (!serial_.send(checksum, 1))
                 return false;
             return true;
         }
@@ -99,6 +122,7 @@ namespace ric_interface
         State state_ = HEADER_PART_A;
         int pkg_indx_ = 0;
         int pkg_size_ = 0;
+        Crc8 crc_;
 
         void reset()
         {

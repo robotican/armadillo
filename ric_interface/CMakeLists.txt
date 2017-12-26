@@ -128,6 +128,7 @@ set(
         include/${PROJECT_NAME}/ric_exception.h
         include/${PROJECT_NAME}/timer.h
         include/${PROJECT_NAME}/sensors_state.h
+        include/${PROJECT_NAME}/crc8.h
         ric_interface_node.cpp
 )
 

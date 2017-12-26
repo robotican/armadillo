@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "protocol.h"
+#include "crc8.h"
 
 class Communicator
 {
@@ -13,7 +14,8 @@ class Communicator
   {
     HEADER_PART_A,
     HEADER_PART_B,
-    PACKAGE
+    PACKAGE, 
+    CHECKSUM
   };
   
   void init(int baudrate)
@@ -45,17 +47,31 @@ class Communicator
         if (incoming != -1)
           buff[pkg_indx_++] = (byte)incoming;
 
-        if (pkg_indx_ >= pkg_size_) //done reading
+        if (pkg_indx_ >= pkg_size_) //done reading pkg content
+         state_ = CHECKSUM;
+        break;
+      }
+      case CHECKSUM:
+      {
+        int incoming = Serial.read();
+        if (incoming != -1)
         {
-          protocol::package pkg;
-          fromBytes(buff, sizeof(protocol::package), pkg);
-          reset();
-          return (uint8_t)pkg.type;
+          byte incoming_checksum = (byte)incoming;
+          byte computed_checksum = crc_.get_crc(buff, pkg_size_);
+          if (incoming_checksum == computed_checksum)
+          {
+            protocol::package pkg;
+            fromBytes(buff, sizeof(protocol::package), pkg);
+            reset();
+            return (uint8_t)pkg.type;
+          }
+          else
+            return -2; //wrong checksum
         }
         break;
       }
     }
-    return -1;
+    return -1; //still reading
   }
 
   static void fromBytes(byte buff[], size_t pkg_size, protocol::package &pkg)
@@ -68,8 +84,10 @@ class Communicator
     memcpy(buff, &pkg, pkg_size);
   }
 
+  /* sending: |header|size|pkg bytes|checksum| */
   bool write(const protocol::package &pkg, size_t pkg_size)
   {
+      /* send pkg header */
       byte header_buff[2];
       header_buff[protocol::HEADER_INDX] = protocol::HEADER_CODE;
       header_buff[protocol::PKG_SIZE_INDX] = pkg_size;
@@ -77,8 +95,11 @@ class Communicator
           return false;
       byte pkg_buff[pkg_size];
       toBytes(pkg, pkg_size, pkg_buff);
+      byte checksum = crc_.get_crc(pkg_buff, pkg_size);
+      /* send pkg content and the checksum */
       if (Serial.write(pkg_buff, pkg_size) != pkg_size)
           return false;
+      Serial.write(checksum);
       return true;
   }
 
@@ -87,6 +108,7 @@ class Communicator
   State state_ = HEADER_PART_A;
   int pkg_indx_ = 0;
   int pkg_size_ = 0;
+  Crc8 crc_;
   
   void reset()
   {
