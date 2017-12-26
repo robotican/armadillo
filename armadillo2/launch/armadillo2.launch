@@ -18,7 +18,9 @@
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
     
     <!--center robot head on startup -->
-    <node name="center_head_node" pkg="armadillo2_utils" type="center_head_node" respawn="false" output="screen" />
+    <node name="center_head_node" pkg="center_head" type="center_head_node" respawn="false" output="screen" />
+    
+    <include file="$(find espeak_ros)/launch/espeak_ros.launch" />
 
     <!--if no one publish map-odom tf, load static tf-->
     <group unless="$(arg gmapping)">

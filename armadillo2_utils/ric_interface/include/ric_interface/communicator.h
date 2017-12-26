@@ -64,14 +64,17 @@ namespace ric_interface
                 }
                 case CHECKSUM:
                 {
+
                     int incoming = serial_.read();
                     if (incoming != -1)
                     {
                         byte incoming_checksum = (byte)incoming;
                         byte computed_checksum = crc_.get_crc(buff, pkg_size_);
+
+                        //fprintf(stderr, "got chksum: %d, comp chksum: %d\n", incoming_checksum, computed_checksum);
+
                         if (incoming_checksum == computed_checksum)
                         {
-                            //fprintf(stderr, "got chksum");
                             protocol::package pkg;
                             fromBytes(buff, sizeof(protocol::package), pkg);
                             reset();

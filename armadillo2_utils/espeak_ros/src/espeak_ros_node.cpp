@@ -28,7 +28,7 @@ void espeak_callback(const std_msgs::String::ConstPtr& line) {
 	// lock mutex before calling espeak functions
 	boost::mutex::scoped_lock u_lock(mtx);
     /* Speak the string */
-	ROS_INFO("%s", line->data.c_str());
+	ROS_INFO("[espeak_node]: speaking \"%s\"", line->data.c_str());
     espeak_Synth(line->data.c_str(), line->data.length()+1, 0, POS_CHARACTER, 0, 
         espeakCHARS_AUTO | espeakPHONEMES | espeakENDPAUSE, NULL, NULL);
     espeak_Synchronize();
@@ -215,40 +215,40 @@ void dyn_cfg_callback(espeak_ros::EspeakConfig &cfg, uint32_t level) {
 	voice_select.gender = cfg.gender; // 0=none, 1=male, 2=female
 
     if (espeak_SetVoiceByProperties(&voice_select) != EE_OK) {
-    	ROS_ERROR("Could not set espeak voice properties. Aborting.");
+    	ROS_ERROR("[espeak_node]: Could not set espeak voice properties. Aborting.");
     	return;
     }
-    ROS_INFO("Using voice %s", voice.c_str());
-    ROS_INFO("Using dialect %s", dialect.c_str());
+    //ROS_INFO("[espeak_node]: Using voice %s", voice.c_str());
+    //ROS_INFO("[espeak_node]: Using dialect %s", dialect.c_str());
 
 	if (espeak_SetParameter(espeakRATE, cfg.rate, 0) != EE_OK) {
-    	ROS_ERROR("Could not set espeak rate. Aborting.");
+    	ROS_ERROR("[espeak_node]: Could not set espeak rate. Aborting.");
     	return;
 	}
 	if (espeak_SetParameter(espeakVOLUME, cfg.volume, 0) != EE_OK) {
-		ROS_ERROR("Could not set espeak volume. Aborting.");
+		ROS_ERROR("[espeak_node]: Could not set espeak volume. Aborting.");
 		return;
 	}
 	if (espeak_SetParameter(espeakPITCH, cfg.pitch, 0) != EE_OK) {
-		ROS_ERROR("Could not set espeak pitch. Aborting.");
+		ROS_ERROR("[espeak_node]: Could not set espeak pitch. Aborting.");
 		return;
 	}
 	if (espeak_SetParameter(espeakRANGE, cfg.range, 0) != EE_OK) {
-		ROS_ERROR("Could not set espeak range. Aborting.");
+		ROS_ERROR("[espeak_node]: Could not set espeak range. Aborting.");
 		return;
 	}
 	if (espeak_SetParameter(espeakPUNCTUATION,
 			espeak_PUNCT_TYPE(cfg.punctuation), 0) != EE_OK) {
-		ROS_ERROR("Could not set espeak punctuation. Aborting.");
+		ROS_ERROR("[espeak_node]: Could not set espeak punctuation. Aborting.");
 		return;
 	}
 	if (espeak_SetParameter(espeakCAPITALS, cfg.capitals, 0) != EE_OK) {
-		ROS_ERROR("Could not set espeak capitals. Aborting.");
+		ROS_ERROR("[espeak_node]: Could not set espeak capitals. Aborting.");
 		return;
 	}
 	int wordgap = cfg.wordgap % 10;
 	if (espeak_SetParameter(espeakWORDGAP, wordgap, 0) != EE_OK) {
-		ROS_ERROR("Could not set espeak wordgap. Aborting.");
+		ROS_ERROR("[espeak_node]: Could not set espeak wordgap. Aborting.");
 		return;
 	}
 }

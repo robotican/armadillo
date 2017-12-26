@@ -14,13 +14,13 @@ class Crc8
 {
 
 private:
-    const unsigned char CRC7_POLY_ = 0x91;
-    unsigned char crc_table_[256];
+    const byte CRC7_POLY_ = 0x91;
+    byte crc_table_[256];
 
 
-    unsigned char get_byte_crc(unsigned char val)
+    byte get_byte_crc(byte val)
     {
-        unsigned char j;
+        byte j;
 
         for (j = 0; j < 8; j++)
         {
@@ -42,10 +42,10 @@ private:
 
 public:
 
-    unsigned char get_crc(byte message[], size_t size)
+    byte get_crc(byte message[], size_t size)
     {
         init();
-        unsigned char i, crc = 0;
+        byte i, crc = 0;
         for (i = 0; i < size; i++)
             crc = crc_table_[crc ^ message[i]];
         return crc;

@@ -51,8 +51,9 @@ namespace ric_interface
     void RicInterface::readAndHandlePkg()
     {
         int pkg_type = comm_.read(pkg_buff_);
-        if (pkg_type != -1)
+        if (pkg_type > 0)
         {
+            //fprintf(stderr, "pkg_type: %d\n", pkg_type);
             switch (pkg_type)
             {
                 case (uint8_t) protocol::Type::KEEP_ALIVE:

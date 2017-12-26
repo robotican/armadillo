@@ -10,6 +10,7 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
+#include <std_msgs/String.h>
 
 
 namespace armadillo2_hw
@@ -33,6 +34,8 @@ namespace armadillo2_hw
         BatteryPub battery_;
         RicboardPub ric_;
         RoboteqDiffDrive roboteq_;
+
+        ros::Publisher espeak_pub_;
 
         void registerInterfaces();
         void straighHead();
