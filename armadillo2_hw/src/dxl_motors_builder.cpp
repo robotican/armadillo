@@ -29,7 +29,7 @@ namespace armadillo2_hw
             failed_reads_ = 0;
             failed_writes_ = 0;
 
-            torque_srv_ = nh_->advertiseService("arm_torque", &DxlMotorsBuilder::torqueServiceCB, this);
+            torque_srv_ = nh_->advertiseService("dxl_torque", &DxlMotorsBuilder::torqueServiceCB, this);
             ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
             espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
             /*speakMsg("dxl motors manager is up", 1);*/
@@ -42,6 +42,7 @@ namespace armadillo2_hw
     {
         if (!load_dxl_hw_)
             return;
+        comm_mutex_.lock();
         if (!dxl_interface_.readMotorsPos(motors_))
         {
             //ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
@@ -69,6 +70,7 @@ namespace armadillo2_hw
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
+        comm_mutex_.unlock();
     }
 
     void DxlMotorsBuilder::writeToMotor(int motor_id, double position, double velocity)
@@ -92,7 +94,7 @@ namespace armadillo2_hw
     {
         if (!load_dxl_hw_)
             return;
-
+        comm_mutex_.lock();
         if (!dxl_interface_.bulkWriteVelocity(motors))
         {
             //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
@@ -112,6 +114,7 @@ namespace armadillo2_hw
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
+        comm_mutex_.unlock();
     }
 
     void DxlMotorsBuilder::write()
@@ -124,6 +127,7 @@ namespace armadillo2_hw
         if (!load_dxl_hw_)
             return;
         ros::Duration(1).sleep();
+        comm_mutex_.lock();
         for (dxl::motor &motor : motors_)
         {
             int error_counter = 0;
@@ -144,6 +148,7 @@ namespace armadillo2_hw
                 ros::Rate(5).sleep();
             }
         }
+        comm_mutex_.unlock();
     }
 
     void DxlMotorsBuilder::loadSpecs()
@@ -408,6 +413,7 @@ namespace armadillo2_hw
     {
         if (!load_dxl_hw_)
             return false;
+        comm_mutex_.lock();
         std::string str_flag = flag ? "on" : "off";
         bool success = true;
         for (dxl::motor &motor : motors_)
@@ -418,7 +424,7 @@ namespace armadillo2_hw
                 ROS_WARN("[dxl_motors_builder]: failed set torque of motor id %d to %s", motor.id, str_flag.c_str());
             }
         }
-
+        comm_mutex_.unlock();
         if (success)
         {
             ROS_INFO("[dxl_motors_builder]: motors torque is %s", str_flag.c_str());

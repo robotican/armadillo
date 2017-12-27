@@ -13,6 +13,7 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
+#include <boost/thread.hpp>
 
 #define MAX_PING_ERRORS 5
 #define MAX_READ_ERRORS 100
@@ -63,6 +64,7 @@ namespace armadillo2_hw
         std::vector<dxl::motor> motors_;
         ros::ServiceServer torque_srv_;
         ros::Publisher espeak_pub_;
+        boost::mutex comm_mutex_;
 
         bool torqueServiceCB(std_srvs::SetBool::Request  &req,
                              std_srvs::SetBool::Response &res);
