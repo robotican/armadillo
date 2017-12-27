@@ -12,17 +12,30 @@ void printAxes()
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 {
     /* print axes for testing */
-    ///*
-    for (int i=0; i<joy->axes.size(); i++)
+    /*for (int i=0; i<joy->axes.size(); i++)
         fprintf(stderr, "axes[%i]:%f | ", i, joy->axes[i]);
-    fprintf(stderr, "\n");
-    //*/
+    fprintf(stderr, "\n");*/
+    /*for (int i=0; i<joy->buttons.size(); i++)
+        fprintf(stderr, "axes[%i]:%f | ", i, joy->buttons[i]);
+    fprintf(stderr, "\n");*/
 
-    twist_joy twist;
-    twist.axis_angular = joy->axes[twist.joy_axes_angular] * twist.scale_angular;
-    twist.axis_linear = joy->axes[twist.joy_axes_linear] * twist.scale_linear;
+    /* drive robot */
+    armadillo_teleop->twist.axis_angular = joy->axes[armadillo_teleop->twist.joy_axis_angular];
+    armadillo_teleop->twist.axis_linear = joy->axes[armadillo_teleop->twist.joy_axis_linear];
+    armadillo_teleop->drive();
 
-    armadillo_teleop->drive(twist);
+    /* move torso */
+    //TODO: INIT WITH JOINT INITIAL STATE TO PREVENT MOVEMENT TO 0 ON STARTUP
+    //TODO: ALOW STOP FUNTCTION
+    //TODO: ADD DEBOUNCER FOR BUTTONS
+    if (joy->axes[armadillo_teleop->torso.joy_axis_updown] == 1)
+        armadillo_teleop->torso.axis_updown += armadillo_teleop->torso.inc_updown;
+    else if (joy->axes[armadillo_teleop->torso.joy_axis_updown] == -1)
+        armadillo_teleop->torso.axis_updown -= armadillo_teleop->torso.inc_updown;
+    fprintf(stderr, "[%f]\n", armadillo_teleop->torso.axis_updown );
+    if (joy->axes[armadillo_teleop->torso.joy_axis_updown] != 0)
+        armadillo_teleop->moveTorso();
+
 }
 
 

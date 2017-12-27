@@ -12,7 +12,7 @@
 
 //#define BATT_PORT "/dev/BMS"
 #define BATT_PUB_INTERVAL 1 //secs
-#define SPEAK_LOW_BAT_INTERVAL 60 //secs
+#define SPEAK_LOW_BAT_INTERVAL 30 //secs
 #define BATT_PORT_PARAM "~batt_port"
 
 namespace armadillo2_hw

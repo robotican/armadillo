@@ -8,6 +8,7 @@
 #include <ros/forwards.h>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Float64.h>
 
 struct twist_joy
 {
@@ -17,14 +18,16 @@ struct twist_joy
     float scale_angular = 1;
     float scale_linear = 1;
 
-    int joy_axes_linear = 3;
-    int joy_axes_angular = 2;
+    int joy_axis_linear = 3;
+    int joy_axis_angular = 2;
 };
 
 struct torso_joy
 {
     float axis_updown = 0;
-    float inc_updown = 0;
+    float inc_updown = 0.01; //meters
+
+    int joy_axis_updown = 7;
 };
 
 struct arm_joy
@@ -67,11 +70,18 @@ class Armadillo2Teleop
 private:
     ros::NodeHandle *nh_;
     ros::Publisher twist_pub_;
+    ros::Publisher torso_pub_;
 
 
 public:
+    torso_joy torso;
+    twist_joy twist;
+    arm_joy arm;
+    gripper_joy gripper;
+    pan_tilt_joy pan_tilt;
+
     Armadillo2Teleop(ros::NodeHandle &nh);
-    void drive(const twist_joy &twist);
+    void drive();
     void moveTorso();
     void moveArm();
     void moveHead();
