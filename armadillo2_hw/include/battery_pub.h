@@ -12,6 +12,7 @@
 
 //#define BATT_PORT "/dev/BMS"
 #define BATT_PUB_INTERVAL 1 //secs
+#define SPEAK_LOW_BAT_INTERVAL 60 //secs
 #define BATT_PORT_PARAM "~batt_port"
 
 namespace armadillo2_hw
@@ -21,6 +22,7 @@ namespace armadillo2_hw
     private:
         ros::Publisher bat_pub_;
         ros::Timer bat_pub_timer_;
+        ros::Timer speak_low_batt_timer_;
         bms::BMSInterface bms_;
 
         std::string batt_port_;
@@ -30,7 +32,9 @@ namespace armadillo2_hw
 
         ros::Publisher espeak_pub_;
 
-        void pubTimerCB(const ros::TimerEvent& event);
+        void pubBatTimerCB(const ros::TimerEvent &event);
+
+        void speakLowTimerCB(const ros::TimerEvent& event);
 
         void speakMsg(std::string msg, int sleep_time)
         {

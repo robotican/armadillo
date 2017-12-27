@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
-    
   <node name="espeak_node" pkg="espeak_ros" type="espeak_node" respawn="false" output="screen">
-        
+    
         <param name="voice" value="1" />
         <param name="dialect" value="1" />
         <param name="rate" value="157" />
@@ -16,7 +15,5 @@
         <param name="gender" value="1" />
         <param name="age" value="30" />
       
-
     </node>
-  
 </launch>

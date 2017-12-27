@@ -15,6 +15,8 @@
     <arg name="amcl" default="false"/>
     <arg name="move_base" default="false"/>
     <arg name="twist_mux" default="true"/>
+    <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
+    <arg name="joy_dev" default="/dev/input/js0"/>
     
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
     
@@ -22,6 +24,17 @@
     <node name="center_head_node" pkg="center_head" type="center_head_node" respawn="false" output="screen" />
     
     <include file="$(find espeak_ros)/launch/espeak_ros.launch" />
+    
+    <group if="$(arg teleop)" >
+        
+        <!-- load joystick listener node -->
+        <node pkg="joy" type="joy_node" name="joy_listener">
+            <param name="dev" value="$(arg joy_dev)" />
+            <param name="deadzone" value="0.05" />
+            <param name="autorepeat_rate" value="20" />
+        </node>
+        
+    </group>
 
     <!--if no one publish map-odom tf, load static tf-->
     <group unless="$(arg gmapping)">

@@ -4,11 +4,11 @@
     <arg name="deadband" default="0.05"/>
 
     <!-- load joystick controller node -->
-	<node pkg="joy" type="joy_node" name="joy_listener">
-		<param name="dev" value="$(arg joystick_dev)" />
-		<param name="deadzone" value="$(arg deadband)" />
-		<param name="autorepeat_rate" value="20" />
-	</node>
+    <node pkg="joy" type="joy_node" name="joy_listener">
+            <param name="dev" value="$(arg joystick_dev)" />
+            <param name="deadzone" value="$(arg deadband)" />
+            <param name="autorepeat_rate" value="20" />
+    </node>
 
     <rosparam file="$(find armadillo2_demos)/config/arm_joy_teleop.yaml" command="load"/>
 	<node name="arm_joy_node" output="screen" pkg="armadillo2_demos" type="arm_joy_teleop_node" />
