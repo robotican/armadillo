@@ -98,11 +98,10 @@ namespace dxl
         /*******************************************************************************/
 
         /*******************************************************************************/
-        /* set set_first_pos_write_to_curr_pos to true        */
-        /* to write current position to motors on first write */
-        bool first_pos_read = true;/* don't change this feild - it will */
-                                   /* be updated automatically          */
-        bool set_first_pos_write_to_curr_pos = true;
+        /* set first_pos_read to true to write current position */
+        /* to motors on first write. This is true by default to */
+        /* prevent dangerous abrupt movement on startup         */
+        bool first_pos_read = true;
         /*******************************************************************************/
     };
 

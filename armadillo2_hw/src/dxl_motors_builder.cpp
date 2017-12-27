@@ -535,7 +535,7 @@ namespace armadillo2_hw
             new_motor.spec.model = 0;
             new_motor.command_position = 0.0;
             new_motor.command_velocity = 0.15;
-            new_motor.set_first_pos_write_to_curr_pos = true;
+            new_motor.first_pos_read = true;
             new_motor.dont_allow_zero_ticks_vel = true;
 
             if(dxl_joints_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid id field

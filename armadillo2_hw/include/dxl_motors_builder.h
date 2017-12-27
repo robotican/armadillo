@@ -64,6 +64,7 @@ namespace armadillo2_hw
         std::vector<dxl::motor> motors_;
         ros::ServiceServer torque_srv_;
         ros::Publisher espeak_pub_;
+        /* prevent parallel access to dxl motors */
         boost::mutex comm_mutex_;
 
         bool torqueServiceCB(std_srvs::SetBool::Request  &req,

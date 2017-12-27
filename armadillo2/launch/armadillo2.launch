@@ -14,6 +14,7 @@
     <arg name="hector_slam" default="false"/>
     <arg name="amcl" default="false"/>
     <arg name="move_base" default="false"/>
+    <arg name="twist_mux" default="true"/>
     
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
     
@@ -58,6 +59,10 @@
             <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" />
         </group>
                 
+    </group>
+    
+    <group if="$(arg twist_mux)">
+        <include file="$(find ros_twist_mux)/launch/twist_mux.launch" />
     </group>
     
     <group if="$(arg lidar)">
