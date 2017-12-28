@@ -22,6 +22,8 @@
     
     <!--center robot head on startup -->
     <node name="center_head_node" pkg="center_head" type="center_head_node" respawn="false" output="screen" />
+    <!--open lift_arm service to allow lifting arm from dead state-->
+    <node name="lift_arm_node" pkg="lift_arm" type="lift_arm_node" respawn="false" output="screen" />
     
     <include file="$(find espeak_ros)/launch/espeak_ros.launch" />
     

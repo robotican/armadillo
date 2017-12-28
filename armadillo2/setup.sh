@@ -37,6 +37,7 @@ sudo apt-get -y install ros-kinetic-gmapping
 sudo apt-get -y install ros-kinetic-twist-mux
 sudo apt-get -y install ros-kinetic-pid
 sudo apt-get -y install ros-kinetic-joy
+sudo apt-get -y install ros-kinetic-ar-track-alvar
 sudo apt-get -y install joystick
 sudo apt-get -y install espeak espeak-data libespeak-dev
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
