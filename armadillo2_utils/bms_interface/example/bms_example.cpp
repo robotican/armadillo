@@ -21,7 +21,7 @@ int main(int argc, char **argv)
         //ros::shutdown();
     }
 
-    ros::Rate loop_rate(1);
+    ros::Rate loop_rate(2);
 
 
     while (ros::ok())
