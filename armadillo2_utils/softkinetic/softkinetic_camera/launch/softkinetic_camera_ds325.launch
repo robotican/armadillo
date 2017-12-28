@@ -7,10 +7,10 @@ The arguments given are the device indices of the cameras determined by the Dept
 <launch>
   <arg name="depth" default="true" />
   <arg name="color" default="true" />
-  <node name="softkinetic_camera" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
+  <node name="softkinetic" pkg="softkinetic_camera" type="softkinetic_bringup_node" args="0" output="screen" >
     <param name="camera_link" type="string" value="/softkinetic_link" />
-    <param name="rgb_optical_frame" type="string" value="/softkinetic_camera_rgb_optical_frame" />
-    <param name="depth_optical_frame" type="string" value="/softkinetic_camera_depth_optical_frame" />
+    <param name="rgb_optical_frame" type="string" value="/softkinetic_rgb_optical_frame" />
+    <param name="depth_optical_frame" type="string" value="/softkinetic_depth_optical_frame" />
     <param name="confidence_threshold"      type="int"       value="200"   />
 
     <!-- Downsampling (using PCL voxel grid filter) -->

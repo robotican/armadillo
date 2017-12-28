@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+
+ <!--EXAMPLE
+
+   roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find robotican_common`/worlds/objects_on_table.world" x:=0.8 y:=-0.35
+   
+  roslaunch armadillo2_demos pick_and_place.launch  
+   
+   rosservice call /pick_go "{}"
+ -->
+
+<launch>
+
+    <arg name="start_position" default="cobra_center" /> <!--ninety_deg-->
+    
+    <node name="pick_and_place_node" pkg="armadillo2_demos" type="pick_and_place_node" output="screen" required="true">
+      <param name="~start_position_name" value="$(arg start_position)"/>
+      <param name="~object_name" value="can"/>
+    </node>
+
+
+	<node name="find_object_node" pkg="robotican_common" type="find_objects_node" output="screen">
+		<param name="~object_id" value="1"/>
+		<param name="~depth_topic1" value="/kinect2/qhd/points"/>
+		<param name="~depth_topic2" value="/softkinetic_camera/depth/points"/>  
+		 <rosparam file="$(find armadillo2_demos)/config/red_object.yaml" command="load"/>
+	</node>
+
+
+	<node name="objects_handler" pkg="robotican_common" type="objects_handler" output="screen">
+		<param name="~db_path" value=""/>
+	</node> 
+
+	<node name="object_view" pkg="rqt_image_view" type="rqt_image_view" >
+		<remap from="image" to="find_object_node/result" />
+	</node>
+
+</launch>

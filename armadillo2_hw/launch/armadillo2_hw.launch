@@ -33,8 +33,7 @@
 
     </node>
     
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
-    
+  
     <rosparam file="$(find armadillo2_hw)/config/dxl_joints_config.yaml" command="load"/>
     
     <rosparam file="$(find armadillo2_hw)/config/dxl_spec_config.yaml" command="load"/>

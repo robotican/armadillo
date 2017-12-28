@@ -4,7 +4,8 @@
   <xacro:property name="M_PI" value="3.14159265359"/>
 
   <xacro:macro name="softkinetic_camera" params="name *origin">
-      
+
+
     <!-- Add frames for RGB and depth optical axes -->
     <joint name="${name}_rgb_joint" type="fixed">
       <origin xyz="0.0 0.0125 0.0" rpy="0.0 0.0 0.0"/>
@@ -32,5 +33,4 @@
     </joint>
     <link name="${name}_depth_optical_frame"/>
   </xacro:macro>
-  
 </robot>

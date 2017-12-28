@@ -1,0 +1,35 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="IMU" description="IMU sensor">
+	<xacro:macro name="imu" params="link imu_offset_x imu_offset_y imu_offset_z imu_offset_roll imu_offset_pitch imu_offset_yaw mag_offset_x mag_offset_y mag_offset_z">
+		<gazebo>
+			<plugin name="GazeboRosImu" filename="libhector_gazebo_ros_imu.so">
+				<alwaysOn>true</alwaysOn>
+				<updateRate>50.0</updateRate> 
+				<bodyName>${link}</bodyName>
+				<frameId>${link}</frameId>
+				<topicName>imu</topicName>
+<accelDrift>0.001 0.001 0.001</accelDrift>
+      <accelGaussianNoise>0.05 0.05 0.05</accelGaussianNoise>
+      <rateDrift>0.005 0.005 0.005 </rateDrift>
+      <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
+      <headingDrift>0.005</headingDrift>
+      <headingGaussianNoise>0.005</headingGaussianNoise>
+				<xyzOffsets>${imu_offset_x} ${imu_offset_y} ${imu_offset_z}</xyzOffsets>
+				<rpyOffsets>${imu_offset_roll} ${imu_offset_pitch} ${imu_offset_yaw}</rpyOffsets>
+				<material>Gazebo/Red</material>
+			</plugin>
+		</gazebo>
+
+		<gazebo>
+			<plugin name="GazeboRosMagnetic" filename="libhector_gazebo_ros_magnetic.so">
+				<updateRate>50.0</updateRate>
+				<bodyName>${link}</bodyName>
+				<frameId>${link}</frameId>
+				<topicName>imu_M</topicName>
+				<offset>${mag_offset_x} ${mag_offset_y} ${mag_offset_z}</offset>
+				<drift>0.0 0.0 0.0</drift>
+				<gaussianNoise>1.3e-2 1.3e-2 1.3e-2</gaussianNoise>
+			</plugin>
+		</gazebo>
+	</xacro:macro>
+
+</robot>

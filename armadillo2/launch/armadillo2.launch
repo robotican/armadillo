@@ -6,7 +6,12 @@
     
     <!--common settings-->
     <arg name="sim" default="false" doc="execute armadillo2 inside gazebo sim"/>
-    <arg name="moveit" default="false"/>
+    <arg name="world_name" default="worlds/empty.world"/> 
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.0"/>
+    <arg name="Y" default="0.0" />
+    <arg name="moveit" default="true"/>
     <arg name="softkinetic" default="false"/>
     <arg name="kinect" default="false"/>
     <arg name="lidar" default="false"/>
@@ -18,8 +23,10 @@
     <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
     <arg name="joy_dev" default="/dev/input/js0"/>
     
-    <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
-    
+
+
+     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
+  
     <!--center robot head on startup -->
     <node name="center_head_node" pkg="center_head" type="center_head_node" respawn="false" output="screen" />
     <!--open lift_arm service to allow lifting arm from dead state-->
@@ -41,11 +48,9 @@
     <!--if no one publish map-odom tf, load static tf-->
     <group unless="$(arg gmapping)">
         <group unless="$(arg hector_slam)">
-            <group unless="$(arg amcl)">
-            
+            <group unless="$(arg amcl)">           
                 <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
-                <!--<node pkg="tf" type="static_transform_publisher" name="odom_base_broadcaster" args="0 0 0 0 0 0 /odom /base_footprint 20" />-->
-            
+               
             </group>   
         </group>    
     </group>
@@ -53,15 +58,25 @@
     <!--load simulation stuff-->
     <group if="$(arg sim)">
         
-        <include file="$(find armadillo2_gazebo)/launch/default_world.launch" />
-        
+         <env name="GAZEBO_MODEL_PATH" value="$(find robotican_common)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
+
+
         <include file="$(find armadillo2_control)/launch/armadillo2_gazebo_controllers.launch" />
+
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">	    
+              <arg name="world_name" value="$(arg world_name)"/>
+	      <arg name="gui" value="true"/>	     
+	</include>
+
+        <node name="armadillo2_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model armadillo2 -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y)" />
         
     </group>
     
     <!--load hardware stuff-->
     <group unless="$(arg sim)">
         
+         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2.xacro' --inorder" />
         <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />
         
         <include file="$(find armadillo2_control)/launch/armadillo2_hw_controllers.launch" />

@@ -32,21 +32,16 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
     traj_pub = nh.advertise<trajectory_msgs::JointTrajectory>("pan_tilt_trajectory_controller/command", 5);
     grp_pos_pub = nh.advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
-    ros::Rate r(1); // 50 hz
+    ros::Rate r(1); //
 
     std::vector<double> head_goal(2); //rads
-    float pan_angle, tilt_angle;
+    float pan_angle=0, tilt_angle=0;
     bool gen_random_angles = false;
 
-    if (!ros::param::get("~pan_angle", pan_angle) ||
-        !ros::param::get("~tilt_angle", tilt_angle) ||
-        !ros::param::get("~pan_vel", pan_angle) ||
-        !ros::param::get("~tilt_vel", tilt_angle) ||
-        !ros::param::get("~random", gen_random_angles))
-    {
-        ROS_ERROR("[move_pan_tilt_node]: one of the required params is missing. exiting...");
-        exit(EXIT_FAILURE);
-    }
+    ros::param::get("~pan_angle", pan_angle);
+    ros::param::get("~tilt_angle", tilt_angle); 
+    ros::param::get("~random", gen_random_angles);
+
 
     if (gen_random_angles)
     {

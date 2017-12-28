@@ -161,6 +161,7 @@ private:
 
   // ROS API
   ros::NodeHandle    controller_nh_;
+double joints_vel_;
   ActionServerPtr    action_server_;
 
   ros::Timer         goal_handle_timer_;

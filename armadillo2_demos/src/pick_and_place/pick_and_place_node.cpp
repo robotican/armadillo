@@ -13,6 +13,7 @@
 #include <std_srvs/SetBool.h>
 #include <moveit_msgs/PickupAction.h>
 #include <moveit_msgs/PlaceAction.h>
+#include <std_msgs/Float64MultiArray.h>
 
 #define MAX_BOARD_PLACE 0.05
 typedef actionlib::SimpleActionClient<moveit_msgs::PickupAction> PickClient;
@@ -42,7 +43,8 @@ double randBetweenTwoNum(int max, int min);
 
 bool exec = false;
 ros::ServiceClient *uc_client_ptr;
-ros::Publisher pub_controller_command;
+//ros::Publisher pub_controller_command;
+ros::Publisher grp_pos_pub;
 Point_t point;
 
 
@@ -56,6 +58,8 @@ int main(int argc, char **argv) {
     ros::NodeHandle pn("~");
     std::string object_name,table_name;
     std::string startPositionName ;
+
+
 
     pn.param<std::string>("start_position_name", startPositionName, "pre_grasp2");
     pn.param<std::string>("object_name", object_name, "can");
@@ -77,14 +81,15 @@ int main(int argc, char **argv) {
     moveit::planning_interface::MoveGroupInterface::Plan startPosPlan;
     if(group.plan(startPosPlan)) { //Check if plan is valid
         group.execute(startPosPlan);
-        pub_controller_command = n.advertise<trajectory_msgs::JointTrajectory>("/pan_tilt_trajectory_controller/command", 2);
+      //  pub_controller_command = n.advertise<trajectory_msgs::JointTrajectory>("/pan_tilt_trajectory_controller/command", 2);
+ grp_pos_pub = n.advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
         ROS_INFO("Waiting for the moveit action server to come up");
         ros::ServiceClient uc_client = n.serviceClient<std_srvs::SetBool>("update_collision_objects");
         ROS_INFO("Waiting for update_collision service...");
         uc_client.waitForExistence();
         uc_client_ptr = &uc_client;
         set_collision_update(true);
-        ros::Duration(10.0).sleep();
+        ros::Duration(5.0).sleep();
         look_down();
         ROS_INFO("Looking down...");
         ROS_INFO("Ready!");
@@ -103,7 +108,7 @@ moveit_msgs::PlaceGoal buildPlaceGoal(const std::string &objectName) {
     placeGoal.place_eef = false;
     placeGoal.support_surface_name = "table";
     placeGoal.planner_id = "RRTConnectkConfigDefault";
-    placeGoal.allowed_planning_time = 5.0;
+    placeGoal.allowed_planning_time = 10.0;
     placeGoal.planning_options.replan = true;
     placeGoal.planning_options.replan_attempts = 5;
     placeGoal.planning_options.replan_delay = 2.0;
@@ -152,7 +157,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
     goal.target_name = objectName;
     goal.group_name = "arm";
     goal.end_effector = "eef";
-    goal.allowed_planning_time = 5.0;
+    goal.allowed_planning_time = 10.0;
     goal.planning_options.replan_delay = 2.0;
     goal.planning_options.planning_scene_diff.is_diff = true;
     goal.planning_options.planning_scene_diff.robot_state.is_diff = true;
@@ -164,7 +169,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
     moveit_msgs::Grasp g;
     g.max_contact_force = 1.00; //0.01
     g.grasp_pose.header.frame_id = goal.target_name;
-    g.grasp_pose.pose.position.x = -0.04;
+    g.grasp_pose.pose.position.x = -0.02;
     g.grasp_pose.pose.position.y = 0.0;
     g.grasp_pose.pose.position.z = 0.0;
     g.grasp_pose.pose.orientation.x = 0.0;
@@ -174,8 +179,8 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
 
     g.pre_grasp_approach.direction.header.frame_id = "/base_footprint"; //gripper_link
     g.pre_grasp_approach.direction.vector.x = 1.0;
-    g.pre_grasp_approach.min_distance = 0.1;
-    g.pre_grasp_approach.desired_distance = 0.2;
+    g.pre_grasp_approach.min_distance = 0.01;
+    g.pre_grasp_approach.desired_distance = 0.02;
 
     g.post_grasp_retreat.direction.header.frame_id = "/base_footprint"; //gripper_link
     g.post_grasp_retreat.direction.vector.z = 1.0;
@@ -199,7 +204,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
 }
 
 void look_down() {
-
+/*
     trajectory_msgs::JointTrajectory traj;
     traj.header.stamp = ros::Time::now();
     traj.joint_names.push_back("head_pan_joint");
@@ -213,6 +218,12 @@ void look_down() {
     traj.points[0].velocities.push_back(0);
     traj.points[0].velocities.push_back(0);
     pub_controller_command.publish(traj);
+*/
+ std_msgs::Float64MultiArray grp_pos_msg;
+    grp_pos_msg.data.push_back(0);
+    grp_pos_msg.data.push_back(0.6);
+    grp_pos_pub.publish(grp_pos_msg);
+
 }
 
 bool set_collision_update(bool state){

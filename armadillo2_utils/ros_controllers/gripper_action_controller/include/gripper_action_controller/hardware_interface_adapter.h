@@ -106,6 +106,7 @@ public:
                          double max_allowed_effort)
     {
         /* forward desired posvel command */
+//std::cout << "desired_velocity: "<<desired_velocity<<std::endl;
         (*joint_handle_ptr_).setCommand(desired_position, desired_velocity);
     }
 

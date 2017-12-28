@@ -153,6 +153,8 @@ namespace internal
     // Controlled joint
     controller_nh_.getParam("right_finger_joint", right_finger_joint_name_);
     controller_nh_.getParam("left_finger_joint", left_finger_joint_name_);
+    controller_nh_.getParam("joints_vel", joints_vel_);
+
     if (right_finger_joint_name_.empty())
     {
       ROS_ERROR_STREAM_NAMED(right_finger_joint_name_, "Could not find joint name on param server");
@@ -261,9 +263,9 @@ namespace internal
       //ROS_INFO("current_gap: %f, command_struct_rt_.gap_: %f, error_position: %f", current_position, command_struct_rt_.position_, error_position);
 
       computed_command_ = right_finger_hw_iface_adapter_.updateCommand(time, period,
-                                                              joints_pos, 0.0, error_position, error_velocity, command_struct_rt_.max_effort_);
+                                                              joints_pos,joints_vel_, error_position, error_velocity, command_struct_rt_.max_effort_);
       computed_command_ = left_finger_hw_iface_adapter_.updateCommand(time, period,
-                                                                      -joints_pos, 0.0,
+                                                                      -joints_pos,joints_vel_,
                                                                       error_position, error_velocity, command_struct_rt_.max_effort_);
   }
 
