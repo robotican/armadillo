@@ -20,7 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
         moveit_ros_planning_interface
         kdl_parser
         actionlib
-      #  pr2_controllers_msgs
+        pr2_controllers_msgs
         tf_conversions
         trajectory_msgs
         gazebo_ros
@@ -163,8 +163,8 @@ link_directories(
 add_library(gazebo_grasp_fix SHARED src/GazeboGraspFix.cpp src/GazeboGraspGripper.cpp)
 add_dependencies(gazebo_grasp_fix ${catkin_EXPORTED_TARGETS})
 
-#add_executable(point_head_action src/point_head_action.cpp)
-#target_link_libraries(point_head_action ${catkin_LIBRARIES})
+add_executable(point_head_action src/point_head_action.cpp)
+target_link_libraries(point_head_action ${catkin_LIBRARIES})
 
 add_executable(find_objects_node src/find_objects.cpp)
 add_dependencies(find_objects_node ${PROJECT_NAME}_gencfg)
@@ -172,11 +172,14 @@ add_dependencies(find_objects_node ${PROJECT_NAME}_gencpp)
 target_link_libraries(find_objects_node ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 
-#add_executable(pan_tilt_object_tracking_node src/pan_tilt_object_tracking.cpp)
-#target_link_libraries(pan_tilt_object_tracking_node ${catkin_LIBRARIES})
+add_executable(pan_tilt_object_tracking_node src/pan_tilt_object_tracking.cpp)
+target_link_libraries(pan_tilt_object_tracking_node ${catkin_LIBRARIES})
 
-#add_executable(drive2object_node src/drive2object.cpp)
-#target_link_libraries(drive2object_node ${catkin_LIBRARIES})
+add_executable(drive2object_node src/drive2object.cpp)
+target_link_libraries(drive2object_node ${catkin_LIBRARIES})
+
+add_executable(drive_and_pick src/drive_and_pick.cpp)
+target_link_libraries(drive_and_pick ${catkin_LIBRARIES})
 
 #add_executable(pick_and_place_tcp_server src/pick_and_place_tcp_server.cpp)
 #target_link_libraries(pick_and_place_tcp_server ${catkin_LIBRARIES})

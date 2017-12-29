@@ -9,7 +9,18 @@
 #include <moveit_msgs/CollisionObject.h>
 #include <iostream>
 #include <sstream>
-#include "tf/tf.h"
+#include <kdl/chainfksolver.hpp>
+#include <kdl/chain.hpp>
+#include <kdl/chainjnttojacsolver.hpp>
+#include <kdl/frames.hpp>
+#include "kdl/chainfksolverpos_recursive.hpp"
+#include "kdl_parser/kdl_parser.hpp"
+
+#include "tf_conversions/tf_kdl.h"
+#include <message_filters/subscriber.h>
+#include <tf/message_filter.h>
+#include <tf/transform_datatypes.h>
+#include <tf/transform_listener.h>
 
 
 bool update_cb(std_srvs::SetBool::Request  &req,std_srvs::SetBool::Response &res);

@@ -43,7 +43,7 @@ double randBetweenTwoNum(int max, int min);
 
 bool exec = false;
 ros::ServiceClient *uc_client_ptr;
-//ros::Publisher pub_controller_command;
+ros::Publisher pub_controller_command;
 ros::Publisher grp_pos_pub;
 Point_t point;
 
@@ -81,8 +81,8 @@ int main(int argc, char **argv) {
     moveit::planning_interface::MoveGroupInterface::Plan startPosPlan;
     if(group.plan(startPosPlan)) { //Check if plan is valid
         group.execute(startPosPlan);
-      //  pub_controller_command = n.advertise<trajectory_msgs::JointTrajectory>("/pan_tilt_trajectory_controller/command", 2);
- grp_pos_pub = n.advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
+        pub_controller_command = n.advertise<trajectory_msgs::JointTrajectory>("/pan_tilt_trajectory_controller/command", 2);
+ //grp_pos_pub = n.advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
         ROS_INFO("Waiting for the moveit action server to come up");
         ros::ServiceClient uc_client = n.serviceClient<std_srvs::SetBool>("update_collision_objects");
         ROS_INFO("Waiting for update_collision service...");
@@ -204,7 +204,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
 }
 
 void look_down() {
-/*
+
     trajectory_msgs::JointTrajectory traj;
     traj.header.stamp = ros::Time::now();
     traj.joint_names.push_back("head_pan_joint");
@@ -218,12 +218,12 @@ void look_down() {
     traj.points[0].velocities.push_back(0);
     traj.points[0].velocities.push_back(0);
     pub_controller_command.publish(traj);
-*/
+/*
  std_msgs::Float64MultiArray grp_pos_msg;
     grp_pos_msg.data.push_back(0);
     grp_pos_msg.data.push_back(0.6);
     grp_pos_pub.publish(grp_pos_msg);
-
+*/
 }
 
 bool set_collision_update(bool state){

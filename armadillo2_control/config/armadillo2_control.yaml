@@ -23,7 +23,7 @@ pan_tilt_trajectory_controller:
   joints: ['head_pan_joint', 'head_tilt_joint']
   
 pan_tilt_posvel_trajectory_controller:
-  type: position_controllers/JointTrajectoryController #pos_vel_controllers/JointTrajectoryController
+  type: pos_vel_controllers/JointTrajectoryController
   joints: ['head_pan_joint', 'head_tilt_joint']
 
 mobile_base_controller:
@@ -99,6 +99,12 @@ gripper_controller:
  stalled_velocity_threshold: 0.005
  stall_timeout: 1.0
  joints_vel: 0.4
-action_monitor_rate: 50
+ action_monitor_rate: 50
       
+gazebo_ros_control:
+  pid_gains:
+    left_finger_joint: {p: 150.0, i: 0.01, d: 10.0}
+    right_finger_joint: {p: 150.0, i: 0.01, d: 10.0}
+    head_pan_joint: {p: 150.0, i: 0.02, d: 10.0}
+    head_tilt_joint: {p: 150.0, i: 0.02, d: 10.0}
 

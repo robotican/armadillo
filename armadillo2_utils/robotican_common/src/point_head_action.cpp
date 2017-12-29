@@ -377,7 +377,7 @@ public:
       }
     }
     ROS_DEBUG("Iterative solver took %d steps", count);
-    
+
     std::vector<double> q_goal(joints);
 
     for(unsigned int i = 0; i < joints; i++)
@@ -436,7 +436,7 @@ public:
     pub_controller_command_.publish(traj);
   }
 
-  
+
   void watchdog(const ros::TimerEvent &e)
   {
     ros::Time now = ros::Time::now();
@@ -542,4 +542,3 @@ int main(int argc, char** argv)
   ros::spin();
   return 0;
 }
-

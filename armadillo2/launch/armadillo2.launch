@@ -89,15 +89,17 @@
             <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" />
         </group>
                 
+ <group if="$(arg lidar)">
+        <include file="$(find lidar_urg_node)/launch/lidar.launch" />
+    </group>
+
     </group>
     
     <group if="$(arg twist_mux)">
         <include file="$(find ros_twist_mux)/launch/twist_mux.launch" />
     </group>
     
-    <group if="$(arg lidar)">
-        <include file="$(find lidar_urg_node)/launch/lidar.launch" />
-    </group>
+   
     
     <group if="$(arg gmapping)">
         <include file="$(find armadillo2_navigation)/launch/gmapping.launch" />

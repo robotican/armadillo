@@ -61,8 +61,8 @@ int main(int argc, char **argv) {
     ROS_INFO("[move_pan_tilt_node]: sending pan-tilt goal [%f,%f](degrees)", pan_angle, tilt_angle);
     while (ros::ok())
     {
-        publishGroupPosMsg(head_goal);
-        //publishTrajectoryMsg(head_goal);
+       // publishGroupPosMsg(head_goal);
+        publishTrajectoryMsg(head_goal);
         r.sleep();
     }
 }

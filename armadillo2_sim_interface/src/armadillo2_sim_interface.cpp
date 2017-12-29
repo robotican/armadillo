@@ -169,8 +169,9 @@ namespace gazebo_ros_control
                                     joint_limit_nh, urdf_model,
                                     &joint_types_[j], &joint_lower_limits_[j], &joint_upper_limits_[j],
                                     &joint_effort_limits_[j]);
-            }
 
+            }
+//ROS_ERROR("LIMIT on: %s     UP: %f    DOWN: %f",joint_names_[j].c_str(),joint_lower_limits_[j],joint_upper_limits_[j]);
 
             if (joint_control_methods_[j] != EFFORT)
             {
@@ -187,6 +188,10 @@ namespace gazebo_ros_control
                             break;
                         case VELOCITY:
                             joint_control_methods_[j] = VELOCITY_PID;
+                            break;
+ 			case POS_VEL:
+			    joint_control_methods_[j] = POSITION_PID;
+                          //  ROS_ERROR("PID on: %s",joint_names_[j].c_str());
                             break;
                     }
                 }
@@ -268,12 +273,15 @@ namespace gazebo_ros_control
             {
 
                 case POS_VEL:
+
+//sim_joints_[j]->SetVelocityLimit(0,joint_velocity_command_[j]);
 #if GAZEBO_MAJOR_VERSION >= 4
                     sim_joints_[j]->SetPosition(0, joint_position_command_[j]);
 #else
                     sim_joints_[j]->SetAngle(0, joint_position_command_[j]);
 #endif
                     sim_joints_[j]->SetVelocity(0, e_stop_active_ ? 0 : joint_velocity_command_[j]);
+
                     break;
 
                 case EFFORT:
