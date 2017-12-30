@@ -55,7 +55,7 @@ printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install kinect drivers #
 printf "${WHITE_TXT}Installing kinect driver...\n${NO_COLOR}"
-cd ~/catkin_ws/src/armadillo2/libfreenect2
+cd ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2
 sudo apt-get -y install build-essential cmake pkg-config
 sudo apt-get -y install libusb-1.0-0-dev
 sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
@@ -64,7 +64,7 @@ mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
 make
 make install
-cd ~/catkin_ws/src/armadillo2/iai_kinect2/iai_kinect2
+cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
 cd ~/catkin_ws
 catkin_make -DCMAKE_BUILD_TYPE="Release"
