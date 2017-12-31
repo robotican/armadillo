@@ -102,9 +102,9 @@ gripper_controller:
  action_monitor_rate: 50
       
 gazebo_ros_control:
-  pid_gains:
-    left_finger_joint: {p: 150.0, i: 0.01, d: 10.0}
-    right_finger_joint: {p: 150.0, i: 0.01, d: 10.0}
-    head_pan_joint: {p: 150.0, i: 0.02, d: 10.0}
-    head_tilt_joint: {p: 150.0, i: 0.02, d: 10.0}
+ pid_gains:
+   left_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
+   right_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
+#  head_pan_joint: {p: 150.0, i: 0.02, d: 10.0}
+#  head_tilt_joint: {p: 150.0, i: 0.02, d: 10.0}
 

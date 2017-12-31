@@ -108,7 +108,7 @@ moveit_msgs::PlaceGoal buildPlaceGoal(const std::string &objectName) {
     placeGoal.place_eef = false;
     placeGoal.support_surface_name = "table";
     placeGoal.planner_id = "RRTConnectkConfigDefault";
-    placeGoal.allowed_planning_time = 10.0;
+    placeGoal.allowed_planning_time = 15.0;
     placeGoal.planning_options.replan = true;
     placeGoal.planning_options.replan_attempts = 5;
     placeGoal.planning_options.replan_delay = 2.0;
@@ -157,7 +157,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
     goal.target_name = objectName;
     goal.group_name = "arm";
     goal.end_effector = "eef";
-    goal.allowed_planning_time = 10.0;
+    goal.allowed_planning_time = 15.0;
     goal.planning_options.replan_delay = 2.0;
     goal.planning_options.planning_scene_diff.is_diff = true;
     goal.planning_options.planning_scene_diff.robot_state.is_diff = true;
@@ -167,7 +167,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
 
     goal.minimize_object_distance = true;
     moveit_msgs::Grasp g;
-    g.max_contact_force = 1.00; //0.01
+    g.max_contact_force = 1.0; //0.01
     g.grasp_pose.header.frame_id = goal.target_name;
     g.grasp_pose.pose.position.x = -0.02;
     g.grasp_pose.pose.position.y = 0.0;
@@ -180,7 +180,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
     g.pre_grasp_approach.direction.header.frame_id = "/base_footprint"; //gripper_link
     g.pre_grasp_approach.direction.vector.x = 1.0;
     g.pre_grasp_approach.min_distance = 0.01;
-    g.pre_grasp_approach.desired_distance = 0.02;
+    g.pre_grasp_approach.desired_distance = 0.2;
 
     g.post_grasp_retreat.direction.header.frame_id = "/base_footprint"; //gripper_link
     g.post_grasp_retreat.direction.vector.z = 1.0;
@@ -213,7 +213,7 @@ void look_down() {
     traj.points[0].time_from_start = ros::Duration(1.0);
     std::vector<double> q_goal(2);
     q_goal[0]=0.0;
-    q_goal[1]=0.6;
+    q_goal[1]=0.7;
     traj.points[0].positions=q_goal;
     traj.points[0].velocities.push_back(0);
     traj.points[0].velocities.push_back(0);
@@ -221,7 +221,7 @@ void look_down() {
 /*
  std_msgs::Float64MultiArray grp_pos_msg;
     grp_pos_msg.data.push_back(0);
-    grp_pos_msg.data.push_back(0.6);
+    grp_pos_msg.data.push_back(0.7);
     grp_pos_pub.publish(grp_pos_msg);
 */
 }
