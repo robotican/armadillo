@@ -155,7 +155,7 @@
     <disable_collisions link1="head_tilt_link" link2="rotation1_link" reason="Never" />
     <disable_collisions link1="head_tilt_link" link2="shoulder1_link" reason="Never" />
     <disable_collisions link1="head_tilt_link" link2="shoulder2_link" reason="Never" />
-    <disable_collisions link1="head_tilt_link" link2="torso_link" reason="Never" />
+    <disable_collisions link1="head_tilt_link" link2="torso_link" reason="Default" />
     <disable_collisions link1="left_finger_link" link2="rotation2_link" reason="Never" />
     <disable_collisions link1="left_finger_link" link2="shoulder2_link" reason="Never" />
     <disable_collisions link1="left_finger_link" link2="shoulder3_link" reason="Never" />

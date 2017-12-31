@@ -301,6 +301,7 @@ namespace dxl
         for (motor &motor : motors)
         {
             bool addparam_success = false;
+
             int32_t motor_pos = convertions::rads2ticks(motor.command_position * motor.direction, motor, protocol_);
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.pos_write_addr,

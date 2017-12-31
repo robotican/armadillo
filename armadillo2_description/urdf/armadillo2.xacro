@@ -348,7 +348,7 @@
           rgba="0.79216 0.81961 0.93333 1" />
       </material>
     </visual>
-    <collision>
+    <collision name="torso">
       <origin
         xyz="0 0 0"
         rpy="0 0 0" />
@@ -357,6 +357,16 @@
           filename="package://armadillo2_description/mesh/torso_link.STL" />
       </geometry>
     </collision>
+    
+     <collision name="safty box">
+      <origin
+        xyz="0 -0.03 0.9"
+        rpy="0 0 0" />
+      <geometry>
+<box size="0.07 0.5 0.8"/>
+      </geometry>
+    </collision>
+    
   </link>
   <joint
     name="torso_joint"
