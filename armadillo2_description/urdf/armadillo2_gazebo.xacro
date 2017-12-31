@@ -43,7 +43,7 @@
   <!-- Sonars -->
   <xacro:if value="$(arg urf)">
     <xacro:include filename="$(find armadillo2_gazebo)/macros/urf.xacro" />
-    <xacro:urf name="rear" link="front_urf_link" topic="URF/front" />
+    <xacro:urf name="front" link="front_urf_link" topic="URF/front" fov="${5.0*M_PI/180}" min="0.2" max="5.0"/>
   </xacro:if>
 
 

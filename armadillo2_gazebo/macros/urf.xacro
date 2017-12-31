@@ -1,5 +1,5 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="URF" description="URF sensor">
- 	<xacro:macro name="urf" params=" name link topic">
+ 	<xacro:macro name="urf" params=" name link topic fov min max">
 		<gazebo reference="${link}">
 			<material>Gazebo/Black</material>
 				<sensor type="ray" name="range">
@@ -12,19 +12,19 @@
 						<horizontal>
 							<samples>10</samples>
 							<resolution>1</resolution>
-							<min_angle>${-URF_FOV/2.0}</min_angle>
-							<max_angle>${URF_FOV/2.0}</max_angle>
+							<min_angle>${-fov/2.0}</min_angle>
+							<max_angle>${-fov/2.0}</max_angle>
 						</horizontal>
 						<vertical>
 							<samples>10</samples>
 							<resolution>1</resolution>
-							<min_angle>${-URF_FOV/2.0}</min_angle>
-							<max_angle>${URF_FOV/2.0}</max_angle>
+							<min_angle>${-fov/2.0}</min_angle>
+							<max_angle>${-fov/2.0}</max_angle>
 						</vertical>
 					</scan>
 					<range>
-						<min>0.01</min>
-						<max>5.0</max>
+						<min>${min}</min>
+						<max>${max}</max>
 						<resolution>0.001</resolution>
 					</range>
 				</ray>
