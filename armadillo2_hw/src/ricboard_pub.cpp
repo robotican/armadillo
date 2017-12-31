@@ -35,7 +35,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
             exit(1);
         }
 
-        torso_lpf_.setCutOffFrequency(5);
+        torso_lpf_.setCutOffFrequency(0.3);
         torso_lpf_.setDeltaTime(0.1);
 
         /* ric publishers */
