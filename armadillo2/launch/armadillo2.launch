@@ -18,14 +18,14 @@
     <arg name="gmapping" default="false"/>
     <arg name="hector_slam" default="false"/>
     <arg name="amcl" default="false"/>
+    <arg name="have_map" default="false" doc="set to true to use pre-saved map"/>
+    <arg name="map" default="map.yaml" doc="pre-saved map path"/>
     <arg name="move_base" default="false"/>
     <arg name="twist_mux" default="true"/>
     <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
     <arg name="joy_dev" default="/dev/input/js0"/>
     
-
-
-     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
   
     <!--center robot head on startup -->
     <node name="center_head_node" pkg="center_head" type="center_head_node" respawn="false" output="screen" />
@@ -43,6 +43,10 @@
             <param name="autorepeat_rate" value="20" />
         </node>
         
+    </group>
+    
+    <group if="$(arg have_map)">
+        <node name="map_server" pkg="map_server" type="map_server" args="$(arg map)" />
     </group>
 
     <!--if no one publish map-odom tf, load static tf-->
@@ -76,7 +80,7 @@
     <!--load hardware stuff-->
     <group unless="$(arg sim)">
         
-         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2.xacro' --inorder" />
+        <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2.xacro' --inorder" />
         <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />
         
         <include file="$(find armadillo2_control)/launch/armadillo2_hw_controllers.launch" />
@@ -87,9 +91,9 @@
     
         <group if="$(arg kinect)">
             <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" />
-        </group>
+    </group>
                 
- <group if="$(arg lidar)">
+    <group if="$(arg lidar)">
         <include file="$(find lidar_urg_node)/launch/lidar.launch" />
     </group>
 

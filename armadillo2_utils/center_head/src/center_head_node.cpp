@@ -44,7 +44,8 @@ int main(int argc, char **argv) {
     while (ros::ok() && elapsed < timeout)
     {
         elapsed = ros::Time::now() - start_time;
-        publishGroupPosMsg(head_goal);
+        //publishGroupPosMsg(head_goal);
+        publishTrajectoryMsg(head_goal);
         r.sleep();
     }
     ROS_INFO("[center_head_node]: done.");
