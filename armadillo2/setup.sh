@@ -44,7 +44,7 @@ sudo apt-get -y install espeak espeak-data libespeak-dev
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install hokuyo #
-sudo apt-get install ros-kinetic-urg-node
+sudo apt-get -y install ros-kinetic-urg-node
 
 # install softkinetic drivers #
 printf "${WHITE_TXT}Installing softkinetic driver...\n${NO_COLOR}"
@@ -67,8 +67,6 @@ make
 make install
 cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
-cd ~/catkin_ws
-catkin_make -DCMAKE_BUILD_TYPE="Release"
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # usb rules #
@@ -86,12 +84,12 @@ printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 # compiling #
 printf "${WHITE_TXT}Compiling armadillo2 package...\n${NO_COLOR}"
 
-cd ../../.. && catkin_make
+cd ~/catkin_ws && catkin_make -DCMAKE_BUILD_TYPE="Release"
 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 printf "${GREEN_TXT}Installation process finished.\n\n${NO_COLOR}"
 printf "${GREEN_TXT}Rebooting PC...\n\n${NO_COLOR}"
-sleep(3)
+sleep 3
 sudo reboot
 
 exit 0
