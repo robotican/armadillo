@@ -105,11 +105,11 @@
     
         <group if="$(arg kinect)">
             <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch" />
-    </group>
+        </group>
                 
-    <group if="$(arg lidar)">
-        <include file="$(find lidar_urg_node)/launch/lidar.launch" />
-    </group>
+        <group if="$(arg lidar)">
+            <include file="$(find lidar_urg_node)/launch/lidar.launch" />
+        </group>
 
     </group>
     
@@ -129,11 +129,10 @@
     
     <group if="$(arg amcl)">
         <include file="$(find armadillo2_navigation)/launch/amcl.launch" >
-              <arg name="x" value="$(arg x)"/>
-	     <arg name="y" value="$(arg y)"/>
-             <arg name="Y" value="$(arg Y)"/>
+            <arg name="x" value="$(arg x)"/>
+            <arg name="y" value="$(arg y)"/>
+            <arg name="Y" value="$(arg Y)"/>
 	</include>
-
     </group>
     
     <group if="$(arg moveit)">

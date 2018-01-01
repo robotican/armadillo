@@ -1,7 +1,8 @@
 #include <ros/ros.h>
 #include <trajectory_msgs/JointTrajectory.h>
-#include <std_srvs/SetBool.h>
+#include <std_srvs/Trigger.h>
 #include <sensor_msgs/JointState.h>
+#include <control_msgs/GripperCommandActionGoal.h>
 
 #define ROTATION1_JOINT_INDX 6
 #define ROTATION2_JOINT_INDX 7
@@ -77,8 +78,10 @@ struct arm_state
 };
 
 ros::Publisher arm_pub;
+ros::Publisher gripper_pub;
 ros::Subscriber joints_state_sub;
 ros::ServiceServer lift_arm_srv;
+ros::ServiceServer open_gripper_srv;
 arm_state arm;
 
 /* check that arm is in valid start pos */
@@ -135,8 +138,8 @@ ArmPose getArmPose()
     return ::INVALID;
 }
 
-bool liftArmCB(std_srvs::SetBool::Request  &req,
-               std_srvs::SetBool::Response &res)
+bool liftArmCB(std_srvs::Trigger::Request  &req,
+               std_srvs::Trigger::Response &res)
 {
 
 
@@ -191,18 +194,15 @@ bool liftArmCB(std_srvs::SetBool::Request  &req,
     point.velocities.push_back(WRIST_RAD_GOAL_VEL);
 
     point.time_from_start = ros::Duration(1);
-
     traj_msg.points.push_back(point);
-
     traj_msg.header.stamp = ros::Time::now();
-
     arm_pub.publish(traj_msg);
-    res.success = true;
 
+    res.success = true;
     return true;
 }
 
-void chatterCallback(const sensor_msgs::JointState::ConstPtr& msg)
+void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr& msg)
 {
     /* save joints updated state */
     arm.got_state = true;
@@ -214,6 +214,19 @@ void chatterCallback(const sensor_msgs::JointState::ConstPtr& msg)
     arm.wrist_pos_rad = msg->position[WRIST_JOINT_INDX];
 }
 
+bool openGripperCB(std_srvs::Trigger::Request  &req,
+                   std_srvs::Trigger::Response &res)
+{
+    control_msgs::GripperCommandActionGoal gripper_msg;
+    gripper_msg.header.stamp = ros::Time::now();
+    gripper_msg.goal.command.position = 0.5;
+    gripper_msg.goal.command.max_effort = 0;
+    gripper_pub.publish(gripper_msg);
+    res.message = "gripper open request was sent";
+    res.success = true;
+    return true;
+}
+
 
 
 int main(int argc, char** argv) {
@@ -222,8 +235,10 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
 
     arm_pub = nh.advertise<trajectory_msgs::JointTrajectory>("arm_trajectory_controller/command", 5);
-    joints_state_sub = nh.subscribe("joint_states", 5, chatterCallback);
+    gripper_pub = nh.advertise<control_msgs::GripperCommandActionGoal>("gripper_controller/gripper_cmd/goal", 5);
+    joints_state_sub = nh.subscribe("joint_states", 5, jointsUpdateCB);
     lift_arm_srv = nh.advertiseService("lift_arm", liftArmCB);
+    open_gripper_srv = nh.advertiseService("open_gripper", openGripperCB);
 
     ros::spin();
     return 0;
