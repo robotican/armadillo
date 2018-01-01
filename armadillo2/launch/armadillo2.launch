@@ -57,6 +57,8 @@
             <param name="autorepeat_rate" value="20" />
         </node>
         
+        <node pkg="armadillo2_teleop" type="armadillo2_teleop_node" name="armadillo2_teleop_node"/>
+        
     </group>
     
     <group if="$(arg have_map)">

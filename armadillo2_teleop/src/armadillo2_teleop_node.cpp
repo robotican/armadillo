@@ -32,7 +32,7 @@ void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
         armadillo_teleop->torso.axis_updown += armadillo_teleop->torso.inc_updown;
     else if (joy->axes[armadillo_teleop->torso.joy_axis_updown] == -1)
         armadillo_teleop->torso.axis_updown -= armadillo_teleop->torso.inc_updown;
-    fprintf(stderr, "[%f]\n", armadillo_teleop->torso.axis_updown );
+    //fprintf(stderr, "[%f]\n", armadillo_teleop->torso.axis_updown );
     if (joy->axes[armadillo_teleop->torso.joy_axis_updown] != 0)
         armadillo_teleop->moveTorso();
 
