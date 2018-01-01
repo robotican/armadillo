@@ -47,10 +47,10 @@
   </xacro:if>
 
 
-  <!-- hokuyo   -->
+  <!-- hokuyo  utm-30lx -->
   <xacro:if value="$(arg lidar)">
     <xacro:include filename="$(find armadillo2_gazebo)/macros/hokuyo.xacro" />
-    <xacro:lidar link="laser_link" topic="scan" samples="667" resolution="1" min_angle="-1.5707963" max_angle="1.5707963" range_min="0.05" range_max="10" range_resolution="0.01" />
+    <xacro:lidar link="laser_link" topic="scan" samples="720" resolution="1" min_angle="-1.5707963" max_angle="1.5707963" range_min="0.1" range_max="30" range_resolution="0.03" />
   </xacro:if>
 
 
