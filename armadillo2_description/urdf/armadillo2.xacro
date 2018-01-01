@@ -3,6 +3,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo2_robot" description="ARMadillo2 Robot">
 
  <xacro:property name="M_PI" value="3.1415926535897931" />
+ <xacro:property name="WHEEL_RADIUS" value="0.095" />
 
  <xacro:include filename="$(find softkinetic_camera)/urdf/sofkinetic_ds325.xacro"/> 
 
@@ -11,7 +12,7 @@
  <joint name="base_footprint_joint" type="fixed">
     <parent link="base_footprint"/>
     <child link="base_link"/>
-    <origin xyz="0.00 0.00 0.1" rpy="0.0 0.0 0.0"/>
+    <origin xyz="0.00 0.00 ${WHEEL_RADIUS-0.0115}" rpy="0.0 0.0 0.0"/>
   </joint> 
 
   <link
@@ -60,7 +61,7 @@
     <joint name="caster_front_joint" type="fixed">
       <parent link="base_link"/>
       <child link="caster_front_link"/>
-      <origin xyz="0.2 0.0 -0.0385" rpy="${-M_PI/2} 0 0"/>
+      <origin xyz="0.2 0.0 ${-WHEEL_RADIUS+0.0115+0.05}" rpy="${-M_PI/2} 0 0"/>
     </joint>
     <link name="caster_front_link">
       <collision>
@@ -81,7 +82,7 @@
     <joint name="caster_back_joint" type="fixed">
       <parent link="base_link"/>
       <child link="caster_back_link"/>
-      <origin xyz="-0.2 0.0 -0.0385" rpy="${-M_PI/2} 0 0"/>
+      <origin xyz="-0.2 0.0 ${-WHEEL_RADIUS+0.0115+0.05}" rpy="${-M_PI/2} 0 0"/>
     </joint>
     <link name="caster_back_link">
       <collision>
@@ -136,7 +137,7 @@
         xyz="0 0 0"
         rpy="${M_PI/2} 0 0" />
       <geometry>
-      <cylinder  length="0.04" radius="0.1"/> 
+      <cylinder  length="0.04" radius="${WHEEL_RADIUS}"/> 
       </geometry>
     </collision>
   </link>
@@ -194,7 +195,7 @@
         xyz="0 0 0"
         rpy="${M_PI/2} 0 0" />
       <geometry>
-      <cylinder  length="0.04" radius="0.1"/> 
+      <cylinder  length="0.04" radius="${WHEEL_RADIUS}"/> 
       </geometry>
     </collision>
   </link>
@@ -920,7 +921,7 @@
       lower="-3.14"
       upper="3.14"
       velocity="2.0" /> 
-<dynamics damping="0.1" friction="0"/>
+<dynamics damping="0.5" friction="0.5"/>
   </joint>
 
   <link name="gripper_link"/>
@@ -989,7 +990,7 @@
       lower="-1.57"
       upper="1.57"
       velocity="0.1" /> 
-<dynamics damping="0.5" friction="0.0"/>
+<dynamics damping="0.5" friction="0.5"/>
   </joint>
   <link
     name="right_finger_link">
@@ -1048,7 +1049,7 @@
       lower="-1.57"
       upper="1.57"
       velocity="0.1" /> 
-<dynamics damping="0.5" friction="0.0"/>
+<dynamics damping="0.5" friction="0.5"/>
   </joint>
   <link
     name="softkinetic_link">

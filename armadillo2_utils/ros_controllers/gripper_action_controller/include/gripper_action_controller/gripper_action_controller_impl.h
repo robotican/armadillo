@@ -352,6 +352,7 @@ namespace internal
     if(rt_active_goal_->gh_.getGoalStatus().status != actionlib_msgs::GoalStatus::ACTIVE)
       return;
 
+//ROS_INFO("max_effort: %f",max_effort);
     if(fabs(error_position) < goal_tolerance_)
     {
       pre_alloc_result_->effort = computed_command_;
@@ -391,7 +392,7 @@ namespace internal
         ROS_WARN("GRIPPER: STALLED");
         pre_alloc_result_->effort = computed_command_;
         pre_alloc_result_->position = current_position;
-        pre_alloc_result_->reached_goal = false;
+        pre_alloc_result_->reached_goal = true;
         pre_alloc_result_->stalled = true;
         rt_active_goal_->setAborted(pre_alloc_result_);
         setHoldPosition(ros::Time(0.0));

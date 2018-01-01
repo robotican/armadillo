@@ -61,8 +61,8 @@ mobile_base_controller:
       max_velocity           : 0.8  # m/s
       min_velocity           : -0.5 # m/s
       has_acceleration_limits: true
-      max_acceleration       : 0.22  # m/s^2
-      min_acceleration       : -0.22 # m/s^2
+      max_acceleration       : 0.15  # m/s^2
+      min_acceleration       : -0.15 # m/s^2
   angular:
     z:
       has_velocity_limits    : true
@@ -96,15 +96,15 @@ gripper_controller:
  left_finger_joint: 'left_finger_joint'
  right_finger_joint: 'right_finger_joint'
  goal_tolerance: 0.005
- stalled_velocity_threshold: 0.005
+ stalled_velocity_threshold: 0.05
  stall_timeout: 1.0
  joints_vel: 0.4
  action_monitor_rate: 50
       
-gazebo_ros_control:
- pid_gains:
-   left_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
-   right_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
+#gazebo_ros_control:
+# pid_gains:
+#   left_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
+#   right_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
 #  head_pan_joint: {p: 150.0, i: 0.02, d: 10.0}
 #  head_tilt_joint: {p: 150.0, i: 0.02, d: 10.0}
 

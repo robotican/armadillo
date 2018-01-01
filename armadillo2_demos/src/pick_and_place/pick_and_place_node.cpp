@@ -69,10 +69,10 @@ int main(int argc, char **argv) {
     ROS_INFO("Hello");
     moveit::planning_interface::MoveGroupInterface group("arm");
     //Config move group
-    group.setMaxVelocityScalingFactor(0.1);
-    group.setMaxAccelerationScalingFactor(0.5);
-    group.setPlanningTime(5.0);
-    group.setNumPlanningAttempts(10);
+    //group.setMaxVelocityScalingFactor(0.1);
+    //group.setMaxAccelerationScalingFactor(0.5);
+    group.setPlanningTime(10.0);
+    group.setNumPlanningAttempts(50);
     group.setPlannerId("RRTConnectkConfigDefault");
     group.setPoseReferenceFrame("base_footprint");
 
@@ -144,7 +144,7 @@ moveit_msgs::PlaceGoal buildPlaceGoal(const std::string &objectName) {
         }
     } while (!inTheBoard);
 
-    location.place_pose.pose.position.z = 0.1;
+    location.place_pose.pose.position.z = 0.15;
     location.place_pose.pose.orientation.w = 1.0;
 
     locations.push_back(location);
