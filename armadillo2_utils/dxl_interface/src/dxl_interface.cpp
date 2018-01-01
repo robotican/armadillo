@@ -271,7 +271,10 @@ namespace dxl
             /* by setting velocity to the last non-zero value                */
             if (motor.dont_allow_zero_ticks_vel)
             {
-                if (abs(motor_vel) < 800){
+                double min_ticks;
+                if (motor.id>=1 && motor.id <=6) min_ticks=700;
+                else min_ticks=0;
+                if (abs(motor_vel) <= min_ticks){
                     
                     motor_vel = motor.prev_non_zero_velocity_ticks;
                     // printf("id: %d    motor_vel_tics %d      motor_vel_rad_s: %f\n",motor.id,motor_vel,((double)motor_vel) * 2.0 * M_PI / 60.0 *motor.spec.rpm_scale_factor);
@@ -384,7 +387,7 @@ namespace dxl
     int32_t convertions::rad_s2ticks_s(double rads, struct motor &motor, float protocol)
     {
         if (protocol == DXL_PROTOCOL2) {
-           // printf("id: %d    rads %f        ticks: %d\n",motor.id,rads,static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor));
+          // if (motor.id==7) printf("id: %d    rad_s %f    ticks: %d\n",motor.id,rads,static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor));
             return static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor);
         }
         else

@@ -24,7 +24,7 @@
    <!-- softkinetic -->
   <xacro:if value="$(arg softkinetic)">
   
-     <xacro:softkinetic_gazebo name="softkinetic_rgb" ros_topic="softkinetic_camera"/> 
+     <xacro:softkinetic_gazebo name="softkinetic_rgb" ros_topic="softkinetic"/> 
   </xacro:if>
 
 

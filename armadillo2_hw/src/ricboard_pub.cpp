@@ -39,9 +39,9 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         torso_lpf_.setDeltaTime(0.1);
 
         /* ric publishers */
-        ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("gps", 10);
-        ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("ultrasonic", 10);
-        ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("imu", 10);
+        ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("GPS/fix", 10);
+        ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("URF/front", 10);
+        ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("IMU", 10);
 
         ric_pub_timer_ = nh.createTimer(ros::Duration(RIC_PUB_INTERVAL), &RicboardPub::pubTimerCB, this);
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);

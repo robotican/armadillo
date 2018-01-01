@@ -99,7 +99,7 @@ namespace internal
     left_finger_hw_iface_adapter_.starting(ros::Time(0.0));
     last_movement_time_ = time;
 
-      setHoldPosition(ros::Time(0.0));
+      setHoldPosition(ros::Time(0.0),0);
   }
 
   template <class HardwareInterface>
@@ -325,7 +325,7 @@ namespace internal
       rt_active_goal_.reset();
 
       // Enter hold current position mode
-      setHoldPosition(ros::Time(0.0));
+      setHoldPosition(ros::Time(0.0),0);
       ROS_DEBUG_NAMED(name_, "Canceling active action goal because cancel callback recieved from actionlib.");
 
       // Mark the current goal as canceled
@@ -336,9 +336,10 @@ namespace internal
 
   template <class HardwareInterface>
   void GripperActionController<HardwareInterface>::
-  setHoldPosition(const ros::Time& time)
+  setHoldPosition(const ros::Time& time,double offset)
   {
-    command_struct_.position_ = pos2Gap(right_finger_joint_.getPosition())-0.02;
+    command_struct_.position_ = pos2Gap(right_finger_joint_.getPosition())+offset;
+    
     command_struct_.max_effort_ = default_max_effort_;
     command_.writeFromNonRT(command_struct_);
   }
@@ -381,7 +382,8 @@ namespace internal
        // ROS_WARN("pre_alloc_result_->position: %f", pre_alloc_result_->position);
 
         rt_active_goal_->setSucceeded(pre_alloc_result_);
-        setHoldPosition(ros::Time(0.0));
+       
+        setHoldPosition(ros::Time(0.0),-0.02);
         return;
       }
 
@@ -397,7 +399,7 @@ namespace internal
         pre_alloc_result_->reached_goal = false;
         pre_alloc_result_->stalled = true;
         rt_active_goal_->setSucceeded(pre_alloc_result_);
-        setHoldPosition(ros::Time(0.0));
+        setHoldPosition(ros::Time(0.0),0.0);
       }
     }
   }

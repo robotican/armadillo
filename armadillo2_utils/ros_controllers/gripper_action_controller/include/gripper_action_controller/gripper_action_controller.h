@@ -169,7 +169,7 @@ double joints_vel_;
   void goalCB(GoalHandle gh);
   void cancelCB(GoalHandle gh);
   void preemptActiveGoal();
-  void setHoldPosition(const ros::Time& time);
+  void setHoldPosition(const ros::Time& time,double offset);
 
   ros::Time last_movement_time_;                                    ///< Store stall time
   double computed_command_;                                         ///< Computed command

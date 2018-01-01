@@ -97,8 +97,8 @@ gripper_controller:
  right_finger_joint: 'right_finger_joint'
  goal_tolerance: 0.005
  stalled_velocity_threshold: 0.01
- stall_timeout: 2.0
- joints_vel: 2.0
+ stall_timeout: 1.0
+ joints_vel: 1.0
  action_monitor_rate: 50
       
 #gazebo_ros_control:
