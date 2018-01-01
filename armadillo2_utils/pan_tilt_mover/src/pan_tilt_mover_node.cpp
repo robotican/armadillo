@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
     traj_pub = nh.advertise<trajectory_msgs::JointTrajectory>("/pan_tilt_trajectory_controller/command", 5);
   //  grp_pos_pub = nh.advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
-    ros::Rate r(0.2); //
+    ros::Rate r(15); //
 
     std::vector<double> head_goal(2); //rads
     float pan_angle = 0, tilt_angle = 0;
@@ -64,15 +64,21 @@ int main(int argc, char **argv) {
         head_goal[1] = tilt_angle * (M_PI / 180);
     }
 
-    ROS_INFO("[move_pan_tilt_node]: sending pan-tilt goal [%f,%f](degrees)", pan_angle, tilt_angle);
+   
 
     ros::Duration max_period(timeout);
     ros::Duration elapsed;
     ros::Time start_time = ros::Time::now();
-r.sleep();
+//r.sleep();
+ ROS_INFO("[move_pan_tilt_node]: waiting for subscriber");
     /* if timeout is 0, run forever. else, run until timeout */
    while (ros::ok())
     {
+while (traj_pub.getNumSubscribers()<=0) {
+ ros::spinOnce();
+r.sleep();
+}
+ ROS_INFO("[move_pan_tilt_node]: sending pan-tilt goal [%f,%f](degrees)", pan_angle, tilt_angle);
        // elapsed = ros::Time::now() - start_time;
         // publishGroupPosMsg(head_goal);
         publishTrajectoryMsg(head_goal);

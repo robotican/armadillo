@@ -182,6 +182,7 @@ int main(int argc, char **argv) {
     ros::ServiceClient uc_client = n.serviceClient<std_srvs::SetBool>("update_collision_objects");
     ROS_INFO("Waiting for update_collision service...");
     uc_client.waitForExistence();
+    ROS_INFO("Ready! run: 'rosservice call /drive2object_go' to initiate");
     std_srvs::SetBool srv;
     srv.request.data=true;
     uc_client.call(srv);
