@@ -22,8 +22,8 @@
 
 	<node name="find_object_node" pkg="robotican_common" type="find_objects_node" output="screen">
 		<param name="~object_id" value="1"/>
-		<param name="~depth_topic1" value="/kinect2/qhd/points"/>
-		<param name="~depth_topic2" value="/softkinetic_camera/depth/points"/>  
+		<param name="~depth_topic2" value="/kinect2/qhd/points"/>
+		<param name="~depth_topic1" value="/softkinetic/depth/points"/>  
 		 <rosparam file="$(find armadillo2_demos)/config/red_object.yaml" command="load"/>
 	</node>
 

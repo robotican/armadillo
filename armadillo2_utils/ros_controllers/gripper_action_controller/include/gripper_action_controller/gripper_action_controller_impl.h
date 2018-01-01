@@ -248,9 +248,11 @@ namespace internal
   {
     command_struct_rt_ = *(command_.readFromRT());
     double current_position = pos2Gap(right_finger_joint_.getPosition());
-    double current_velocity =  current_position - last_position_ / period.toSec();
+    double current_velocity =  (current_position - last_position_) / period.toSec();
+    //ROS_INFO("current_position: %f    last_position_: %f    period.toSec(): %f    current_velocity: %f",current_position,last_position_,period.toSec(),current_velocity);
     double current_effort = (fabs(left_finger_joint_.getEffort()) > fabs(right_finger_joint_.getEffort())) ?
                             fabs(left_finger_joint_.getEffort()) : fabs(right_finger_joint_.getEffort());
+    //  ROS_INFO("current_effort: %f      max_effort_: %f",current_effort,command_struct_rt_.max_effort_);                    
     double error_position = command_struct_rt_.position_ - current_position;
     double error_velocity = command_struct_rt_.velocity - current_velocity;
     last_position_ = current_position;
@@ -336,7 +338,7 @@ namespace internal
   void GripperActionController<HardwareInterface>::
   setHoldPosition(const ros::Time& time)
   {
-    command_struct_.position_ = pos2Gap(right_finger_joint_.getPosition());
+    command_struct_.position_ = pos2Gap(right_finger_joint_.getPosition())-0.02;
     command_struct_.max_effort_ = default_max_effort_;
     command_.writeFromNonRT(command_struct_);
   }
@@ -355,7 +357,7 @@ namespace internal
 //ROS_INFO("max_effort: %f",max_effort);
     if(fabs(error_position) < goal_tolerance_)
     {
-      pre_alloc_result_->effort = computed_command_;
+      pre_alloc_result_->effort = current_effort;
       pre_alloc_result_->position = current_position;
       pre_alloc_result_->reached_goal = true;
       pre_alloc_result_->stalled = false;
@@ -369,14 +371,14 @@ namespace internal
 
 
 
-        pre_alloc_result_->effort = computed_command_;
+        pre_alloc_result_->effort = current_effort;
         pre_alloc_result_->position = current_position;
-        pre_alloc_result_->reached_goal = false;
+        pre_alloc_result_->reached_goal = true;
         pre_alloc_result_->stalled = true;
 
 
-        ROS_WARN("pre_alloc_result_->effort: %f", pre_alloc_result_->effort);
-        ROS_WARN("pre_alloc_result_->position: %f", pre_alloc_result_->position);
+       // ROS_WARN("pre_alloc_result_->effort: %f", pre_alloc_result_->effort);
+       // ROS_WARN("pre_alloc_result_->position: %f", pre_alloc_result_->position);
 
         rt_active_goal_->setSucceeded(pre_alloc_result_);
         setHoldPosition(ros::Time(0.0));
@@ -384,17 +386,17 @@ namespace internal
       }
 
       if(fabs(current_velocity) > stall_velocity_threshold_) {
-
+//ROS_INFO("current_velocity: %f",fabs(current_velocity));
         last_movement_time_ = time;
       }
       else if( (time - last_movement_time_).toSec() > stall_timeout_)
       {
         ROS_WARN("GRIPPER: STALLED");
-        pre_alloc_result_->effort = computed_command_;
+        pre_alloc_result_->effort = current_effort;
         pre_alloc_result_->position = current_position;
-        pre_alloc_result_->reached_goal = true;
+        pre_alloc_result_->reached_goal = false;
         pre_alloc_result_->stalled = true;
-        rt_active_goal_->setAborted(pre_alloc_result_);
+        rt_active_goal_->setSucceeded(pre_alloc_result_);
         setHoldPosition(ros::Time(0.0));
       }
     }

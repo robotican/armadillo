@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(center_head)
+project(pan_tilt_mover)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -102,8 +102,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES armadillo2_utils
-      CATKIN_DEPENDS roscpp
+#  LIBRARIES pan_tilt_mover
+  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
 
@@ -120,19 +120,19 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/armadillo2_utils.cpp
+#   src/${PROJECT_NAME}/pan_tilt_mover.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(center_head_node
-                src/center_head_node.cpp)
+add_executable(${PROJECT_NAME}_node src/pan_tilt_mover_node.cpp)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -141,12 +141,11 @@ add_executable(center_head_node
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(center_head_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(
-        center_head_node
-        ${catkin_LIBRARIES}
+target_link_libraries(${PROJECT_NAME}_node
+   ${catkin_LIBRARIES}
 )
 
 #############
@@ -189,7 +188,7 @@ target_link_libraries(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_armadillo2_utils.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_pan_tilt_mover.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

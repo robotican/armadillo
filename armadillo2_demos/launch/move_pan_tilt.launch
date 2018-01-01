@@ -17,10 +17,12 @@
     <arg name="pan_angle" default="0"/> <!-- degrees -->
     <arg name="tilt_angle" default="0"/> <!-- degrees -->
     <arg name="random_angle" default="false"/> <!-- if true, pan tilt angles will be generated randomly -->
+    <arg name="timeout" default="5"/> <!--execute until timeout (seconds). if timeout=0 it will execute forever-->
 
-    <node name="move_pan_tilt_node" output="screen" pkg="armadillo2_demos" type="move_pan_tilt_node">
+    <node name="pan_tilt_center_node" output="screen" pkg="pan_tilt_mover" type="pan_tilt_mover_node">
         <param name="pan_angle" value="$(arg pan_angle)" />
         <param name="tilt_angle" value="$(arg tilt_angle)" />
+        <param name="timeout" value="$(arg timeout)" />
         <param name="random" value="$(arg random_angle)" />
     </node>
 

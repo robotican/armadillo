@@ -271,8 +271,11 @@ namespace dxl
             /* by setting velocity to the last non-zero value                */
             if (motor.dont_allow_zero_ticks_vel)
             {
-                if (motor_vel == 0)
+                if (abs(motor_vel) < 800){
+                    
                     motor_vel = motor.prev_non_zero_velocity_ticks;
+                    // printf("id: %d    motor_vel_tics %d      motor_vel_rad_s: %f\n",motor.id,motor_vel,((double)motor_vel) * 2.0 * M_PI / 60.0 *motor.spec.rpm_scale_factor);
+                }
                 else
                     motor.prev_non_zero_velocity_ticks = motor_vel;
             }
@@ -380,8 +383,10 @@ namespace dxl
     /* rads per sec to ticks per sec */
     int32_t convertions::rad_s2ticks_s(double rads, struct motor &motor, float protocol)
     {
-        if (protocol == DXL_PROTOCOL2)
+        if (protocol == DXL_PROTOCOL2) {
+           // printf("id: %d    rads %f        ticks: %d\n",motor.id,rads,static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor));
             return static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor);
+        }
         else
             return static_cast<int32_t >(83.49f * (rads)-0.564f);
     }
@@ -389,8 +394,11 @@ namespace dxl
     /* ticks per sec to rads per sec */
     double convertions::ticks_s2rad_s(int32_t ticks, struct motor &motor, float protocol)
     {
-        if (protocol == DXL_PROTOCOL2)
-            return ((double)ticks) * 2.0 * M_PI / 60.0 / motor.spec.rpm_scale_factor;
+        if (protocol == DXL_PROTOCOL2) {
+           // 
+            return ((double)ticks) * 2.0 * M_PI / 60.0 *motor.spec.rpm_scale_factor;
+            
+        }
         else
             return (100.0f / 8349.0f) * ((double)ticks) + (94.0f / 13915.0f);
     }

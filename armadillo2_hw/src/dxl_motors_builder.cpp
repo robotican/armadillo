@@ -534,7 +534,7 @@ namespace armadillo2_hw
             /* defaults to prevent bad movement on startup */
             new_motor.spec.model = 0;
             new_motor.command_position = 0.0;
-            new_motor.command_velocity = 0.15;
+            new_motor.command_velocity = 0.5;
             new_motor.first_pos_read = true;
             new_motor.dont_allow_zero_ticks_vel = true;
 

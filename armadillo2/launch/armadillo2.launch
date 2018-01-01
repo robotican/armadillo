@@ -11,7 +11,7 @@
     <arg name="y" default="0.0"/>
     <arg name="z" default="0.0"/>
     <arg name="Y" default="0.0" />
-    <arg name="moveit" default="true"/>
+    <arg name="moveit" default="false"/>
     <arg name="softkinetic" default="false"/>
     <arg name="kinect" default="false"/>
     <arg name="lidar" default="false"/>
@@ -24,11 +24,25 @@
     <arg name="twist_mux" default="true"/>
     <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
     <arg name="joy_dev" default="/dev/input/js0"/>
+    <!--uncommon settings-->
+    <arg name="center_pan_tilt" default="true" doc="centers head on startup"/>
     
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
   
     <!--center robot head on startup -->
-    <node name="center_head_node" pkg="center_head" type="center_head_node" respawn="false" output="screen" />
+    <group if="$(arg center_pan_tilt)" >
+        
+        <!-- load joystick listener node -->
+        <node name="pan_tilt_center_node" output="screen" pkg="pan_tilt_mover" type="pan_tilt_mover_node">
+            <param name="pan_angle" value="0" />
+            <param name="tilt_angle" value="0" />
+            <param name="timeout" value="5" />
+            <param name="random" value="false" />
+        </node>
+        
+    </group>
+    
+    
     <!--open lift_arm service to allow lifting arm from dead state-->
     <node name="lift_arm_node" pkg="lift_arm" type="lift_arm_node" respawn="false" output="screen" />
     
@@ -114,7 +128,12 @@
     </group>
     
     <group if="$(arg amcl)">
-        <include file="$(find armadillo2_navigation)/launch/amcl.launch" />
+        <include file="$(find armadillo2_navigation)/launch/amcl.launch" >
+              <arg name="x" value="$(arg x)"/>
+	     <arg name="y" value="$(arg y)"/>
+             <arg name="Y" value="$(arg Y)"/>
+	</include>
+
     </group>
     
     <group if="$(arg moveit)">

@@ -12,11 +12,15 @@ void publishTrajectoryMsg(std::vector<double> &head_goal)
     traj.joint_names.push_back("head_pan_joint");
     traj.joint_names.push_back("head_tilt_joint");
     traj.points.resize(1);
-    traj.points[0].time_from_start = ros::Duration(5.0);
-    traj.points[0].positions = head_goal;
+    traj.points[0].time_from_start = ros::Duration(1.0);
+    std::vector<double> q_goal(2);
+    q_goal[0]=head_goal[0];
+    q_goal[1]=head_goal[1];
+    traj.points[0].positions=q_goal;
     traj.points[0].velocities.push_back(0.1);
     traj.points[0].velocities.push_back(0.1);
     traj_pub.publish(traj);
+    
 }
 
 void publishGroupPosMsg(std::vector<double> &head_goal)
@@ -30,17 +34,19 @@ void publishGroupPosMsg(std::vector<double> &head_goal)
 int main(int argc, char **argv) {
     ros::init(argc, argv, "pan_tilt_api");
     ros::NodeHandle nh;
-    traj_pub = nh.advertise<trajectory_msgs::JointTrajectory>("pan_tilt_trajectory_controller/command", 5);
-    grp_pos_pub = nh.advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
-    ros::Rate r(1); //
+    traj_pub = nh.advertise<trajectory_msgs::JointTrajectory>("/pan_tilt_trajectory_controller/command", 5);
+  //  grp_pos_pub = nh.advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
+    ros::Rate r(0.2); //
 
     std::vector<double> head_goal(2); //rads
-    float pan_angle=0, tilt_angle=0;
+    float pan_angle = 0, tilt_angle = 0;
+    float timeout = 0; //secs
     bool gen_random_angles = false;
 
     ros::param::get("~pan_angle", pan_angle);
-    ros::param::get("~tilt_angle", tilt_angle); 
+    ros::param::get("~tilt_angle", tilt_angle);
     ros::param::get("~random", gen_random_angles);
+    ros::param::get("~timeout", timeout);
 
 
     if (gen_random_angles)
@@ -59,10 +65,21 @@ int main(int argc, char **argv) {
     }
 
     ROS_INFO("[move_pan_tilt_node]: sending pan-tilt goal [%f,%f](degrees)", pan_angle, tilt_angle);
-    while (ros::ok())
+
+    ros::Duration max_period(timeout);
+    ros::Duration elapsed;
+    ros::Time start_time = ros::Time::now();
+r.sleep();
+    /* if timeout is 0, run forever. else, run until timeout */
+   while (ros::ok())
     {
-       // publishGroupPosMsg(head_goal);
+       // elapsed = ros::Time::now() - start_time;
+        // publishGroupPosMsg(head_goal);
         publishTrajectoryMsg(head_goal);
-        r.sleep();
+        ros::spinOnce();
+       // r.sleep();
+        ros::shutdown();
     }
+
+    ROS_INFO("[move_pan_tilt_node]: done");
 }

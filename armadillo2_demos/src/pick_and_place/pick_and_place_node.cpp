@@ -46,8 +46,10 @@ ros::ServiceClient *uc_client_ptr;
 ros::Publisher pub_controller_command;
 ros::Publisher grp_pos_pub;
 Point_t point;
-
-
+  std::string startPositionName ;
+moveit::planning_interface::MoveGroupInterface *group_ptr;
+  
+  
 int main(int argc, char **argv) {
 
     ros::init(argc, argv, "pick_and_plce_node");
@@ -57,7 +59,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle n;
     ros::NodeHandle pn("~");
     std::string object_name,table_name;
-    std::string startPositionName ;
+  
 
 
 
@@ -68,6 +70,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer pickAndPlace = n.advertiseService("pick_go", &pickAndPlaceCallBack);
     ROS_INFO("Hello");
     moveit::planning_interface::MoveGroupInterface group("arm");
+    group_ptr=&group;
     //Config move group
     //group.setMaxVelocityScalingFactor(0.1);
     //group.setMaxAccelerationScalingFactor(0.5);
@@ -144,7 +147,7 @@ moveit_msgs::PlaceGoal buildPlaceGoal(const std::string &objectName) {
         }
     } while (!inTheBoard);
 
-    location.place_pose.pose.position.z = 0.15;
+    location.place_pose.pose.position.z = 0.13;
     location.place_pose.pose.orientation.w = 1.0;
 
     locations.push_back(location);
@@ -198,7 +201,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
     g.grasp_posture.points[0].positions.resize(g.grasp_posture.joint_names.size());
     g.grasp_posture.points[0].positions[0] = 0.01;
     g.grasp_posture.points[0].effort.resize(g.grasp_posture.joint_names.size());
-    g.grasp_posture.points[0].effort[0] = 0.4;
+    g.grasp_posture.points[0].effort[0] = 0.5;
     goal.possible_grasps.push_back(g);
     return goal;
 }
@@ -284,6 +287,13 @@ bool pickAndPlaceCallBack(std_srvs::Trigger::Request &req, std_srvs::Trigger::Re
         } while(!found);
     }
 
+     group_ptr->setStartStateToCurrentState();
+    group_ptr->setNamedTarget(startPositionName);
+    moveit::planning_interface::MoveGroupInterface::Plan startPosPlan;
+    if(group_ptr->plan(startPosPlan)) { //Check if plan is valid
+        group_ptr->execute(startPosPlan);
+    }
+    
     std_srvs::SetBool enableColl;
     enableColl.request.data = true;
     if(uc_client.call(enableColl)) {

@@ -13,14 +13,14 @@
 /* valid starting positions */
 #define VALID_START_RAD_GOAL_TOLERANCE 0.174533 //10 deg
 
-#define ROTATION1_VALID_START_RAD_LEFT_POS 1.5299
+#define ROTATION1_VALID_START_RAD_LEFT_POS 1.567
 #define ROTATION2_VALID_START_RAD_LEFT_POS 0.0
 #define SHOULDER1_VALID_START_RAD_LEFT_POS -1.883
 #define SHOULDER2_VALID_START_RAD_LEFT_POS 2.366
 #define SHOULDER3_VALID_START_RAD_LEFT_POS 0.413287
 #define WRIST_VALID_START_RAD_LEFT_POS 0.0
 
-#define ROTATION1_VALID_START_RAD_RIGHT_POS 4.68747
+#define ROTATION1_VALID_START_RAD_RIGHT_POS -1.567
 #define ROTATION2_VALID_START_RAD_RIGHT_POS 0.0
 #define SHOULDER1_VALID_START_RAD_RIGHT_POS -1.883
 #define SHOULDER2_VALID_START_RAD_RIGHT_POS 2.366
@@ -29,7 +29,7 @@
 
 /* goal position when arm is folded with gripper */
 /* on the right side of the robot                */
-#define ROTATION1_RAD_GOAL_LEFT_POS 1.5299
+#define ROTATION1_RAD_GOAL_LEFT_POS 1.567
 #define ROTATION2_RAD_GOAL_LEFT_POS 0.0
 #define SHOULDER1_RAD_GOAL_LEFT_POS -1.5264
 #define SHOULDER2_RAD_GOAL_LEFT_POS 2.1339
@@ -38,7 +38,7 @@
 
 /* goal position when arm is folded with gripper */
 /* on the left side of the robot                 */
-#define ROTATION1_RAD_GOAL_RIGHT_POS 4.68747
+#define ROTATION1_RAD_GOAL_RIGHT_POS -1.567
 #define ROTATION2_RAD_GOAL_RIGHT_POS 0.0
 #define SHOULDER1_RAD_GOAL_RIGHT_POS -1.5264
 #define SHOULDER2_RAD_GOAL_RIGHT_POS 2.1339
@@ -89,7 +89,7 @@ ArmPose getArmPose()
     if (arm.rotation1_pos_rad > ROTATION1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
         arm.rotation1_pos_rad < ROTATION1_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
     {
-        if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
+        /*if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
             arm.rotation2_pos_rad < ROTATION2_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
         {
             if (arm.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
@@ -102,17 +102,17 @@ ArmPose getArmPose()
                         arm.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                     {
                         if (arm.wrist_pos_rad > WRIST_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
                             return ::GRIPPER_TO_THE_RIGHT;
-                    }
+                    /*}
                 }
             }
-        }
+        }*/
     }
     else if (arm.rotation1_pos_rad > ROTATION1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
              arm.rotation1_pos_rad < ROTATION1_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
     {
-        if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
+        /*if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
             arm.rotation2_pos_rad < ROTATION2_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
         {
             if (arm.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
@@ -125,12 +125,12 @@ ArmPose getArmPose()
                         arm.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                     {
                         if (arm.wrist_pos_rad > WRIST_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
                             return ::GRIPPER_TO_THE_LEFT;
-                    }
+                    /*}
                 }
             }
-        }
+        }*/
     }
     return ::INVALID;
 }
