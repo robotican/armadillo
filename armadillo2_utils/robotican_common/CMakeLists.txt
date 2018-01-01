@@ -26,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
         gazebo_ros
         ar_track_alvar
         message_generation
+robotican_msgs_srvs
  gazebo_dev
 pluginlib
         )
@@ -72,10 +73,10 @@ find_package( OpenCV REQUIRED )
 # )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
- switch_topic.srv
-)
+#add_service_files(
+#  FILES
+# switch_topic.srv
+#)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -164,7 +165,8 @@ add_library(gazebo_grasp_fix SHARED src/GazeboGraspFix.cpp src/GazeboGraspGrippe
 add_dependencies(gazebo_grasp_fix ${catkin_EXPORTED_TARGETS})
 
 add_executable(point_head_action src/point_head_action.cpp)
-target_link_libraries(point_head_action ${catkin_LIBRARIES})
+add_dependencies(point_head_action pr2_controllers_msgs_gencpp)
+target_link_libraries(point_head_action ${catkin_LIBRARIES} )
 
 add_executable(find_objects_node src/find_objects.cpp)
 add_dependencies(find_objects_node ${PROJECT_NAME}_gencfg)

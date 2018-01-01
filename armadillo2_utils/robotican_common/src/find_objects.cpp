@@ -18,7 +18,7 @@
 #include "tf/message_filter.h"
 #include "message_filters/subscriber.h"
 #include <ar_track_alvar_msgs/AlvarMarkers.h>
-#include <robotican_common/switch_topic.h>
+#include <robotican_msgs_srvs/switch_topic.h>
 
 using namespace cv;
 using namespace std;
@@ -273,7 +273,7 @@ void dynamicParamCallback(robotican_common::FindObjectDynParamConfig &config, ui
 
 void on_trackbar( int, void* ){}
 
-bool switch_pcl_topic(robotican_common::switch_topic::Request &req, robotican_common::switch_topic::Response &res) {
+bool switch_pcl_topic(robotican_msgs_srvs::switch_topic::Request &req, robotican_msgs_srvs::switch_topic::Response &res) {
 
     if (req.num==1) depth_topic=depth_topic1;
     else if (req.num==2) depth_topic=depth_topic2;
