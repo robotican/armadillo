@@ -13,13 +13,13 @@
 							<samples>10</samples>
 							<resolution>1</resolution>
 							<min_angle>${-fov/2.0}</min_angle>
-							<max_angle>${-fov/2.0}</max_angle>
+							<max_angle>${fov/2.0}</max_angle>
 						</horizontal>
 						<vertical>
 							<samples>10</samples>
 							<resolution>1</resolution>
 							<min_angle>${-fov/2.0}</min_angle>
-							<max_angle>${-fov/2.0}</max_angle>
+							<max_angle>${fov/2.0}</max_angle>
 						</vertical>
 					</scan>
 					<range>

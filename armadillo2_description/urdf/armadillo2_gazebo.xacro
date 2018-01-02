@@ -5,10 +5,6 @@
  <xacro:include filename="$(find armadillo2_description)/urdf/armadillo2.xacro" />
 <xacro:include filename="$(find armadillo2_gazebo)/macros/softkinetic_camera_ds325.xacro" />
  
-  <xacro:property name="URF_FOV" value="${10.0*M_PI/180}" />
-
-
-
 
   <xacro:arg name="kinect2" default="true"/>
   <xacro:arg name="kinect2_hz" default="30.0"/>
@@ -43,7 +39,7 @@
   <!-- Sonars -->
   <xacro:if value="$(arg urf)">
     <xacro:include filename="$(find armadillo2_gazebo)/macros/urf.xacro" />
-    <xacro:urf name="front" link="front_urf_link" topic="URF/front" fov="${5.0*M_PI/180}" min="0.2" max="5.0"/>
+    <xacro:urf name="front" link="front_urf_link" topic="URF/front" fov="${10.0*M_PI/180.0}" min="0.2" max="5.0"/>
   </xacro:if>
 
 
