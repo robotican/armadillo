@@ -240,6 +240,17 @@ int main(int argc, char** argv) {
     lift_arm_srv = nh.advertiseService("lift_arm", liftArmCB);
     open_gripper_srv = nh.advertiseService("open_gripper", openGripperCB);
 
+    /* wait for subscribers and publishers to come up */
+    ros::Rate loop_rate(1);
+    while (arm_pub.getNumSubscribers() <= 0 ||
+           gripper_pub.getNumSubscribers() <= 0 ||
+           joints_state_sub.getNumPublishers() <= 0)
+    {
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+    ROS_INFO("[lift_arm_node]: ready");
+
     ros::spin();
     return 0;
 }
