@@ -42,6 +42,7 @@ sudo apt-get -y install joystick
 sudo apt-get -y install ros-kinetic-hector-gazebo-plugins
 sudo apt-get -y install ros-kinetic-serial
 sudo apt-get -y install espeak espeak-data libespeak-dev
+sudo apt-get -y install ros-kinetic-robot-localization
 sudo apt-get -y install ros-kinetic-trac-ik ros-kinetic-moveit-kinematics 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 

@@ -21,6 +21,7 @@
     <arg name="have_map" default="false" doc="set to true to use pre-saved map"/>
     <arg name="map" default="map.yaml" doc="pre-saved map path"/>
     <arg name="move_base" default="false"/>
+    <arg name="robot_localization" default="false"/>
     <arg name="twist_mux" default="true"/>
     <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
     <arg name="joy_dev" default="/dev/input/js0"/>
@@ -66,7 +67,9 @@
     <group unless="$(arg gmapping)">
         <group unless="$(arg hector_slam)">
             <group unless="$(arg amcl)">           
-                <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
+          	  <group unless="$(arg robot_localization)">  
+                     <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" /> 
+		</group>   
             </group>   
         </group>    
     </group>
@@ -130,7 +133,11 @@
     <group if="$(arg hector_slam)">
         <include file="$(find armadillo2_navigation)/launch/hector_slam.launch" />
     </group>
-    
+
+        <group if="$(arg robot_localization)">
+        <include file="$(find armadillo2_navigation)/launch/robot_localization.launch" />
+    </group>
+
     <group if="$(arg amcl)">
         <include file="$(find armadillo2_navigation)/launch/amcl.launch" >
             <arg name="x" value="$(arg x)"/>
