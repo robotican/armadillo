@@ -92,7 +92,7 @@ ArmPose getArmPose()
     if (arm.rotation1_pos_rad > ROTATION1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
         arm.rotation1_pos_rad < ROTATION1_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
     {
-        /*if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
+        if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
             arm.rotation2_pos_rad < ROTATION2_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
         {
             if (arm.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
@@ -105,17 +105,17 @@ ArmPose getArmPose()
                         arm.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                     {
                         if (arm.wrist_pos_rad > WRIST_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
+                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                             return ::GRIPPER_TO_THE_RIGHT;
-                    /*}
+                    }
                 }
             }
-        }*/
+        }
     }
     else if (arm.rotation1_pos_rad > ROTATION1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
              arm.rotation1_pos_rad < ROTATION1_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
     {
-        /*if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
+        if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
             arm.rotation2_pos_rad < ROTATION2_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
         {
             if (arm.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
@@ -128,12 +128,12 @@ ArmPose getArmPose()
                         arm.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                     {
                         if (arm.wrist_pos_rad > WRIST_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
+                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                             return ::GRIPPER_TO_THE_LEFT;
-                    /*}
+                    }
                 }
             }
-        }*/
+        }
     }
     return ::INVALID;
 }
@@ -250,6 +250,10 @@ int main(int argc, char** argv) {
         loop_rate.sleep();
     }
     ROS_INFO("[lift_arm_node]: ready");
+    /* lift arm once on startup */
+    std_srvs::Trigger::Request  req;
+    std_srvs::Trigger::Response  res;
+    liftArmCB(req, res);
 
     ros::spin();
     return 0;

@@ -43,9 +43,6 @@
     </group>
     
     
-    <!--open lift_arm service to allow lifting arm from dead state-->
-    <node name="lift_arm_node" pkg="lift_arm" type="lift_arm_node" respawn="false" output="screen" />
-    
     <include file="$(find espeak_ros)/launch/espeak_ros.launch" />
     
     <group if="$(arg teleop)" >
@@ -94,6 +91,12 @@
     
     <!--load hardware stuff-->
     <group unless="$(arg gazebo)">
+        
+            
+        <!--open lift_arm service to allow lifting arm from dead state-->
+        <node name="lift_arm_node" pkg="lift_arm" type="lift_arm_node" respawn="false" output="screen" />
+        <!--open prepare_shutdown service to allow lifting arm from dead state-->
+        <node name="prepare_shutdown_node" pkg="prepare_shutdown" type="prepare_shutdown_node" respawn="false" output="screen" />
         
         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2.xacro' --inorder" />
         <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />

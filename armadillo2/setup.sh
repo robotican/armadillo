@@ -92,8 +92,6 @@ catkin_make -DCMAKE_BUILD_TYPE="Release"
 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 printf "${GREEN_TXT}Installation process finished.\n\n${NO_COLOR}"
-printf "${GREEN_TXT}Rebooting PC...\n\n${NO_COLOR}"
-sleep 3
-sudo reboot
+printf "${GREEN_TXT}Please reboot to apply changes\n\n${NO_COLOR}"
 
 exit 0
