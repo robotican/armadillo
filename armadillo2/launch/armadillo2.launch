@@ -5,7 +5,7 @@
 <launch>
     
     <!--common settings-->
-    <arg name="sim" default="false" doc="execute armadillo2 inside gazebo sim"/>
+    <arg name="gazebo" default="false" doc="execute armadillo2 inside gazebo sim"/>
     <arg name="world_name" default="worlds/empty.world"/> 
     <arg name="x" default="0.0"/>
     <arg name="y" default="0.0"/>
@@ -70,13 +70,12 @@
         <group unless="$(arg hector_slam)">
             <group unless="$(arg amcl)">           
                 <node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /odom 20" />
-               
             </group>   
         </group>    
     </group>
     
     <!--load simulation stuff-->
-    <group if="$(arg sim)">
+    <group if="$(arg gazebo)">
         
          <env name="GAZEBO_MODEL_PATH" value="$(find robotican_common)/models:$(optenv GAZEBO_MODEL_PATH)"/>
          <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder" />
@@ -94,7 +93,7 @@
     </group>
     
     <!--load hardware stuff-->
-    <group unless="$(arg sim)">
+    <group unless="$(arg gazebo)">
         
         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2.xacro' --inorder" />
         <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />
