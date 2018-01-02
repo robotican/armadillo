@@ -134,13 +134,16 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     tf::Quaternion orientation_q = tf::createQuaternionFromRPY(sensors.imu.roll_rad,
                                                                sensors.imu.pitch_rad,
                                                                sensors.imu.yaw_rad);
-    geometry_msgs::Quaternion q_msg;
-    q_msg.x = orientation_q.x();
-    q_msg.y = orientation_q.y();
-    q_msg.z = orientation_q.z();
-    q_msg.w = orientation_q.w();
-
-    imu_msg.orientation = q_msg;
+    imu_msg.orientation.x = orientation_q.x();
+    imu_msg.orientation.y = orientation_q.y();
+    imu_msg.orientation.z = orientation_q.z();
+    imu_msg.orientation.w = orientation_q.w();
+    imu_msg.angular_velocity.x = sensors.imu.gyro_x_rad;
+    imu_msg.angular_velocity.y = sensors.imu.gyro_y_rad;
+    imu_msg.angular_velocity.z = sensors.imu.gyro_z_rad;
+    imu_msg.linear_acceleration.x = sensors.imu.accl_x_rad;
+    imu_msg.linear_acceleration.y = sensors.imu.accl_y_rad;
+    imu_msg.linear_acceleration.z = sensors.imu.accl_z_rad;
     imu_msg.header.stamp = ros::Time::now();
     ric_imu_pub_.publish(imu_msg);
 
