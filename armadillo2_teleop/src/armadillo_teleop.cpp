@@ -4,7 +4,7 @@
 Armadillo2Teleop::Armadillo2Teleop(ros::NodeHandle &nh)
 {
     nh_ = &nh;
-    twist_pub_ = nh_->advertise<geometry_msgs::Twist>("twist_mux/cmd_vel", 5);
+    twist_pub_ = nh_->advertise<geometry_msgs::Twist>("cmd_vel", 5);
     torso_pub_ = nh_->advertise<std_msgs::Float64>("torso_effort_controller/command", 5);
 }
 

@@ -1,30 +1,30 @@
 topics:
 -
   name    : joystick
-  topic   : twist_mux/joy_vel
+  topic   : joy_vel
   timeout : 0.5
   priority: 100
 -
   name    : api
-  topic   : twist_mux/cmd_vel
+  topic   : cmd_vel
   timeout : 0.5
   priority: 90
 -
   name    : navigation
-  topic   : twist_mux/nav_vel
+  topic   : nav_vel
   timeout : 0.5
   priority: 80
 
 locks:
 -
   name    : pause
-  topic   : twist_mux/pause_navigation
+  topic   : pause_navigation
   timeout : 0.0
   # Same priority as joystick control, so it'll not block it.
   priority: 100
 -
   name    : joystick 
-  topic   : twist_mux/joy_priority
+  topic   : joy_priority
   timeout : 0.0
   priority: 100
 
