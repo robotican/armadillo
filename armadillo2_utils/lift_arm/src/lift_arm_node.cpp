@@ -92,7 +92,7 @@ ArmPose getArmPose()
     if (arm.rotation1_pos_rad > ROTATION1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
         arm.rotation1_pos_rad < ROTATION1_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
     {
-        if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
+        /*if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
             arm.rotation2_pos_rad < ROTATION2_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
         {
             if (arm.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
@@ -105,17 +105,17 @@ ArmPose getArmPose()
                         arm.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                     {
                         if (arm.wrist_pos_rad > WRIST_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
                             return ::GRIPPER_TO_THE_RIGHT;
-                    }
+                   /* }
                 }
             }
-        }
+        }*/
     }
     else if (arm.rotation1_pos_rad > ROTATION1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
              arm.rotation1_pos_rad < ROTATION1_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
     {
-        if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
+    /*    if (arm.rotation2_pos_rad > ROTATION2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
             arm.rotation2_pos_rad < ROTATION2_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
         {
             if (arm.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
@@ -128,12 +128,12 @@ ArmPose getArmPose()
                         arm.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
                     {
                         if (arm.wrist_pos_rad > WRIST_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+                            arm.wrist_pos_rad < WRIST_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
                             return ::GRIPPER_TO_THE_LEFT;
-                    }
+                    /*}
                 }
             }
-        }
+        }*/
     }
     return ::INVALID;
 }
@@ -239,7 +239,7 @@ int main(int argc, char** argv) {
     joints_state_sub = nh.subscribe("joint_states", 5, jointsUpdateCB);
     lift_arm_srv = nh.advertiseService("lift_arm", liftArmCB);
     open_gripper_srv = nh.advertiseService("open_gripper", openGripperCB);
-
+ros::Duration(5).sleep();
     /* wait for subscribers and publishers to come up */
     ros::Rate loop_rate(1);
     while (arm_pub.getNumSubscribers() <= 0 ||
