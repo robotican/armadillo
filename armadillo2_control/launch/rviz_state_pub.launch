@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
+
 <launch>
-
-
-<param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
-
-
-  <param name="use_gui" value="true" />
-  <param name="publish_default_velocities" value="false" />
-  <param name="publish_default_efforts" value="false" />
-
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find armadillo2_description)/urdf.rviz" />
-
-
-
+    
+    
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find armadillo2_description)/urdf/armadillo2.xacro'" />
+    
+    
+    <param name="use_gui" value="true" />
+    <param name="publish_default_velocities" value="false" />
+    <param name="publish_default_efforts" value="false" />
+    
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find armadillo2_description)/urdf.rviz" />
+    
+    
+    
 </launch>

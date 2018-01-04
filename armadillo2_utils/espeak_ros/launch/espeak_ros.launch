@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 
 <launch>
   <node name="espeak_node" pkg="espeak_ros" type="espeak_node" respawn="false" output="screen">
