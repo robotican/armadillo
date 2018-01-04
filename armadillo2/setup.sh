@@ -79,8 +79,7 @@ sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/usb_to_dxl.rules /etc/udev/r
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/49-teensy.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
-sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/steelseries_joystick.rules /etc/udev/rules.d/
-sudo cp ~/catkin_ws/src/armadillo2/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
+sudo cp ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && udevadm trigger
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
