@@ -21,24 +21,29 @@
 class Armadillo2Teleop
 {
 private:
-    ros::NodeHandle *nh_;
+    //ros::NodeHandle *nh_;
     ros::Publisher torso_real_pub_,
                    torso_sim_pub_,
                    twist_pub_,
                    head_pub_;
-
-    //moveit::planning_interface::MoveGroupInterface arm_grp_;
+    ros::Subscriber joy_sub_;
+    ros::NodeHandle nh_;
+    moveit::planning_interface::MoveGroupInterface arm_grp_;
+    actionlib::SimpleActionClient<control_msgs::GripperCommandAction> *gripper_client_;
 
     void drive();
     void moveTorso();
     void moveArm();
+    void moveGripper();
     void moveHead();
+    void update(const sensor_msgs::Joy::ConstPtr& joy);
+    void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
+    bool loadProfile(const std::string &profile_name);
 
 public:
     joy_profile joy;
-    Armadillo2Teleop(ros::NodeHandle &nh);
-    bool loadProfile(const std::string &profile_name);
-    void update(const sensor_msgs::Joy::ConstPtr& joy);
+    Armadillo2Teleop();
+    ~Armadillo2Teleop() { delete gripper_client_; }
 };
 
 #endif //ARMADILLO2_TELEOP_ARMADILLO_JOY_H

@@ -12,7 +12,7 @@
         <param name="autorepeat_rate" value="20" />
     </node>
     
-    <node pkg="armadillo2_teleop" type="armadillo2_teleop_node" name="armadillo2_teleop_node">
+    <node pkg="armadillo2_teleop" type="armadillo2_teleop_node" name="armadillo2_teleop_node" output="screen">
         <rosparam file="$(find armadillo2_teleop)/config/joy_profiles.yaml" command="load"/>
         <rosparam file="$(find armadillo2_teleop)/config/config.yaml" command="load"/>
         <param name="profile" value="$(arg joy_profile)" />

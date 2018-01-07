@@ -1,20 +1,67 @@
 # joystick profiles axes and buttons #
 xbox:
-  twist: {joy_axis_linear: 3, joy_axis_angular: 2, scale_angular: 1, scale_linear: 1}
+  twist: {joy_axis_linear: 3,
+          joy_axis_angular: 2,
+          scale_angular: 1,
+          scale_linear: 1}
+
   torso: {joy_axis_updown: 7, inc_updown: 0.01}
-  arm: {rotation1_axis: 0, shoulder1_axis: 1, shoulder2_axis: 3, rotation2_axis: 2, shoulder3_up_btn: 4, shoulder3_down_btn: 0, wrist_cw: 1, wrist_ccw: 3, gripper_axis: 7}
-  head: {right_btn: 1, left_btn: 3, up_btn: 4, down_btn: 0, inc_pan: 3, inc_tilt: 3}
+
+  arm: {rotation1_axis: 0,
+        shoulder1_axis: 1,
+        shoulder2_axis: 3,
+        rotation2_axis: 2,
+        shoulder3_up_btn: 4,
+        shoulder3_down_btn: 0,
+        wrist_cw_btn: 1,
+        wrist_ccw_btn: 3,
+        inc: 0.5} #inc in rads
+
+  gripper: {axis: 6,
+            inc: 0.01,
+            max_effort: 5,
+            limit_lower: 0,
+            limit_upper: 0.15} #gap limit in meters
+
+  head: {right_btn: 1,
+         left_btn: 3,
+         up_btn: 4,
+         down_btn: 0,
+         inc_pan: 3,
+         inc_tilt: 3}
+
   arm_mode: 6
   safety_btn: 7
   driving_scale: {angular: 1, linear: 1}
   torso_inc: 0
   
 steelseries:
-  twist: {joy_axis_linear: 2, joy_axis_angular: 3, scale_angular: 1, scale_linear: 1}
-  torso: {joy_axis_updown: 2, inc_updown: 0.01}
-  arm: {rotation1: 0, shoulder1: 0, shoulder2: 0, rotation2: 0, shoulder3: 0, wrist_joint: 0, gripper: 0}
-  head: {right_btn: 1, left_btn: 3, up_btn: 4, down_btn: 0, inc_pan: 3, inc_tilt: 3}
-  arm_mode: 0
-  safety_btn: 0
+  twist: {joy_axis_linear: 2,
+          joy_axis_angular: 3,
+          scale_angular: 1,
+          scale_linear: 1}
+
+  torso: {joy_axis_updown: 7, inc_updown: 0.01}
+
+  arm: {rotation1_axis: 0,
+        shoulder1_axis: 1,
+        shoulder2_axis: 3,
+        rotation2_axis: 2,
+        shoulder3_up_btn: 4,
+        shoulder3_down_btn: 0,
+        wrist_cw: 1,
+        wrist_ccw: 3,
+        gripper_axis: 7,
+        inc: 0.5} #inc in rads
+
+  head: {right_btn: 1,
+         left_btn: 3,
+         up_btn: 4,
+         down_btn: 0,
+         inc_pan: 3,
+         inc_tilt: 3}
+
+  arm_mode: 6
+  safety_btn: 7
   driving_scale: {angular: 1, linear: 1}
   torso_inc: 0

@@ -1,8 +1,9 @@
 #include <armadillo2_teleop/armadillo_teleop.h>
+#include <armadillo2_teleop/joy_profile.h>
 
-Armadillo2Teleop::Armadillo2Teleop(ros::NodeHandle &nh)
+
+Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
 {
-    nh_ = &nh;
     std::string driving_topic,
             torso_elevator_sim_topic,
             torso_elevator_real_topic,
@@ -17,10 +18,11 @@ Armadillo2Teleop::Armadillo2Teleop(ros::NodeHandle &nh)
         ROS_ERROR("[armadillo2_teleop]: topics params are missing. did you load topics.yaml?");
         exit(EXIT_FAILURE);
     }
-    twist_pub_ = nh_->advertise<geometry_msgs::Twist>(driving_topic, 5);
-    torso_real_pub_ = nh_->advertise<std_msgs::Float64>(torso_elevator_real_topic, 5);
-    torso_sim_pub_ = nh_->advertise<std_msgs::Float64>(torso_elevator_sim_topic, 5);
-    head_pub_ = nh_->advertise<trajectory_msgs::JointTrajectory>(head_topic, 5);
+    twist_pub_ = nh_.advertise<geometry_msgs::Twist>(driving_topic, 5);
+    torso_real_pub_ = nh_.advertise<std_msgs::Float64>(torso_elevator_real_topic, 5);
+    torso_sim_pub_ = nh_.advertise<std_msgs::Float64>(torso_elevator_sim_topic, 5);
+    head_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>(head_topic, 5);
+    joy_sub_ = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &Armadillo2Teleop::joyCallback, this);
 
     /* limits */
     ros::param::get("~limits/torso/lower", joy.torso.limit_lower);
@@ -34,33 +36,58 @@ Armadillo2Teleop::Armadillo2Teleop(ros::NodeHandle &nh)
     ros::param::get("~limits/head/tilt_lower", joy.head.limit_lower_tilt);
     ros::param::get("~limits/head/tilt_upper", joy.head.limit_upper_tilt);
 
-    std::string arm_start_pos = "ninety_deg";
-    ros::param::get("~start_pos", arm_start_pos);
+    /* moveit */
+    std::string arm_start_pose = "ninety_deg";
+    ros::param::get("~start_pos", arm_start_pose);
 
-    /*arm_grp_.setNamedTarget(arm_start_pos);
+    arm_grp_.setPlannerId("RRTConnectkConfigDefault");
+    arm_grp_.setPlanningTime(5.0);
+    arm_grp_.setNumPlanningAttempts(15);
+    arm_grp_.setPoseReferenceFrame("base_footprint");
+    arm_grp_.setStartStateToCurrentState();
+    arm_grp_.setNamedTarget(arm_start_pose);
     moveit::planning_interface::MoveGroupInterface::Plan start_plan;
     if(arm_grp_.plan(start_plan))  //Check if plan is valid
     {
-        ROS_INFO("[armadillo2_teleop]: moving arm to start position: %s", arm_start_pos.c_str());
+        ROS_INFO("[armadillo2_teleop]: moving arm to start position: %s", arm_start_pose.c_str());
         arm_grp_.execute(start_plan);
     }
     else
-        ROS_WARN("[armadillo2_teleop]: failed moving arm to start position: %s", arm_start_pos.c_str());*/
+        ROS_WARN("[armadillo2_teleop]: failed moving arm to start position: %s", arm_start_pose.c_str());
 
-    //joy.arm.axes_vals.reserve(6);
-   /* arm_grp_.setPlannerId("RRTConnectkConfigDefault");
-    arm_grp_.setPlanningTime(3.0);
-    arm_grp_.setNumPlanningAttempts(10);
     arm_grp_.getCurrentState()->copyJointGroupPositions(
             arm_grp_.getCurrentState()->getRobotModel()->getJointModelGroup(arm_grp_.getName()),
-            joy.arm.axes_vals
-    );*/
+            joy.arm.axes_vals);
 
-   /* actionlib::SimpleActionClient<control_msgs::GripperCommandAction> gripper_client(gripper_topic, true);
+    /* gripper action client */
+    gripper_client_ = new actionlib::SimpleActionClient<control_msgs::GripperCommandAction>(gripper_topic, true);
+    //actionlib::SimpleActionClient<control_msgs::GripperCommandAction> gripper_client(gripper_topic, true);
     ROS_INFO("[armadillo2_teleop]: waiting for gripper action server to start...");
-    gripper_client.waitForServer();
-    ROS_INFO("[armadillo2_teleop]: gripper action server found");
-    control_msgs::GripperCommandGoal goal;*/
+    /* wait for the action server to start */
+    gripper_client_->waitForServer(); //will wait for infinite time
+
+    ROS_INFO("[armadillo2_teleop]: gripper action server started");
+
+    /* load joystick profile */
+    std::string profile_name = "xbox";
+    ros::param::get("~profile", profile_name);
+    loadProfile(profile_name);
+
+    ROS_INFO("[armadillo2_teleop]: ready to dance according to joy profile: %s", profile_name.c_str());
+}
+
+void Armadillo2Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
+{
+
+    /* print axes for testing */
+    /*for (int i=0; i<joy->axes.size(); i++)
+        fprintf(stderr, "axes[%i]:%f | ", i, joy->axes[i]);
+    fprintf(stderr, "\n");*/
+    /*for (int i=0; i<joy->buttons.size(); i++)
+        fprintf(stderr, "axes[%i]:%f | ", i, joy->buttons[i]);
+    fprintf(stderr, "\n");*/
+
+    update(joy);
 }
 
 void Armadillo2Teleop::drive()
@@ -74,7 +101,7 @@ void Armadillo2Teleop::drive()
 void Armadillo2Teleop::moveTorso()
 {
     std_msgs::Float64 torso_pos;
-    torso_pos.data = joy.torso.axis_val_updown + joy.torso.inc_updown;
+    torso_pos.data = joy.torso.axis_val_updown + joy.torso.increment;
     torso_real_pub_.publish(torso_pos);
     torso_sim_pub_.publish(torso_pos);
 }
@@ -105,7 +132,7 @@ bool Armadillo2Teleop::loadProfile(const std::string &profile_name)
     ros::param::get("~" + profile_name + "/twist/scale_linear", joy.twist.scale_linear);
     /* torso */
     ros::param::get("~" + profile_name + "/torso/joy_axis_updown", joy.torso.joy_axis_updown);
-    ros::param::get("~" + profile_name + "/torso/inc_updown", joy.torso.inc_updown);
+    ros::param::get("~" + profile_name + "/torso/increment", joy.torso.increment);
 
     /* head */
     ros::param::get("~" + profile_name + "/head/right_btn", joy.head.joy_btn_pan_right);
@@ -115,14 +142,46 @@ bool Armadillo2Teleop::loadProfile(const std::string &profile_name)
     ros::param::get("~" + profile_name + "/head/inc_pan", joy.head.inc_pan);
     ros::param::get("~" + profile_name + "/head/inc_tilt", joy.head.inc_tilt);
 
+    /* arm */
+    ros::param::get("~" + profile_name + "/arm/rotation1_axis", joy.arm.joy_axis_rotation1);
+    ros::param::get("~" + profile_name + "/arm/shoulder1_axis", joy.arm.joy_axis_shoulder1);
+    ros::param::get("~" + profile_name + "/arm/shoulder2_axis", joy.arm.joy_axis_shoulder2);
+    ros::param::get("~" + profile_name + "/arm/rotation2_axis", joy.arm.joy_axis_rotation2);
+    ros::param::get("~" + profile_name + "/arm/shoulder3_up_btn", joy.arm.joy_btn_shoulder3_up);
+    ros::param::get("~" + profile_name + "/arm/shoulder3_down_btn", joy.arm.joy_btn_shoulder3_down);
+    ros::param::get("~" + profile_name + "/arm/wrist_cw_btn", joy.arm.joy_btn_wrist_cw);
+    ros::param::get("~" + profile_name + "/arm/wrist_ccw_btn", joy.arm.joy_btn_wrist_ccw);
+    ros::param::get("~" + profile_name + "/arm/inc", joy.arm.increment);
+
+    /* gripper */
+    ros::param::get("~" + profile_name + "/gripper/axis", joy.gripper.joy_axis);
+    ros::param::get("~" + profile_name + "/gripper/inc", joy.gripper.increment);
+    ros::param::get("~" + profile_name + "/gripper/limit_lower", joy.gripper.limit_lower);
+    ros::param::get("~" + profile_name + "/gripper/limit_upper", joy.gripper.limit_upper);
+    ros::param::get("~" + profile_name + "/gripper/max_effort", joy.gripper.goal.command.max_effort);
 
     //fprintf(stderr, "%d\n", joy.torso.joy_axis_updown);
-    //fprintf(stderr, "%f", joy.torso.inc_updown);
+    //fprintf(stderr, "%f", joy.torso.increment);
+}
+
+void Armadillo2Teleop::moveGripper()
+{
+    gripper_client_->sendGoal(joy.gripper.goal);
 }
 
 void Armadillo2Teleop::moveArm()
 {
-
+    arm_grp_.setJointValueTarget(joy.arm.axes_vals);
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    if (arm_grp_.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+        arm_grp_.move();
+    else
+    {
+        ROS_WARN("[armadillo2_teleop]: invalid moveit goal");
+        //if fail, revert to prev values
+        //for (int i=0; i<6; i++)
+        //    group_variable_values[i] = prev_group_variable_values[i];
+    }
 }
 
 
@@ -144,14 +203,14 @@ void Armadillo2Teleop::update(const sensor_msgs::Joy::ConstPtr &joy_msg)
     /* move torso */
     if (joy_msg->axes[joy.torso.joy_axis_updown] == 1)
     {
-        joy.torso.axis_val_updown += joy.torso.inc_updown;
+        joy.torso.axis_val_updown += joy.torso.increment;
         if (joy.torso.axis_val_updown > joy.torso.limit_upper)
             joy.torso.axis_val_updown = joy.torso.limit_upper;
     }
 
     else if (joy_msg->axes[joy.torso.joy_axis_updown] == -1)
     {
-        joy.torso.axis_val_updown -= joy.torso.inc_updown;
+        joy.torso.axis_val_updown -= joy.torso.increment;
         if (joy.torso.axis_val_updown < joy.torso.limit_lower)
             joy.torso.axis_val_updown = joy.torso.limit_lower;
     }
@@ -185,8 +244,31 @@ void Armadillo2Teleop::update(const sensor_msgs::Joy::ConstPtr &joy_msg)
         joy_msg->buttons[joy.head.joy_btn_tilt_up])
         moveHead();
 
-    /* move arm */
+    /* move gripper */
+    if (joy_msg->axes[joy.gripper.joy_axis] == 1)
+    {
+        joy.gripper.goal.command.position += joy.gripper.increment;
+        if (joy.gripper.goal.command.position > joy.gripper.limit_upper)
+            joy.gripper.goal.command.position = joy.gripper.limit_upper;
+    }
 
+    else if (joy_msg->axes[joy.gripper.joy_axis] == -1)
+    {
+        joy.gripper.goal.command.position -= joy.gripper.increment;
+        if (joy.gripper.goal.command.position < joy.gripper.limit_lower)
+            joy.gripper.goal.command.position = joy.gripper.limit_lower;
+    }
+    if (joy_msg->axes[joy.gripper.joy_axis] != 0)
+        moveGripper();
+
+
+    /* move arm */
+    joy.arm.axes_vals[arm_joy::INDX_ROTATION1] += joy_msg->axes[joy.arm.joy_axis_rotation1] * joy.arm.increment;
+
+    if (joy_msg->axes[joy.arm.joy_axis_rotation1] != 0)
+        moveArm();
 
     //fprintf(stderr, "%d\n", joy.head.joy_btn_pan_left);
 }
+
+

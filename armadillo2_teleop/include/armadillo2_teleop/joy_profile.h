@@ -20,7 +20,7 @@ struct twist_joy
 struct torso_joy
 {
     float axis_val_updown = 0;
-    float inc_updown = 0; //meters
+    float increment = 0; //meters
 
     int joy_axis_updown = 0;
 
@@ -30,30 +30,35 @@ struct torso_joy
 
 struct arm_joy
 {
-    //std::vector<double> axes_vals;
+    std::vector<double> axes_vals;
 
-    float axis_val_rotation1 = 0;
-    float axis_val_rotation2 = 0;
-    float axis_val_shoulder1 = 0;
-    float axis_val_shoulder2 = 0;
-    float axis_val_shoulder3 = 0;
-    float axis_val_wrist = 0;
+    static const uint8_t INDX_ROTATION1 = 0;
+    static const uint8_t INDX_SHOULDER1 = 1;
+    static const uint8_t INDX_SHOULDER2 = 2;
+    static const uint8_t INDX_ROTATION2 = 3;
+    static const uint8_t INDX_SHOULDER3 = 4;
+    static const uint8_t INDX_WRIST = 5;
 
-    float inc_rotation1 = 0;
-    float inc_rotation2 = 0;
-    float inc_shoulder1 = 0;
-    float inc_shoulder2 = 0;
-    float inc_shoulder3 = 0;
-    float inc_wrist = 0;
+    int joy_axis_rotation1 = 0;
+    int joy_axis_shoulder1 = 0;
+    int joy_axis_shoulder2 = 0;
+    int joy_axis_rotation2 = 0;
+    int joy_btn_shoulder3_up = 0;
+    int joy_btn_shoulder3_down = 0;
+    int joy_btn_wrist_cw = 0;
+    int joy_btn_wrist_ccw = 0;
+    int increment = 0;
+
+    arm_joy() { axes_vals.reserve(6); }
 };
 
 struct gripper_joy
 {
-    float axis_val_right_finger = 0;
-    float axis_val_left_finger = 0;
-
-    float inc_right_finger = 0;
-    float inc_left_finger = 0;
+    int joy_axis = 0;
+    control_msgs::GripperCommandGoal goal;
+    float increment = 0;
+    float limit_upper = 0;
+    float limit_lower = 0;
 };
 
 struct pan_tilt_joy
