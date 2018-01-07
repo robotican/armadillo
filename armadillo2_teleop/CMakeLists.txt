@@ -10,7 +10,9 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   joy
   roscpp
-)
+        actionlib
+        moveit_ros_planning_interface
+        )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -104,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES armadillo2_teleop
-  CATKIN_DEPENDS joy roscpp
+  CATKIN_DEPENDS joy roscpp actionlib
 #  DEPENDS system_lib
 )
 
@@ -132,7 +134,11 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/armadillo2_teleop_node.cpp include/armadillo2_teleop/armadillo_teleop.h src/armadillo_teleop.cpp)
+add_executable(${PROJECT_NAME}_node
+        src/armadillo2_teleop_node.cpp
+        include/armadillo2_teleop/armadillo_teleop.h
+        src/armadillo_teleop.cpp
+        include/armadillo2_teleop/joy_profile.h)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
