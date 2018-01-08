@@ -30,6 +30,8 @@
 #ifndef GRIPPER_ACTION_CONTROLLER_GRIPPER_ACTION_CONTROLLER_IMPL_H
 #define GRIPPER_ACTION_CONTROLLER_GRIPPER_ACTION_CONTROLLER_IMPL_H
 
+#include <std_msgs/Float32.h>
+
 namespace gripper_action_controller
 {
 namespace internal
@@ -141,6 +143,8 @@ namespace internal
     // Cache controller node handle
     controller_nh_ = controller_nh;
 
+      gap_pub_ = controller_nh_.advertise<std_msgs::Float32>("/gripper_controller/current_gap", 5);
+
     // Controller name
     name_ = getLeafNamespace(controller_nh_);
 
@@ -249,6 +253,12 @@ namespace internal
     command_struct_rt_ = *(command_.readFromRT());
     double current_position = pos2Gap(right_finger_joint_.getPosition());
     double current_velocity =  (current_position - last_position_) / period.toSec();
+
+      //publish current gap
+    std_msgs::Float32 curr_gap_msg;
+    curr_gap_msg.data = current_position;
+    gap_pub_.publish(curr_gap_msg);
+
     //ROS_INFO("current_position: %f    last_position_: %f    period.toSec(): %f    current_velocity: %f",current_position,last_position_,period.toSec(),current_velocity);
     double current_effort = (fabs(left_finger_joint_.getEffort()) > fabs(right_finger_joint_.getEffort())) ?
                             fabs(left_finger_joint_.getEffort()) : fabs(right_finger_joint_.getEffort());

@@ -2,7 +2,11 @@
 #ifndef ARMADILLO2_TELEOP_JOY_PROFILE_H
 #define ARMADILLO2_TELEOP_JOY_PROFILE_H
 
-struct joy_twist
+struct joy_puppet
+{
+    bool init_state_recorded = false;
+};
+struct joy_twist : joy_puppet
 {
     float axis_val_linear = 0;
     float axis_val_angular = 0;
@@ -14,7 +18,7 @@ struct joy_twist
     int joy_axis_angular = 0;
 };
 
-struct joy_torso
+struct joy_torso : joy_puppet
 {
     float axis_val_updown = 0;
     float increment = 0; //meters
@@ -25,7 +29,7 @@ struct joy_torso
     float limit_lower = 0;
 };
 
-struct joy_arm
+struct joy_arm : joy_puppet
 {
     std::vector<double> axes_vals;
     std::vector<double> axes_vals_prev;
@@ -58,7 +62,7 @@ struct joy_arm
     }
 };
 
-struct joy_gripper
+struct joy_gripper : joy_puppet
 {
     int joy_axis = 0;
     control_msgs::GripperCommandGoal goal;
@@ -67,7 +71,7 @@ struct joy_gripper
     float limit_lower = 0;
 };
 
-struct joy_pan_tilt
+struct joy_pan_tilt : joy_puppet
 {
     float axis_val_pan = 0;
     float axis_val_tilt = 0;

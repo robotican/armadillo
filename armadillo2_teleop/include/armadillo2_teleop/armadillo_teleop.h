@@ -8,6 +8,7 @@
 #include <ros/forwards.h>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Float32.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/Joy.h>
 #include <trajectory_msgs/JointTrajectory.h>
@@ -17,17 +18,11 @@
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include "joy_profile.h"
 
-struct joints_state
+struct joints_state_indx
 {
-    static const uint8_t INDX_TORSO = 11;
-    static const uint8_t INDX_GRIPPER;
-    static const uint8_t INDX_PAN;
-    static const uint8_t INDX_TILT;
-
-    double torso = 0;
-    double gripper = 0;
-    double pan = 0;
-    double tilt = 0;
+    static const uint8_t TORSO = 11;
+    static const uint8_t PAN = 0;
+    static const uint8_t TILT = 1;
 };
 
 class Armadillo2Teleop
@@ -39,10 +34,14 @@ private:
                    twist_pub_,
                    head_pub_;
     ros::Subscriber joy_sub_,
-                    joints_states_sub_;
+                    joints_states_sub_,
+                    gripper_sub_;
     ros::NodeHandle nh_;
     moveit::planning_interface::MoveGroupInterface arm_grp_;
     actionlib::SimpleActionClient<control_msgs::GripperCommandAction> *gripper_client_;
+
+    joints_state_indx states_;
+    joy_profile joy_;
 
     void drive();
     void moveTorso();
@@ -54,9 +53,9 @@ private:
     void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
     bool loadProfile(const std::string &profile_name);
     void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr& msg);
+    void gripperGapCB(const std_msgs::Float32::ConstPtr& msg);
 
 public:
-    joy_profile joy;
     Armadillo2Teleop();
     ~Armadillo2Teleop() { delete gripper_client_; }
 };

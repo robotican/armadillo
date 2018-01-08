@@ -15,9 +15,10 @@ xbox:
         shoulder3_down_btn: 0,
         wrist_cw_btn: 1,
         wrist_ccw_btn: 3,
-        gripper_axis: 7,
         reset_arm: 14,
         inc: 0.2} #inc in rads
+
+  gripper: {axis: 7, inc: 0.01}
 
   head: {right_btn: 1,
          left_btn: 3,
