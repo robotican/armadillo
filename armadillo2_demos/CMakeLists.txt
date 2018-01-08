@@ -135,8 +135,6 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(arm_joy_teleop_node
-        src/arm_joy_teleop/arm_joy_teleop_node.cpp)
 
 add_executable(pick_and_place_node
         src/pick_and_place/pick_and_place_node.cpp)
@@ -149,14 +147,8 @@ add_executable(pick_and_place_node
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(arm_joy_teleop_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(
-         arm_joy_teleop_node
-   ${catkin_LIBRARIES}
- )
 
 target_link_libraries(
         pick_and_place_node
