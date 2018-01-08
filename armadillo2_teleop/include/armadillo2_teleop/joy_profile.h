@@ -2,7 +2,7 @@
 #ifndef ARMADILLO2_TELEOP_JOY_PROFILE_H
 #define ARMADILLO2_TELEOP_JOY_PROFILE_H
 
-struct twist_joy
+struct joy_twist
 {
     float axis_val_linear = 0;
     float axis_val_angular = 0;
@@ -12,12 +12,9 @@ struct twist_joy
 
     int joy_axis_linear = 0;
     int joy_axis_angular = 0;
-
-    float scale_limit_angular = 0;
-    float scale_limit_linear = 0;
 };
 
-struct torso_joy
+struct joy_torso
 {
     float axis_val_updown = 0;
     float increment = 0; //meters
@@ -28,9 +25,10 @@ struct torso_joy
     float limit_lower = 0;
 };
 
-struct arm_joy
+struct joy_arm
 {
     std::vector<double> axes_vals;
+    std::vector<double> axes_vals_prev;
 
     static const uint8_t INDX_ROTATION1 = 0;
     static const uint8_t INDX_SHOULDER1 = 1;
@@ -38,6 +36,7 @@ struct arm_joy
     static const uint8_t INDX_ROTATION2 = 3;
     static const uint8_t INDX_SHOULDER3 = 4;
     static const uint8_t INDX_WRIST = 5;
+    static const uint8_t DOF = 6;
 
     int joy_axis_rotation1 = 0;
     int joy_axis_shoulder1 = 0;
@@ -47,12 +46,19 @@ struct arm_joy
     int joy_btn_shoulder3_down = 0;
     int joy_btn_wrist_cw = 0;
     int joy_btn_wrist_ccw = 0;
+    int joy_btn_reset = 0;
     int increment = 0;
 
-    arm_joy() { axes_vals.reserve(6); }
+    std::string start_pos = "ninety_deg";
+
+    joy_arm()
+    {
+        axes_vals.reserve(6);
+        axes_vals_prev.reserve(6);
+    }
 };
 
-struct gripper_joy
+struct joy_gripper
 {
     int joy_axis = 0;
     control_msgs::GripperCommandGoal goal;
@@ -61,7 +67,7 @@ struct gripper_joy
     float limit_lower = 0;
 };
 
-struct pan_tilt_joy
+struct joy_pan_tilt
 {
     float axis_val_pan = 0;
     float axis_val_tilt = 0;
@@ -80,13 +86,20 @@ struct pan_tilt_joy
     float limit_lower_tilt = 0;
 };
 
+struct joy_utils
+{
+    int joy_btn_arm_mode = 0;
+    int joy_btn_safety = 0;
+};
+
 struct joy_profile
 {
-    torso_joy torso;
-    twist_joy twist;
-    arm_joy arm;
-    gripper_joy gripper;
-    pan_tilt_joy head;
+    joy_torso torso;
+    joy_twist twist;
+    joy_arm arm;
+    joy_gripper gripper;
+    joy_pan_tilt head;
+    joy_utils utils;
 };
 
 

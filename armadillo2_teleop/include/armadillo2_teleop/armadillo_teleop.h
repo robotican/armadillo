@@ -36,6 +36,7 @@ private:
     void moveArm();
     void moveGripper();
     void moveHead();
+    void resetArm();
     void update(const sensor_msgs::Joy::ConstPtr& joy);
     void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
     bool loadProfile(const std::string &profile_name);

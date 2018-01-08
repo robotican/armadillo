@@ -28,36 +28,21 @@ Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
     ros::param::get("~limits/torso/lower", joy.torso.limit_lower);
     ros::param::get("~limits/torso/upper", joy.torso.limit_upper);
 
-    ros::param::get("~limits/driving/scale_limit_linear", joy.twist.scale_limit_linear);
-    ros::param::get("~limits/driving/scale_limit_angular", joy.twist.scale_limit_angular);
-
     ros::param::get("~limits/head/pan_lower", joy.head.limit_lower_pan);
     ros::param::get("~limits/head/pan_upper", joy.head.limit_upper_pan);
     ros::param::get("~limits/head/tilt_lower", joy.head.limit_lower_tilt);
     ros::param::get("~limits/head/tilt_upper", joy.head.limit_upper_tilt);
 
     /* moveit */
-    std::string arm_start_pose = "ninety_deg";
-    ros::param::get("~start_pos", arm_start_pose);
+    ros::param::get("~start_pos", joy.arm.start_pos);
 
     arm_grp_.setPlannerId("RRTConnectkConfigDefault");
     arm_grp_.setPlanningTime(5.0);
     arm_grp_.setNumPlanningAttempts(15);
     arm_grp_.setPoseReferenceFrame("base_footprint");
     arm_grp_.setStartStateToCurrentState();
-    arm_grp_.setNamedTarget(arm_start_pose);
-    moveit::planning_interface::MoveGroupInterface::Plan start_plan;
-    if(arm_grp_.plan(start_plan))  //Check if plan is valid
-    {
-        ROS_INFO("[armadillo2_teleop]: moving arm to start position: %s", arm_start_pose.c_str());
-        arm_grp_.execute(start_plan);
-    }
-    else
-        ROS_WARN("[armadillo2_teleop]: failed moving arm to start position: %s", arm_start_pose.c_str());
-
-    arm_grp_.getCurrentState()->copyJointGroupPositions(
-            arm_grp_.getCurrentState()->getRobotModel()->getJointModelGroup(arm_grp_.getName()),
-            joy.arm.axes_vals);
+    arm_grp_.setNamedTarget(joy.arm.start_pos);
+    resetArm();
 
     /* gripper action client */
     gripper_client_ = new actionlib::SimpleActionClient<control_msgs::GripperCommandAction>(gripper_topic, true);
@@ -78,30 +63,21 @@ Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
 
 void Armadillo2Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 {
-
-    /* print axes for testing */
-    /*for (int i=0; i<joy->axes.size(); i++)
-        fprintf(stderr, "axes[%i]:%f | ", i, joy->axes[i]);
-    fprintf(stderr, "\n");*/
-    /*for (int i=0; i<joy->buttons.size(); i++)
-        fprintf(stderr, "axes[%i]:%f | ", i, joy->buttons[i]);
-    fprintf(stderr, "\n");*/
-
     update(joy);
 }
 
 void Armadillo2Teleop::drive()
 {
     geometry_msgs::Twist twist_msg;
-    twist_msg.angular.z = joy.twist.axis_val_angular * joy.twist.scale_angular;
-    twist_msg.linear.x = joy.twist.axis_val_linear * joy.twist.scale_linear;
+    twist_msg.angular.z = joy.twist.axis_val_angular;
+    twist_msg.linear.x = joy.twist.axis_val_linear;
     twist_pub_.publish(twist_msg);
 }
 
 void Armadillo2Teleop::moveTorso()
 {
     std_msgs::Float64 torso_pos;
-    torso_pos.data = joy.torso.axis_val_updown + joy.torso.increment;
+    torso_pos.data = joy.torso.axis_val_updown;
     torso_real_pub_.publish(torso_pos);
     torso_sim_pub_.publish(torso_pos);
 }
@@ -151,6 +127,7 @@ bool Armadillo2Teleop::loadProfile(const std::string &profile_name)
     ros::param::get("~" + profile_name + "/arm/shoulder3_down_btn", joy.arm.joy_btn_shoulder3_down);
     ros::param::get("~" + profile_name + "/arm/wrist_cw_btn", joy.arm.joy_btn_wrist_cw);
     ros::param::get("~" + profile_name + "/arm/wrist_ccw_btn", joy.arm.joy_btn_wrist_ccw);
+    ros::param::get("~" + profile_name + "/arm/reset_arm", joy.arm.joy_btn_reset);
     ros::param::get("~" + profile_name + "/arm/inc", joy.arm.increment);
 
     /* gripper */
@@ -160,8 +137,9 @@ bool Armadillo2Teleop::loadProfile(const std::string &profile_name)
     ros::param::get("~" + profile_name + "/gripper/limit_upper", joy.gripper.limit_upper);
     ros::param::get("~" + profile_name + "/gripper/max_effort", joy.gripper.goal.command.max_effort);
 
-    //fprintf(stderr, "%d\n", joy.torso.joy_axis_updown);
-    //fprintf(stderr, "%f", joy.torso.increment);
+    /* utils */
+    ros::param::get("~" + profile_name + "/arm_mode_btn", joy.utils.joy_btn_arm_mode);
+    ros::param::get("~" + profile_name + "/safety_btn", joy.utils.joy_btn_safety);
 }
 
 void Armadillo2Teleop::moveGripper()
@@ -174,14 +152,34 @@ void Armadillo2Teleop::moveArm()
     arm_grp_.setJointValueTarget(joy.arm.axes_vals);
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     if (arm_grp_.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+    {
         arm_grp_.move();
+        for (int i=0; i < joy_arm::DOF; i++)
+            joy.arm.axes_vals_prev[i] = joy.arm.axes_vals[i];
+    }
     else
     {
         ROS_WARN("[armadillo2_teleop]: invalid moveit goal");
-        //if fail, revert to prev values
-        //for (int i=0; i<6; i++)
-        //    group_variable_values[i] = prev_group_variable_values[i];
+        /* if fail, revert to prev values */
+        for (int i=0; i < joy_arm::DOF; i++)
+            joy.arm.axes_vals[i] = joy.arm.axes_vals_prev[i];
     }
+}
+
+void Armadillo2Teleop::resetArm()
+{
+    moveit::planning_interface::MoveGroupInterface::Plan start_plan;
+    if(arm_grp_.plan(start_plan))  //Check if plan is valid
+    {
+        ROS_INFO("[armadillo2_teleop]: moving arm to start position: %s", joy.arm.start_pos.c_str());
+        arm_grp_.execute(start_plan);
+    }
+    else
+        ROS_WARN("[armadillo2_teleop]: failed moving arm to start position: %s", joy.arm.start_pos.c_str());
+
+    arm_grp_.getCurrentState()->copyJointGroupPositions(
+            arm_grp_.getCurrentState()->getRobotModel()->getJointModelGroup(arm_grp_.getName()),
+            joy.arm.axes_vals);
 }
 
 
@@ -191,82 +189,112 @@ void Armadillo2Teleop::update(const sensor_msgs::Joy::ConstPtr &joy_msg)
     //TODO: INIT WITH JOINT INITIAL STATE TO PREVENT MOVEMENT TO 0 ON STARTUP
     //TODO: ALOW STOP-reset FUNTCTION
     //TODO: ADD DEBOUNCER FOR BUTTONS
+    if (!joy_msg->buttons[joy.utils.joy_btn_safety])
+        return;
 
-    /* drive robot */
-    joy.twist.axis_val_angular = joy_msg->axes[joy.twist.joy_axis_angular];
-    joy.twist.axis_val_angular *= joy.twist.scale_limit_angular;
-
-    joy.twist.axis_val_linear = joy_msg->axes[joy.twist.joy_axis_linear];
-    joy.twist.axis_val_angular *= joy.twist.scale_limit_linear;
-    drive();
-
-    /* move torso */
-    if (joy_msg->axes[joy.torso.joy_axis_updown] == 1)
+    if (!joy_msg->buttons[joy.utils.joy_btn_arm_mode])
     {
-        joy.torso.axis_val_updown += joy.torso.increment;
-        if (joy.torso.axis_val_updown > joy.torso.limit_upper)
-            joy.torso.axis_val_updown = joy.torso.limit_upper;
-    }
+        /* drive robot */
+        joy.twist.axis_val_angular = joy_msg->axes[joy.twist.joy_axis_angular];
+        joy.twist.axis_val_angular *= joy.twist.scale_angular;
 
-    else if (joy_msg->axes[joy.torso.joy_axis_updown] == -1)
+        joy.twist.axis_val_linear = joy_msg->axes[joy.twist.joy_axis_linear];
+        joy.twist.axis_val_angular *= joy.twist.scale_linear;
+        drive();
+
+        /* move torso */
+        if (joy_msg->axes[joy.torso.joy_axis_updown] == 1)
+        {
+            joy.torso.axis_val_updown += joy.torso.increment;
+            if (joy.torso.axis_val_updown > joy.torso.limit_upper)
+                joy.torso.axis_val_updown = joy.torso.limit_upper;
+        }
+        else if (joy_msg->axes[joy.torso.joy_axis_updown] == -1)
+        {
+
+            joy.torso.axis_val_updown -= joy.torso.increment;
+            if (joy.torso.axis_val_updown < joy.torso.limit_lower)
+                joy.torso.axis_val_updown = joy.torso.limit_lower;
+        }
+        if (joy_msg->axes[joy.torso.joy_axis_updown] != 0)
+            moveTorso();
+
+        /* move head */
+        if (joy_msg->buttons[joy.head.joy_btn_pan_left])
+            joy.head.axis_val_pan += joy.head.inc_pan;
+        if (joy.head.axis_val_pan < joy.head.limit_lower_pan)
+            joy.head.axis_val_pan = joy.head.limit_lower_pan;
+
+        if (joy_msg->buttons[joy.head.joy_btn_pan_right])
+            joy.head.axis_val_pan -= joy.head.inc_pan;
+        if (joy.head.axis_val_pan > joy.head.limit_upper_pan)
+            joy.head.axis_val_pan = joy.head.limit_upper_pan;
+
+        if (joy_msg->buttons[joy.head.joy_btn_tilt_down])
+            joy.head.axis_val_tilt += joy.head.inc_tilt;
+        if (joy.head.axis_val_tilt < joy.head.limit_lower_tilt)
+            joy.head.axis_val_tilt = joy.head.limit_lower_tilt;
+
+        if (joy_msg->buttons[joy.head.joy_btn_tilt_up])
+            joy.head.axis_val_tilt -= joy.head.inc_tilt;
+        if (joy.head.axis_val_tilt > joy.head.limit_upper_tilt)
+            joy.head.axis_val_tilt = joy.head.limit_upper_tilt;
+
+        if (joy_msg->buttons[joy.head.joy_btn_pan_left] ||
+            joy_msg->buttons[joy.head.joy_btn_pan_right] ||
+            joy_msg->buttons[joy.head.joy_btn_tilt_down] ||
+            joy_msg->buttons[joy.head.joy_btn_tilt_up])
+            moveHead();
+    }
+    else
     {
-        joy.torso.axis_val_updown -= joy.torso.increment;
-        if (joy.torso.axis_val_updown < joy.torso.limit_lower)
-            joy.torso.axis_val_updown = joy.torso.limit_lower;
+        /* move gripper */
+        if (joy_msg->axes[joy.gripper.joy_axis] == 1)
+        {
+            joy.gripper.goal.command.position += joy.gripper.increment;
+            if (joy.gripper.goal.command.position > joy.gripper.limit_upper)
+                joy.gripper.goal.command.position = joy.gripper.limit_upper;
+        }
+
+        else if (joy_msg->axes[joy.gripper.joy_axis] == -1)
+        {
+            joy.gripper.goal.command.position -= joy.gripper.increment;
+            if (joy.gripper.goal.command.position < joy.gripper.limit_lower)
+                joy.gripper.goal.command.position = joy.gripper.limit_lower;
+        }
+        if (joy_msg->axes[joy.gripper.joy_axis] != 0)
+            moveGripper();
+
+
+        /* move arm */
+        joy.arm.axes_vals[joy_arm::INDX_ROTATION1] += joy_msg->axes[joy.arm.joy_axis_rotation1] * joy.arm.increment;
+        joy.arm.axes_vals[joy_arm::INDX_SHOULDER1] += joy_msg->axes[joy.arm.joy_axis_shoulder1] * joy.arm.increment;
+        joy.arm.axes_vals[joy_arm::INDX_SHOULDER2] -= joy_msg->axes[joy.arm.joy_axis_shoulder2] * joy.arm.increment;
+        joy.arm.axes_vals[joy_arm::INDX_ROTATION2] += joy_msg->axes[joy.arm.joy_axis_rotation2] * joy.arm.increment;
+
+        if (joy_msg->buttons[joy.arm.joy_btn_shoulder3_up])
+            joy.arm.axes_vals[joy_arm::INDX_SHOULDER3] += joy.arm.increment;
+        else if (joy_msg->buttons[joy.arm.joy_btn_shoulder3_down])
+            joy.arm.axes_vals[joy_arm::INDX_SHOULDER3] -= joy.arm.increment;
+
+        if (joy_msg->buttons[joy.arm.joy_btn_wrist_cw])
+            joy.arm.axes_vals[joy_arm::INDX_WRIST] += joy.arm.increment;
+        else if (joy_msg->buttons[joy.arm.joy_btn_wrist_ccw])
+            joy.arm.axes_vals[joy_arm::INDX_WRIST] -= joy.arm.increment;
+
+        if (joy_msg->axes[joy.arm.joy_axis_rotation1] ||
+            joy_msg->axes[joy.arm.joy_axis_shoulder1] ||
+            joy_msg->axes[joy.arm.joy_axis_shoulder2] ||
+            joy_msg->axes[joy.arm.joy_axis_rotation2] ||
+            joy_msg->buttons[joy.arm.joy_btn_shoulder3_up] ||
+            joy_msg->buttons[joy.arm.joy_btn_shoulder3_down] ||
+            joy_msg->buttons[joy.arm.joy_btn_wrist_cw] ||
+            joy_msg->buttons[joy.arm.joy_btn_wrist_ccw])
+            moveArm();
+
+        if (joy_msg->buttons[joy.arm.joy_btn_reset])
+            resetArm();
     }
-    if (joy_msg->axes[joy.torso.joy_axis_updown] != 0)
-        moveTorso();
-
-    /* move head */
-    if (joy_msg->buttons[joy.head.joy_btn_pan_left])
-        joy.head.axis_val_pan += joy.head.inc_pan;
-    if (joy.head.axis_val_pan < joy.head.limit_lower_pan)
-        joy.head.axis_val_pan = joy.head.limit_lower_pan;
-
-    if (joy_msg->buttons[joy.head.joy_btn_pan_right])
-        joy.head.axis_val_pan -= joy.head.inc_pan;
-    if (joy.head.axis_val_pan > joy.head.limit_upper_pan)
-        joy.head.axis_val_pan = joy.head.limit_upper_pan;
-
-    if (joy_msg->buttons[joy.head.joy_btn_tilt_down])
-        joy.head.axis_val_tilt += joy.head.inc_tilt;
-    if (joy.head.axis_val_tilt < joy.head.limit_lower_tilt)
-        joy.head.axis_val_tilt = joy.head.limit_lower_tilt;
-
-    if (joy_msg->buttons[joy.head.joy_btn_tilt_up])
-        joy.head.axis_val_tilt -= joy.head.inc_tilt;
-    if (joy.head.axis_val_tilt > joy.head.limit_upper_tilt)
-        joy.head.axis_val_tilt = joy.head.limit_upper_tilt;
-
-    if (joy_msg->buttons[joy.head.joy_btn_pan_left] ||
-        joy_msg->buttons[joy.head.joy_btn_pan_right] ||
-        joy_msg->buttons[joy.head.joy_btn_tilt_down] ||
-        joy_msg->buttons[joy.head.joy_btn_tilt_up])
-        moveHead();
-
-    /* move gripper */
-    if (joy_msg->axes[joy.gripper.joy_axis] == 1)
-    {
-        joy.gripper.goal.command.position += joy.gripper.increment;
-        if (joy.gripper.goal.command.position > joy.gripper.limit_upper)
-            joy.gripper.goal.command.position = joy.gripper.limit_upper;
-    }
-
-    else if (joy_msg->axes[joy.gripper.joy_axis] == -1)
-    {
-        joy.gripper.goal.command.position -= joy.gripper.increment;
-        if (joy.gripper.goal.command.position < joy.gripper.limit_lower)
-            joy.gripper.goal.command.position = joy.gripper.limit_lower;
-    }
-    if (joy_msg->axes[joy.gripper.joy_axis] != 0)
-        moveGripper();
-
-
-    /* move arm */
-    joy.arm.axes_vals[arm_joy::INDX_ROTATION1] += joy_msg->axes[joy.arm.joy_axis_rotation1] * joy.arm.increment;
-
-    if (joy_msg->axes[joy.arm.joy_axis_rotation1] != 0)
-        moveArm();
 
     //fprintf(stderr, "%d\n", joy.head.joy_btn_pan_left);
 }
