@@ -16,7 +16,7 @@ bool PanTiltMover::moveHeadCB(armadillo2_msgs_srvs::PanTilt::Request &req,
     //return publishGroupPosMsg(req.pan, req.tilt);
 }
 
-bool PanTiltMover::publishTrajectoryMsg(float pan, float tilt)
+bool PanTiltMover::publishTrajectoryMsg(float pan, float tilt) const
 {
     if (traj_pub_.getNumSubscribers()<=0)
         return false;
@@ -36,7 +36,7 @@ bool PanTiltMover::publishTrajectoryMsg(float pan, float tilt)
     return true;
 }
 
-bool PanTiltMover::publishGroupPosMsg(float pan, float tilt)
+bool PanTiltMover::publishGroupPosMsg(float pan, float tilt) const
 {
     if (grp_pos_pub_.getNumSubscribers()<=0)
         return false;

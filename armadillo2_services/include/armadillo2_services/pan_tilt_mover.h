@@ -23,8 +23,8 @@ private:
 
 public:
     PanTiltMover(ros::NodeHandle &nh);
-    bool publishTrajectoryMsg(float pan, float tilt);
-    bool publishGroupPosMsg(float pan, float tilt);
+    bool publishTrajectoryMsg(float pan, float tilt) const;
+    bool publishGroupPosMsg(float pan, float tilt) const;
 
 };
 

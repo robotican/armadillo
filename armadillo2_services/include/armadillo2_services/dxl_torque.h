@@ -5,9 +5,15 @@
 #ifndef ARMADILLO2_SERVICES_DXL_TORQUE_H
 #define ARMADILLO2_SERVICES_DXL_TORQUE_H
 
+#include <ros/ros.h>
 
-class dxl_torque
+class DxlTorque
 {
+private:
+    ros::NodeHandle* nh_;
+public:
+    DxlTorque(ros::NodeHandle& nh);
+    bool set(bool onoff) const;
 
 };
 
