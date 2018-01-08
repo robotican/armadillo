@@ -13,11 +13,11 @@ xbox:
         rotation2_axis: 2,
         shoulder3_up_btn: 4,
         shoulder3_down_btn: 0,
-        wrist_cw: 1,
-        wrist_ccw: 3,
+        wrist_cw_btn: 1,
+        wrist_ccw_btn: 3,
         gripper_axis: 7,
         reset_arm: 14,
-        inc: 0.5} #inc in rads
+        inc: 0.2} #inc in rads
 
   head: {right_btn: 1,
          left_btn: 3,

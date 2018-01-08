@@ -17,6 +17,18 @@
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include "joy_profile.h"
 
+struct joints_state
+{
+    static const uint8_t INDX_TORSO = 11;
+    static const uint8_t INDX_GRIPPER;
+    static const uint8_t INDX_PAN;
+    static const uint8_t INDX_TILT;
+
+    double torso = 0;
+    double gripper = 0;
+    double pan = 0;
+    double tilt = 0;
+};
 
 class Armadillo2Teleop
 {
@@ -26,7 +38,8 @@ private:
                    torso_sim_pub_,
                    twist_pub_,
                    head_pub_;
-    ros::Subscriber joy_sub_;
+    ros::Subscriber joy_sub_,
+                    joints_states_sub_;
     ros::NodeHandle nh_;
     moveit::planning_interface::MoveGroupInterface arm_grp_;
     actionlib::SimpleActionClient<control_msgs::GripperCommandAction> *gripper_client_;
@@ -40,6 +53,7 @@ private:
     void update(const sensor_msgs::Joy::ConstPtr& joy);
     void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
     bool loadProfile(const std::string &profile_name);
+    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr& msg);
 
 public:
     joy_profile joy;

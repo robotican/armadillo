@@ -47,7 +47,7 @@ struct joy_arm
     int joy_btn_wrist_cw = 0;
     int joy_btn_wrist_ccw = 0;
     int joy_btn_reset = 0;
-    int increment = 0;
+    float increment = 0;
 
     std::string start_pos = "ninety_deg";
 

@@ -23,6 +23,7 @@ Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
     torso_sim_pub_ = nh_.advertise<std_msgs::Float64>(torso_elevator_sim_topic, 5);
     head_pub_ = nh_.advertise<trajectory_msgs::JointTrajectory>(head_topic, 5);
     joy_sub_ = nh_.subscribe<sensor_msgs::Joy>("joy", 10, &Armadillo2Teleop::joyCallback, this);
+    joints_states_sub_ = nh_->subscribe("joint_states", 5, jointsUpdateCB);
 
     /* limits */
     ros::param::get("~limits/torso/lower", joy.torso.limit_lower);
@@ -36,12 +37,6 @@ Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
     /* moveit */
     ros::param::get("~start_pos", joy.arm.start_pos);
 
-    arm_grp_.setPlannerId("RRTConnectkConfigDefault");
-    arm_grp_.setPlanningTime(5.0);
-    arm_grp_.setNumPlanningAttempts(15);
-    arm_grp_.setPoseReferenceFrame("base_footprint");
-    arm_grp_.setStartStateToCurrentState();
-    arm_grp_.setNamedTarget(joy.arm.start_pos);
     resetArm();
 
     /* gripper action client */
@@ -59,6 +54,18 @@ Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
     loadProfile(profile_name);
 
     ROS_INFO("[armadillo2_teleop]: ready to dance according to joy profile: %s", profile_name.c_str());
+}
+
+void Armadillo2Teleop::jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg)
+{
+    /* save joints updated state */
+    arm.got_state = true;
+    arm.rotation1_pos_rad = msg->position[ROTATION1_JOINT_INDX];
+    arm.rotation2_pos_rad = msg->position[ROTATION2_JOINT_INDX];
+    arm.shoulder1_pos_rad = msg->position[SHOULDER1_JOINT_INDX];
+    arm.shoulder2_pos_rad = msg->position[SHOULDER2_JOINT_INDX];
+    arm.shoulder3_pos_rad = msg->position[SHOULDER3_JOINT_INDX];
+    arm.wrist_pos_rad = msg->position[WRIST_JOINT_INDX];
 }
 
 void Armadillo2Teleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
@@ -153,6 +160,7 @@ void Armadillo2Teleop::moveArm()
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     if (arm_grp_.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
     {
+        ROS_WARN("[armadillo2_teleop]: moving arm...");
         arm_grp_.move();
         for (int i=0; i < joy_arm::DOF; i++)
             joy.arm.axes_vals_prev[i] = joy.arm.axes_vals[i];
@@ -164,10 +172,17 @@ void Armadillo2Teleop::moveArm()
         for (int i=0; i < joy_arm::DOF; i++)
             joy.arm.axes_vals[i] = joy.arm.axes_vals_prev[i];
     }
+    ROS_ERROR("HERE");
 }
 
 void Armadillo2Teleop::resetArm()
 {
+    arm_grp_.setPlannerId("RRTConnectkConfigDefault");
+    arm_grp_.setPlanningTime(5.0);
+    arm_grp_.setNumPlanningAttempts(15);
+    arm_grp_.setPoseReferenceFrame("base_footprint");
+    arm_grp_.setStartStateToCurrentState();
+    arm_grp_.setNamedTarget(joy.arm.start_pos);
     moveit::planning_interface::MoveGroupInterface::Plan start_plan;
     if(arm_grp_.plan(start_plan))  //Check if plan is valid
     {
@@ -180,6 +195,9 @@ void Armadillo2Teleop::resetArm()
     arm_grp_.getCurrentState()->copyJointGroupPositions(
             arm_grp_.getCurrentState()->getRobotModel()->getJointModelGroup(arm_grp_.getName()),
             joy.arm.axes_vals);
+
+    /* give arm some time */
+    ros::Duration(3).sleep();
 }
 
 
@@ -268,14 +286,18 @@ void Armadillo2Teleop::update(const sensor_msgs::Joy::ConstPtr &joy_msg)
 
         /* move arm */
         joy.arm.axes_vals[joy_arm::INDX_ROTATION1] += joy_msg->axes[joy.arm.joy_axis_rotation1] * joy.arm.increment;
-        joy.arm.axes_vals[joy_arm::INDX_SHOULDER1] += joy_msg->axes[joy.arm.joy_axis_shoulder1] * joy.arm.increment;
+        joy.arm.axes_vals[joy_arm::INDX_SHOULDER1] -= joy_msg->axes[joy.arm.joy_axis_shoulder1] * joy.arm.increment;
         joy.arm.axes_vals[joy_arm::INDX_SHOULDER2] -= joy_msg->axes[joy.arm.joy_axis_shoulder2] * joy.arm.increment;
+        fprintf(stderr, "rot2: %f\n", joy.arm.axes_vals[joy_arm::INDX_ROTATION2]);
+        fprintf(stderr, "axes: %f\n", joy_msg->axes[joy.arm.joy_axis_shoulder2]);
+        fprintf(stderr, "increment: %f\n", joy.arm.increment);
+
         joy.arm.axes_vals[joy_arm::INDX_ROTATION2] += joy_msg->axes[joy.arm.joy_axis_rotation2] * joy.arm.increment;
 
         if (joy_msg->buttons[joy.arm.joy_btn_shoulder3_up])
-            joy.arm.axes_vals[joy_arm::INDX_SHOULDER3] += joy.arm.increment;
-        else if (joy_msg->buttons[joy.arm.joy_btn_shoulder3_down])
             joy.arm.axes_vals[joy_arm::INDX_SHOULDER3] -= joy.arm.increment;
+        else if (joy_msg->buttons[joy.arm.joy_btn_shoulder3_down])
+            joy.arm.axes_vals[joy_arm::INDX_SHOULDER3] += joy.arm.increment;
 
         if (joy_msg->buttons[joy.arm.joy_btn_wrist_cw])
             joy.arm.axes_vals[joy_arm::INDX_WRIST] += joy.arm.increment;
