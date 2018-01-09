@@ -74,7 +74,7 @@
     <!--load simulation stuff-->
     <group if="$(arg gazebo)">
         
-         <env name="GAZEBO_MODEL_PATH" value="$(find robotican_common)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+         <env name="GAZEBO_MODEL_PATH" value="$(find armadillo2_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
          <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder 
                 kinect2:=true
                 kinect2_hz:=30.0

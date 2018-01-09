@@ -3,7 +3,7 @@
 
 <!--EXAMPLE
 
-roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find robotican_common`/worlds/objects_on_table.world" x:=0.8 y:=-0.35
+roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find robotican_common`/worlds/armadillo2_gazebo.world" x:=0.8 y:=-0.35
 
 roslaunch armadillo2_demos pick_and_place.launch  
 

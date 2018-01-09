@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find robotican_common`/worlds/objects_on_table.world"
+roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find robotican_common`/worlds/armadillo2_gazebo.world"
 
 roslaunch armadillo2_demos find_objects.launch  
 
