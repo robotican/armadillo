@@ -8,7 +8,7 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-        armadillo2_msgs_srvs
+        armadillo2_msgs
         roscpp
 #        std_msgs
         message_generation
@@ -106,11 +106,11 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES armadillo2_msgs_srvs
+#  LIBRARIES armadillo2_msgs
   CATKIN_DEPENDS
         message_runtime
         roscpp
-        armadillo2_msgs_srvs
+        armadillo2_msgs
 #  DEPENDS system_lib
 )
 
@@ -158,7 +158,7 @@ add_executable(${PROJECT_NAME}_node
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(${PROJECT_NAME}_node armadillo2_msgs_srvs_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_node armadillo2_msgs_generate_messages_cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
