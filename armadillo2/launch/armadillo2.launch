@@ -30,6 +30,8 @@
     <arg name="center_pan_tilt" default="true" doc="centers head on startup"/>
     
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
+    
+    <node name="armadillo2_services_node" pkg="armadillo2_services" type="armadillo2_services_node" respawn="false" output="screen"/>
   
     <!--center robot head on startup -->
     <group if="$(arg center_pan_tilt)" >
