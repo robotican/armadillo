@@ -10,8 +10,8 @@ int main(int argc, char** argv)
 
     LiftArm arm_lifter(nh);
     PanTiltMover head_mover(nh);
-    DxlTorque dxl_torque(nh);
-    Shutdown shutdown(head_mover, dxl_torque);
+    DxlTorque dxl_torque(nh, head_mover);
+    Shutdown shutdown(nh, head_mover, dxl_torque);
 
     ros::spin();
     return 0;

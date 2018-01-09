@@ -29,7 +29,7 @@ namespace armadillo2_hw
             failed_reads_ = 0;
             failed_writes_ = 0;
 
-            torque_srv_ = nh_->advertiseService("dxl_torque", &DxlMotorsBuilder::torqueServiceCB, this);
+            torque_srv_ = nh_->advertiseService("hardware/dxl_torque", &DxlMotorsBuilder::torqueServiceCB, this);
             ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
             espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
             /*speakMsg("dxl motors manager is up", 1);*/

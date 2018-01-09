@@ -5,11 +5,11 @@
 LiftArm::LiftArm(ros::NodeHandle &nh)
 {
     nh_ = &nh;
-    arm_pub_ = nh.advertise<trajectory_msgs::JointTrajectory>("arm_trajectory_controller/command", 5);
-    gripper_pub_ = nh.advertise<control_msgs::GripperCommandActionGoal>("gripper_controller/gripper_cmd/goal", 5);
-    joints_state_sub_ = nh.subscribe("joint_states", 5, &LiftArm::jointsUpdateCB, this);
-    lift_arm_srv_ = nh.advertiseService("lift_arm", &LiftArm::liftArmCB, this);
-    open_gripper_srv_ = nh.advertiseService("open_gripper", &LiftArm::openGripperCB, this);
+    arm_pub_ = nh_->advertise<trajectory_msgs::JointTrajectory>("arm_trajectory_controller/command", 5);
+    gripper_pub_ = nh_->advertise<control_msgs::GripperCommandActionGoal>("gripper_controller/gripper_cmd/goal", 5);
+    joints_state_sub_ = nh_->subscribe("joint_states", 5, &LiftArm::jointsUpdateCB, this);
+    lift_arm_srv_ = nh_->advertiseService("services/lift_arm", &LiftArm::liftArmCB, this);
+    open_gripper_srv_ = nh_->advertiseService("services/open_gripper", &LiftArm::openGripperCB, this);
 }
 
 void LiftArm::jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg)

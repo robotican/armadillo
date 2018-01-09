@@ -6,7 +6,7 @@ PanTiltMover::PanTiltMover(ros::NodeHandle &nh)
     nh_ = &nh;
     traj_pub_ = nh_->advertise<trajectory_msgs::JointTrajectory>("/pan_tilt_trajectory_controller/command", 5);
     //grp_pos_pub_ = nh_->advertise<std_msgs::Float64MultiArray>("pan_tilt_controller/command", 5);
-    mover_srv_ = nh_->advertiseService("/armadillo2_services/pan_tilt_mover", &PanTiltMover::moveHeadCB, this);
+    mover_srv_ = nh_->advertiseService("services/pan_tilt_mover", &PanTiltMover::moveHeadCB, this);
 }
 
 bool PanTiltMover::moveHeadCB(armadillo2_msgs_srvs::PanTilt::Request &req,
