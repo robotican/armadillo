@@ -10,8 +10,34 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         actionlib
+        std_msgs
+        sensor_msgs
+        geometry_msgs
+        image_transport
+        cv_bridge
+        pcl_conversions
+        pcl_ros
+        tf
+        dynamic_reconfigure
+        moveit_core
+        moveit_ros_planning
         moveit_ros_planning_interface
+        kdl_parser
+        actionlib
+        tf_conversions
+        trajectory_msgs
+        gazebo_ros
+        ar_track_alvar
+        armadillo2_msgs
+        gazebo_dev
+        pluginlib
+        message_generation
+        genmsg
+        armadillo2_msgs
 )
+
+find_package(gazebo REQUIRED)
+find_package( OpenCV REQUIRED )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -93,6 +119,10 @@ find_package(catkin REQUIRED COMPONENTS
 #   cfg/DynReconf2.cfg
 # )
 
+generate_dynamic_reconfigure_options(
+        cfg/FindObjectDynParam.cfg
+)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -102,13 +132,34 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
+include_directories(
+        include
+        ${catkin_INCLUDE_DIRS}
+        ${GAZEBO_INCLUDE_DIRS}
+)
+
+link_directories(
+        ${GAZEBO_LIBRARY_DIRS}
+        ${catkin_LIBRARY_DIRS}
+)
+
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES armadillo2_demos
   CATKIN_DEPENDS
         roscpp
         actionlib
-#  DEPENDS system_lib
+        std_msgs
+        sensor_msgs
+        geometry_msgs
+        dynamic_reconfigure
+        moveit_core
+        moveit_ros_planning
+        moveit_ros_planning_interface
+        gazebo_ros
+        message_runtime
+        std_msgs
+        DEPENDS gazebo
 )
 
 ###########
@@ -117,10 +168,38 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
+
+
+add_library(gazebo_grasp_fix SHARED
+        src/pick_and_place/GazeboGraspFix.cpp
+        src/pick_and_place/GazeboGraspGripper.cpp
+        include/armadillo2_demos/GazeboGraspFix.h
+        include/armadillo2_demos/GazeboGraspGripper.h)
+add_dependencies(gazebo_grasp_fix ${catkin_EXPORTED_TARGETS})
+
+add_executable(point_head_action src/pick_and_place/point_head_action.cpp)
+add_dependencies(point_head_action ${${PROJECT_NAME}_EXPORTED_TARGETS})
+add_dependencies(point_head_action armadillo2_msgs_gencpp)
+target_link_libraries(point_head_action ${catkin_LIBRARIES} )
+
+add_executable(find_objects_node src/pick_and_place/find_objects.cpp)
+add_dependencies(find_objects_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
+add_dependencies(find_objects_node ${PROJECT_NAME}_gencfg)
+add_dependencies(find_objects_node ${PROJECT_NAME}_gencpp)
+target_link_libraries(find_objects_node ${catkin_LIBRARIES} ${OpenCV_LIBS})
+
+
+add_executable(pan_tilt_object_tracking_node src/pick_and_place/pan_tilt_object_tracking.cpp)
+add_dependencies(pan_tilt_object_tracking_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(pan_tilt_object_tracking_node ${catkin_LIBRARIES})
+
+add_executable(drive2object_node src/pick_and_place/drive2object.cpp)
+add_dependencies(drive2object_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(drive2object_node ${catkin_LIBRARIES})
+
+add_executable(drive_and_pick src/pick_and_place/drive_and_pick.cpp)
+add_dependencies(drive_and_pick ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(drive_and_pick ${catkin_LIBRARIES})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -138,6 +217,7 @@ include_directories(
 
 add_executable(pick_and_place_node
         src/pick_and_place/pick_and_place_node.cpp)
+add_dependencies(pick_and_place_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -154,6 +234,33 @@ target_link_libraries(
         pick_and_place_node
         ${catkin_LIBRARIES}
 )
+
+add_executable(objects_handler src/pick_and_place/objects_handler.cpp)
+add_dependencies(objects_handler ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(objects_handler ${catkin_LIBRARIES})
+
+
+target_link_libraries(gazebo_grasp_fix
+        ${GAZEBO_LIBRARIES}
+        ${Boost_LIBRARIES}      )
+
+
+install(TARGETS gazebo_grasp_fix
+        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
+
+## Mark cpp header files for installation
+install(DIRECTORY include/${PROJECT_NAME}/
+        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+        FILES_MATCHING PATTERN "*.h"
+        )
+
+install(DIRECTORY launch
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+        FILES_MATCHING PATTERN "*.launch"
+        )
 
 #############
 ## Install ##

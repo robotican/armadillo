@@ -5,7 +5,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <std_msgs/Float32.h>
-#include <armadillo2_msgs_srvs/PanTilt.h>
+#include <armadillo2_msgs/PanTilt.h>
 
 class PanTiltMover
 {
@@ -18,8 +18,8 @@ private:
     double pan_goal = 0,
            tilt_goal = 0;
 
-    bool moveHeadCB(armadillo2_msgs_srvs::PanTilt::Request &req,
-                    armadillo2_msgs_srvs::PanTilt::Response &res);
+    bool moveHeadCB(armadillo2_msgs::PanTilt::Request &req,
+                    armadillo2_msgs::PanTilt::Response &res);
 
 public:
     PanTiltMover(ros::NodeHandle &nh);

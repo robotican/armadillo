@@ -1,7 +1,3 @@
-//
-// Created by tom on 19/09/16.
-//
-
 #include <boost/bind.hpp>
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
@@ -10,7 +6,7 @@
 #include <gazebo/common/common.hh>
 #include <stdio.h>
 
-#include <robotican_common/GazeboGraspGripper.h>
+#include <armadillo2_demos/GazeboGraspGripper.h>
 
 using gazebo::GazeboGraspGripper;
 

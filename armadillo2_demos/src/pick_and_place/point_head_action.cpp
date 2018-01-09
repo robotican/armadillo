@@ -1,38 +1,3 @@
-/*********************************************************************
- * Software License Agreement (BSD License)
- *
- *  Copyright (c) 2016, RoboTiCan Inc.
- *  Copyright (c) 2008, Willow Garage, Inc.
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the Willow Garage nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *  POSSIBILITY OF SUCH DAMAGE.
- *********************************************************************/
-
 #include <ros/ros.h>
 
 #include <vector>
@@ -64,9 +29,9 @@
 #include <urdf/model.h>
 
 #include <trajectory_msgs/JointTrajectory.h>
-#include <pr2_controllers_msgs/PointHeadAction.h>
-#include <pr2_controllers_msgs/QueryTrajectoryState.h>
-#include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
+#include <armadillo2_msgs/PointHeadAction.h>
+#include <armadillo2_msgs/QueryTrajectoryState.h>
+#include <armadillo2_msgs/JointTrajectoryControllerState.h>
 
 
 void printVector3(const char * label, tf::Vector3 v)
@@ -78,7 +43,7 @@ void printVector3(const char * label, tf::Vector3 v)
 class ControlHead
 {
 private:
-  typedef actionlib::ActionServer<pr2_controllers_msgs::PointHeadAction> PHAS;
+  typedef actionlib::ActionServer<armadillo2_msgs::PointHeadAction> PHAS;
   typedef PHAS::GoalHandle GoalHandle;
 
   std::string node_name_;
@@ -141,7 +106,7 @@ public:
     sub_controller_state_ =
       nh_.subscribe("state", 1, &ControlHead::controllerStateCB, this);
     cli_query_traj_ =
-        nh_.serviceClient<pr2_controllers_msgs::QueryTrajectoryState>("/pan_tilt_trajectory_controller/query_state");
+        nh_.serviceClient<armadillo2_msgs::QueryTrajectoryState>("/pan_tilt_trajectory_controller/query_state");
 
     // Should only ever happen on first call... move to constructor?
     if(tree_.getNrOfJoints() == 0)
@@ -287,7 +252,7 @@ public:
     KDL::JntArray jnt_pos(joints), jnt_eff(joints);
     KDL::Jacobian jacobian(joints);
 
-    pr2_controllers_msgs::QueryTrajectoryState traj_state;
+    armadillo2_msgs::QueryTrajectoryState traj_state;
     traj_state.request.time = ros::Time::now() + ros::Duration(0.01);
     if (!cli_query_traj_.call(traj_state))
     {
@@ -487,8 +452,8 @@ public:
     }
   }
 
-  pr2_controllers_msgs::JointTrajectoryControllerStateConstPtr last_controller_state_;
-  void controllerStateCB(const pr2_controllers_msgs::JointTrajectoryControllerStateConstPtr &msg)
+    armadillo2_msgs::JointTrajectoryControllerStateConstPtr last_controller_state_;
+  void controllerStateCB(const armadillo2_msgs::JointTrajectoryControllerStateConstPtr &msg)
   {
     last_controller_state_ = msg;
     ros::Time now = ros::Time::now();
@@ -515,7 +480,7 @@ public:
       target_from_frame.normalize();
       tf::Vector3 current_in_frame = frame_in_root.getBasis().inverse()*target_from_frame;
 
-      pr2_controllers_msgs::PointHeadFeedback feedback;
+      armadillo2_msgs::PointHeadFeedback feedback;
       feedback.pointing_angle_error = current_in_frame.angle(axis_in_frame);
       active_goal_.publishFeedback(feedback);
 

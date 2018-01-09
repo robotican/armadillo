@@ -11,14 +11,14 @@
 
 #include <pcl_conversions/pcl_conversions.h>
 #include <tf/transform_listener.h>
-#include <robotican_common/FindObjectDynParamConfig.h>
+#include <armadillo2_demos/FindObjectDynParamConfig.h>
 #include <dynamic_reconfigure/server.h>
 
 #include <tf/transform_broadcaster.h>
 #include "tf/message_filter.h"
 #include "message_filters/subscriber.h"
 #include <ar_track_alvar_msgs/AlvarMarkers.h>
-#include <robotican_msgs_srvs/switch_topic.h>
+#include <armadillo2_msgs/SwitchCamTopic.h>
 
 using namespace cv;
 using namespace std;
@@ -273,7 +273,7 @@ void dynamicParamCallback(robotican_common::FindObjectDynParamConfig &config, ui
 
 void on_trackbar( int, void* ){}
 
-bool switch_pcl_topic(robotican_msgs_srvs::switch_topic::Request &req, robotican_msgs_srvs::switch_topic::Response &res) {
+bool switch_pcl_topic(armadillo2_msgs::SwitchCamTopic::Request &req, armadillo2_msgs::SwitchCamTopic::Response &res) {
 
     if (req.num==1) depth_topic=depth_topic1;
     else if (req.num==2) depth_topic=depth_topic2;

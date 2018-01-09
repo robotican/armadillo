@@ -9,8 +9,8 @@ PanTiltMover::PanTiltMover(ros::NodeHandle &nh)
     mover_srv_ = nh_->advertiseService("services/pan_tilt_mover", &PanTiltMover::moveHeadCB, this);
 }
 
-bool PanTiltMover::moveHeadCB(armadillo2_msgs_srvs::PanTilt::Request &req,
-                              armadillo2_msgs_srvs::PanTilt::Response &res)
+bool PanTiltMover::moveHeadCB(armadillo2_msgs::PanTilt::Request &req,
+                              armadillo2_msgs::PanTilt::Response &res)
 {
     return publishTrajectoryMsg(req.pan, req.tilt);
     //return publishGroupPosMsg(req.pan, req.tilt);

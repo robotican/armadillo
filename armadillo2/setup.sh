@@ -87,7 +87,7 @@ printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 printf "${WHITE_TXT}Compiling armadillo2 package...\n${NO_COLOR}"
 
 cd ~/catkin_ws
-catkin_make --pkg pr2_controllers_msgs robotican_msgs_srvs
+#catkin_make --pkg pr2_controllers_msgs armadillo2_msgs
 catkin_make -DCMAKE_BUILD_TYPE="Release"
 
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
