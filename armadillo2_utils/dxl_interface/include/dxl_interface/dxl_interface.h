@@ -39,21 +39,8 @@ namespace dxl
         uint16_t len_present_curr = 0;
         uint16_t len_goal_speed = 0;
         uint16_t len_goal_pos = 0;
-    };
 
-    struct led_color
-    {
-        uint8_t red,
-                green,
-                blue;
-        led_color(uint8_t red,
-                  uint8_t green,
-                  uint8_t blue)
-        {
-            this->red = red;
-            this->green = green;
-            this->blue = blue;
-        }
+        int32_t min_vel_ticks = 1;
     };
 
     struct motor
@@ -87,22 +74,22 @@ namespace dxl
         std::string joint_name;
         InterfaceType interface_type;
 
-        /*******************************************************************************/
+        /*****************************************************************/
         /* dxl api interperate 0 ticks velocity as the highest velocity. */
-        /* set set_first_pos_write_to_curr_pos field to true  prevent it */
-        /* by setting velocity to the last non-zero value                */
-        int32_t prev_non_zero_velocity_ticks = 4; /* 4 ticks is very slow motor speed. */
-                                                  /* don't change this feild - it will */
-                                                  /* be updated automatically          */
+        /* dxl motor can be very dangerous to operate in high speeds.    */
+        /* set dont_allow_zero_ticks_vel field to true prevent it from   */
+        /* commanding 0 velocity ticks. instead, if vel ticks less than  */
+        /* min_vel_ticks 0, (which also include vel ticks equals 0 case) */
+        /* then vel ticks will be set to min_vel_ticks                   */
         bool dont_allow_zero_ticks_vel = true;
-        /*******************************************************************************/
+        /*****************************************************************/
 
-        /*******************************************************************************/
-        /* set first_pos_read to true to write current position */
-        /* to motors on first write. This is true by default to */
-        /* prevent dangerous abrupt movement on startup         */
+        /*****************************************************************/
+        /* set first_pos_read to true to write current position          */
+        /* to motors on first write. This is true by default to          */
+        /* prevent dangerous abrupt movement on startup                  */
         bool first_pos_read = true;
-        /*******************************************************************************/
+        /*****************************************************************/
     };
 
     namespace convertions
@@ -148,8 +135,6 @@ namespace dxl
         bool readMotorsError(std::vector<motor> & motors);
         bool reboot(const motor &motor);
         bool broadcastPing(std::vector<uint8_t> result_vec, uint16_t protocol);
-        bool setMotorsLed(std::vector<dxl::motor> &motors,
-                          const led_color &color);
     };
 
 }

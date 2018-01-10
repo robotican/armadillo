@@ -265,28 +265,29 @@ namespace dxl
         {
             bool addparam_success = false;
 
-            int32_t motor_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
+            int32_t motor_vel_ticks = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
             /* dxl api interperate 0 ticks velocity as the highest velocity. */
             /* set set_first_pos_write_to_curr_pos field to true  prevent it */
             /* by setting velocity to the last non-zero value                */
             if (motor.dont_allow_zero_ticks_vel)
             {
-                double min_ticks;
-                if (motor.id>=1 && motor.id <=6) min_ticks=700;
-                else min_ticks=0;
-                if (abs(motor_vel) <= min_ticks){
-                    
-                    motor_vel = motor.prev_non_zero_velocity_ticks;
-                    // printf("id: %d    motor_vel_tics %d      motor_vel_rad_s: %f\n",motor.id,motor_vel,((double)motor_vel) * 2.0 * M_PI / 60.0 *motor.spec.rpm_scale_factor);
-                }
-                else
-                    motor.prev_non_zero_velocity_ticks = motor_vel;
+               // double min_ticks;
+               // if (motor.id>=1 && motor.id <=6) min_ticks=700;
+                //else min_ticks=0;
+                if (motor_vel_ticks < motor.spec.min_vel_ticks)
+                    motor_vel_ticks = motor.spec.min_vel_ticks;
+
+                /* protect from user stupidity. if min_vel_ticks equals 0,   */
+                /* this condition will be met and prevent motor from getting */
+                /* zero ticks as velocity command (highest velocity)         */
+                if (motor_vel_ticks == 0)
+                    motor_vel_ticks = 1;
             }
 
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.vel_write_addr,
                                                    motor.spec.len_goal_speed,
-                                                   (uint8_t*)&motor_vel);
+                                                   (uint8_t*)&motor_vel_ticks);
             if (!addparam_success)
                 return false;
         }
@@ -324,13 +325,6 @@ namespace dxl
 
         bulk_write.clearParam();
         return true;
-    }
-
-    bool DxlInterface::setMotorsLed(std::vector<dxl::motor> &motors,
-                                    const led_color &color)
-    {
-        /* todo: implement. reason for not implementing so far: some motor models
-         * have only red led, and some have rgb led. red led looks like warning */
     }
 
     /**** DXL MATH *****/
@@ -386,10 +380,8 @@ namespace dxl
     /* rads per sec to ticks per sec */
     int32_t convertions::rad_s2ticks_s(double rads, struct motor &motor, float protocol)
     {
-        if (protocol == DXL_PROTOCOL2) {
-          // if (motor.id==7) printf("id: %d    rad_s %f    ticks: %d\n",motor.id,rads,static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor));
+        if (protocol == DXL_PROTOCOL2)
             return static_cast<int32_t >(rads / 2.0 / M_PI * 60.0 / motor.spec.rpm_scale_factor);
-        }
         else
             return static_cast<int32_t >(83.49f * (rads)-0.564f);
     }
@@ -397,14 +389,9 @@ namespace dxl
     /* ticks per sec to rads per sec */
     double convertions::ticks_s2rad_s(int32_t ticks, struct motor &motor, float protocol)
     {
-        if (protocol == DXL_PROTOCOL2) {
-           // 
+        if (protocol == DXL_PROTOCOL2)
             return ((double)ticks) * 2.0 * M_PI / 60.0 *motor.spec.rpm_scale_factor;
-            
-        }
         else
             return (100.0f / 8349.0f) * ((double)ticks) + (94.0f / 13915.0f);
     }
-
-
 }

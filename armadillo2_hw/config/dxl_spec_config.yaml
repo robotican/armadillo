@@ -3,17 +3,18 @@ dxl_spec_config: [
     name: H54-200-S500-R, 
     model: 54024, 
     cpr: 501900, 
+    min_vel_ticks: 700,
     rpm_factor: 0.00199234, 
     torque_const_a: 4.337606, 
     torque_const_b: -2.69444,
-    pos_read_addr: 611, #ADDR_PRO_PRESENT_POSITION
-    vel_read_addr: 615, #ADDR_PRO_PRESENT_SPEED
-    current_read_addr: 621, #ADDR_PRO_PRESENT_CURRENT
-    error_read_addr: 892, #ADDR_PRO_HARDWARE_ERROR
-    torque_write_addr: 562, #ADDR_PRO_TORQUE_ENABLE
-    vel_write_addr: 600, #ADDR_PRO_GOAL_SPEED
-    pos_write_addr: 596, #ADDR_PRO_GOAL_POSITION
-    current_ratio: 0.01611328125, #33000.0 / 2048.0 / 1000.0
+    pos_read_addr: 611,             #ADDR_PRO_PRESENT_POSITION
+    vel_read_addr: 615,             #ADDR_PRO_PRESENT_SPEED
+    current_read_addr: 621,         #ADDR_PRO_PRESENT_CURRENT
+    error_read_addr: 892,           #ADDR_PRO_HARDWARE_ERROR
+    torque_write_addr: 562,         #ADDR_PRO_TORQUE_ENABLE
+    vel_write_addr: 600,            #ADDR_PRO_GOAL_SPEED
+    pos_write_addr: 596,            #ADDR_PRO_GOAL_POSITION
+    current_ratio: 0.01611328125,   #33000.0 / 2048.0 / 1000.0
     len_present_speed: 4,
     len_present_pos: 4,
     len_present_curr: 2,
@@ -25,17 +26,18 @@ dxl_spec_config: [
     name: H54-100-S500-R, 
     model: 53768, 
     cpr: 502000, 
+    min_vel_ticks: 700,
     rpm_factor: 0.00199234, 
     torque_const_a: 4.1, 
     torque_const_b: -2.4,
-    pos_read_addr: 611, #ADDR_PRO_PRESENT_POSITION
-    vel_read_addr: 615, #ADDR_PRO_PRESENT_SPEED
-    current_read_addr: 621, #ADDR_PRO_PRESENT_CURRENT
-    error_read_addr: 892, #ADDR_PRO_HARDWARE_ERROR
-    torque_write_addr: 562, #ADDR_PRO_TORQUE_ENABLE
-    vel_write_addr: 600, #ADDR_PRO_GOAL_SPEED
-    pos_write_addr: 596, #ADDR_PRO_GOAL_POSITION
-    current_ratio: 0.01611328125, #33000.0 / 2048.0 / 1000.0
+    pos_read_addr: 611,             #ADDR_PRO_PRESENT_POSITION
+    vel_read_addr: 615,             #ADDR_PRO_PRESENT_SPEED
+    current_read_addr: 621,         #ADDR_PRO_PRESENT_CURRENT
+    error_read_addr: 892,           #ADDR_PRO_HARDWARE_ERROR
+    torque_write_addr: 562,         #ADDR_PRO_TORQUE_ENABLE
+    vel_write_addr: 600,            #ADDR_PRO_GOAL_SPEED
+    pos_write_addr: 596,            #ADDR_PRO_GOAL_POSITION
+    current_ratio: 0.01611328125,   #33000.0 / 2048.0 / 1000.0
     len_present_speed: 4,
     len_present_pos: 4,
     len_present_curr: 2,
@@ -47,17 +49,18 @@ dxl_spec_config: [
     name: H42-20-S300-R, 
     model: 51200, 
     cpr: 303800, 
+    min_vel_ticks: 700,
     rpm_factor: 0.00329218, 
     torque_const_a: 2.8125, 
     torque_const_b: -0.46875,
     pos_read_addr: 611,
-    vel_read_addr: 615, #ADDR_PRO_PRESENT_SPEED
-    current_read_addr: 621, #ADDR_PRO_PRESENT_CURRENT
-    error_read_addr: 892, #ADDR_PRO_HARDWARE_ERROR
-    torque_write_addr: 562, #ADDR_PRO_TORQUE_ENABLE
-    vel_write_addr: 600, #ADDR_PRO_GOAL_SPEED
-    pos_write_addr: 596, #ADDR_PRO_GOAL_POSITION
-    current_ratio: 0.00402832, #8250.0 / 2048.0 / 1000.0
+    vel_read_addr: 615,             #ADDR_PRO_PRESENT_SPEED
+    current_read_addr: 621,         #ADDR_PRO_PRESENT_CURRENT
+    error_read_addr: 892,           #ADDR_PRO_HARDWARE_ERROR
+    torque_write_addr: 562,         #ADDR_PRO_TORQUE_ENABLE
+    vel_write_addr: 600,            #ADDR_PRO_GOAL_SPEED
+    pos_write_addr: 596,            #ADDR_PRO_GOAL_POSITION
+    current_ratio: 0.00402832,      #8250.0 / 2048.0 / 1000.0
     len_present_speed: 4,
     len_present_pos: 4,
     len_present_curr: 2,
@@ -69,17 +72,18 @@ dxl_spec_config: [
     name: XH430-V350-R, 
     model: 1040, 
     cpr: 4095, 
+    min_vel_ticks: 4,
     rpm_factor: 0.229, 
     torque_const_a: 4.568421, 
     torque_const_b: 0.13263157,
-    pos_read_addr: 132, #ADDR_XH_PRESENT_POSITION
-    vel_read_addr: 128, #ADDR_XH_PRESENT_SPEED
-    current_read_addr: 126, #ADDR_XH_PRESENT_CURRENT
-    error_read_addr: 70, #ADDR_XH_HARDWARE_ERROR
-    torque_write_addr: 64, #ADDR_XH_TORQUE_ENABLE
-    vel_write_addr: 112, #ADDR_XH_PROFILE_VELOCITY
-    pos_write_addr: 116, #ADDR_XH_GOAL_POSITION
-    current_ratio: 0.00269, #2.69/1000.0
+    pos_read_addr: 132,             #ADDR_XH_PRESENT_POSITION
+    vel_read_addr: 128,             #ADDR_XH_PRESENT_SPEED
+    current_read_addr: 126,         #ADDR_XH_PRESENT_CURRENT
+    error_read_addr: 70,            #ADDR_XH_HARDWARE_ERROR
+    torque_write_addr: 64,          #ADDR_XH_TORQUE_ENABLE
+    vel_write_addr: 112,            #ADDR_XH_PROFILE_VELOCITY
+    pos_write_addr: 116,            #ADDR_XH_GOAL_POSITION
+    current_ratio: 0.00269,         #2.69/1000.0
     len_present_speed: 4,
     len_present_pos: 4,
     len_present_curr: 2,
@@ -91,17 +95,18 @@ dxl_spec_config: [
     name: MX28, 
     model: 30, 
     cpr: 4095, 
+    min_vel_ticks: 4,
     rpm_factor: 0.229, 
     torque_const_a: 0.01, 
     torque_const_b: 0.0,
-    pos_read_addr: 132, #ADDR_MX_PRESENT_POSITION
-    vel_read_addr: 128, #ADDR_MX_PRESENT_SPEED
-    current_read_addr: 126, #ADDR_MX_PRESENT_LOAD
-    error_read_addr: 70, #ADDR_MX_HARDWARE_ERROR
-    torque_write_addr: 64, #ADDR_MX_TORQUE_ENABLE
-    vel_write_addr: 112, #ADDR_MX_PROFILE_VELOCITY
-    pos_write_addr: 116, #ADDR_MX_GOAL_POSITION
-    current_ratio: 0.01, #current *= 0.01; //percentage -100 ~ 100 %
+    pos_read_addr: 132,             #ADDR_MX_PRESENT_POSITION
+    vel_read_addr: 128,             #ADDR_MX_PRESENT_SPEED
+    current_read_addr: 126,         #ADDR_MX_PRESENT_LOAD
+    error_read_addr: 70,            #ADDR_MX_HARDWARE_ERROR
+    torque_write_addr: 64,          #ADDR_MX_TORQUE_ENABLE
+    vel_write_addr: 112,            #ADDR_MX_PROFILE_VELOCITY
+    pos_write_addr: 116,            #ADDR_MX_GOAL_POSITION
+    current_ratio: 0.01,            #current *= 0.01; //percentage -100 ~ 100 %
     len_present_speed: 2,
     len_present_pos: 2, 
     len_present_curr: 2,

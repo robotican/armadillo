@@ -199,6 +199,16 @@ namespace armadillo2_hw
             }
             spec.cpr = static_cast<int>(dxl_spec_config_[i]["cpr"]);
 
+            /* min_vel_ticks */
+            if(dxl_spec_config_[i]["min_vel_ticks"].getType() != XmlRpc::XmlRpcValue::TypeInt)
+            {
+                ROS_ERROR("[dxl_motors_builder]: spec min_vel_ticks at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            spec.min_vel_ticks = static_cast<int>(dxl_spec_config_[i]["min_vel_ticks"]);
+
             /* rpm_factor */
             if(dxl_spec_config_[i]["rpm_factor"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
             {
@@ -374,6 +384,7 @@ namespace armadillo2_hw
             {
                 motor.spec.name = specs_[motor.spec.model].name;
                 motor.spec.cpr = specs_[motor.spec.model].cpr;
+                motor.spec.min_vel_ticks = specs_[motor.spec.model].min_vel_ticks;
                 motor.spec.rpm_scale_factor = specs_[motor.spec.model].rpm_scale_factor;
                 motor.spec.torque_const_a = specs_[motor.spec.model].torque_const_a;
                 motor.spec.torque_const_b = specs_[motor.spec.model].torque_const_b;
@@ -394,10 +405,7 @@ namespace armadillo2_hw
                 motor.spec.len_goal_speed = specs_[motor.spec.model].len_goal_speed;
                 motor.spec.len_goal_pos = specs_[motor.spec.model].len_goal_pos;
 
-
-
                 motor.spec.current_ratio = specs_[motor.spec.model].current_ratio;
-
             }
             else
             {
@@ -532,7 +540,6 @@ namespace armadillo2_hw
             struct dxl::motor new_motor;
 
             /* defaults to prevent bad movement on startup */
-            new_motor.spec.model = 0;
             new_motor.command_position = 0.0;
             new_motor.command_velocity = 0.5;
             new_motor.first_pos_read = true;

@@ -1,7 +1,5 @@
 
 #include <ric_interface/serial_com.h>
-#include <ric_interface/ric_exception.h>
-
 
 void SerialCom::connect(std::string port, int baudrate) {
     baudrate_ = baudrate;
