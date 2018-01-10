@@ -12,7 +12,6 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
 
 #include <dynamic_reconfigure/server.h>
 #include <espeak_ros/EspeakConfig.h>
