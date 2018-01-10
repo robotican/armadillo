@@ -29,6 +29,7 @@
     <arg name="joy_dev" default="/dev/input/js0"/>
     <arg name="joy_profile" default="xbox"/>
     <arg name="twist_mux" default="true"/>
+    <arg name="tele_arm" default="false" doc="allow armadillo2 arm joy teleop. set teleop:=true, moveit:=true"/>
     
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
     
@@ -42,6 +43,7 @@
         <include file="$(find armadillo2_teleop)/launch/armadillo2_teleop.launch">
             <arg name="joy_dev" value="$(arg joy_dev)"/>
             <arg name="joy_profile" value="$(arg joy_profile)"/>
+            <arg name="tele_arm" value="$(arg joy_profile)"/>
         </include>
     </group>
     

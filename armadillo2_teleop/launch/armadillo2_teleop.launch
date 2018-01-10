@@ -4,6 +4,7 @@
     
     <arg name="joy_dev" default="/dev/input/js0"/>
     <arg name="joy_profile" default="xbox"/>
+    <arg name="tele_arm" default="false"/>
 
     <!-- load joystick listener node -->
     <node pkg="joy" type="joy_node" name="joy_listener">
@@ -16,6 +17,7 @@
         <rosparam file="$(find armadillo2_teleop)/config/joy_profiles.yaml" command="load"/>
         <rosparam file="$(find armadillo2_teleop)/config/config.yaml" command="load"/>
         <param name="profile" value="$(arg joy_profile)" />
+        <param name="tele_arm" value="$(arg tele_arm)" />
     </node>
     
 </launch>

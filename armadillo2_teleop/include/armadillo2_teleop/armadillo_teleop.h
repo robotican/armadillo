@@ -37,11 +37,12 @@ private:
                     joints_states_sub_,
                     gripper_sub_;
     ros::NodeHandle nh_;
-    moveit::planning_interface::MoveGroupInterface arm_grp_;
+    moveit::planning_interface::MoveGroupInterface *arm_grp_;
     actionlib::SimpleActionClient<control_msgs::GripperCommandAction> *gripper_client_;
 
     joints_state_indx states_;
     joy_profile joy_;
+    bool tele_arm_ = false;
 
     void drive();
     void moveTorso();
@@ -57,7 +58,11 @@ private:
 
 public:
     Armadillo2Teleop();
-    ~Armadillo2Teleop() { delete gripper_client_; }
+    ~Armadillo2Teleop()
+    {
+        delete gripper_client_;
+        delete arm_grp_;
+    }
 };
 
 #endif //ARMADILLO2_TELEOP_ARMADILLO_JOY_H

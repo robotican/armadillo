@@ -2,13 +2,16 @@
 #include <armadillo2_teleop/joy_profile.h>
 
 
-Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
+Armadillo2Teleop::Armadillo2Teleop()
 {
     std::string driving_topic,
             torso_elevator_sim_topic,
             torso_elevator_real_topic,
             head_topic,
             gripper_topic;
+
+    ros::param::get("~tele_arm", tele_arm_);
+
     if (!ros::param::get("~topics/driving", driving_topic) ||
         !ros::param::get("~topics/torso/real", torso_elevator_real_topic) ||
         !ros::param::get("~topics/torso/sim", torso_elevator_sim_topic) ||
@@ -41,18 +44,22 @@ Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
     ros::param::get("~limits/gripper/limit_upper", joy_.gripper.limit_upper);
     ros::param::get("~limits/gripper/max_effort", joy_.gripper.goal.command.max_effort);
 
-    /* move arm to start pos */
-    ros::param::get("~start_pos", joy_.arm.start_pos);
-    resetArm();
+    if (tele_arm_)
+    {
+        arm_grp_ = new moveit::planning_interface::MoveGroupInterface("arm");
+        /* move arm to start pos */
+        ros::param::get("~start_pos", joy_.arm.start_pos);
+        resetArm();
 
-    /* gripper action client */
-    gripper_client_ = new actionlib::SimpleActionClient<control_msgs::GripperCommandAction>(gripper_topic, true);
-    //actionlib::SimpleActionClient<control_msgs::GripperCommandAction> gripper_client(gripper_topic, true);
-    ROS_INFO("[armadillo2_teleop]: waiting for gripper action server to start...");
-    /* wait for the action server to start */
-    gripper_client_->waitForServer(); //will wait for infinite time
+        /* gripper action client */
+        gripper_client_ = new actionlib::SimpleActionClient<control_msgs::GripperCommandAction>(gripper_topic, true);
+        //actionlib::SimpleActionClient<control_msgs::GripperCommandAction> gripper_client(gripper_topic, true);
+        ROS_INFO("[armadillo2_teleop]: waiting for gripper action server to start...");
+        /* wait for the action server to start */
+        gripper_client_->waitForServer(); //will wait for infinite time
 
-    ROS_INFO("[armadillo2_teleop]: gripper action server started");
+        ROS_INFO("[armadillo2_teleop]: gripper action server started");
+    }
 
     /* load joystick profile */
     std::string profile_name = "xbox";
@@ -64,6 +71,7 @@ Armadillo2Teleop::Armadillo2Teleop() : arm_grp_("arm")
 
 void Armadillo2Teleop::gripperGapCB(const std_msgs::Float32::ConstPtr &msg)
 {
+    if (!tele_arm_) return;
     joy_.gripper.goal.command.position = msg->data;
     joy_.gripper.init_state_recorded = true;
     gripper_sub_.shutdown();
@@ -160,17 +168,19 @@ bool Armadillo2Teleop::loadProfile(const std::string &profile_name)
 
 void Armadillo2Teleop::moveGripper()
 {
+    if (!tele_arm_) return;
     gripper_client_->sendGoal(joy_.gripper.goal);
 }
 
 void Armadillo2Teleop::moveArm()
 {
-    arm_grp_.setJointValueTarget(joy_.arm.axes_vals);
+    if (!tele_arm_) return;
+    arm_grp_->setJointValueTarget(joy_.arm.axes_vals);
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-    if (arm_grp_.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
+    if (arm_grp_->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS)
     {
         ROS_WARN("[armadillo2_teleop]: moving arm...");
-        arm_grp_.move();
+        arm_grp_->move();
         for (int i=0; i < joy_arm::DOF; i++)
             joy_.arm.axes_vals_prev[i] = joy_.arm.axes_vals[i];
     }
@@ -185,23 +195,24 @@ void Armadillo2Teleop::moveArm()
 
 void Armadillo2Teleop::resetArm()
 {
-    arm_grp_.setPlannerId("RRTConnectkConfigDefault");
-    arm_grp_.setPlanningTime(5.0);
-    arm_grp_.setNumPlanningAttempts(15);
-    arm_grp_.setPoseReferenceFrame("base_footprint");
-    arm_grp_.setStartStateToCurrentState();
-    arm_grp_.setNamedTarget(joy_.arm.start_pos);
+    if (!tele_arm_) return;
+    arm_grp_->setPlannerId("RRTConnectkConfigDefault");
+    arm_grp_->setPlanningTime(5.0);
+    arm_grp_->setNumPlanningAttempts(15);
+    arm_grp_->setPoseReferenceFrame("base_footprint");
+    arm_grp_->setStartStateToCurrentState();
+    arm_grp_->setNamedTarget(joy_.arm.start_pos);
     moveit::planning_interface::MoveGroupInterface::Plan start_plan;
-    if(arm_grp_.plan(start_plan))  //Check if plan is valid
+    if(arm_grp_->plan(start_plan))  //Check if plan is valid
     {
         ROS_INFO("[armadillo2_teleop]: moving arm to start position: %s", joy_.arm.start_pos.c_str());
-        arm_grp_.execute(start_plan);
+        arm_grp_->execute(start_plan);
     }
     else
         ROS_WARN("[armadillo2_teleop]: failed moving arm to start position: %s", joy_.arm.start_pos.c_str());
 
-    arm_grp_.getCurrentState()->copyJointGroupPositions(
-            arm_grp_.getCurrentState()->getRobotModel()->getJointModelGroup(arm_grp_.getName()),
+    arm_grp_->getCurrentState()->copyJointGroupPositions(
+            arm_grp_->getCurrentState()->getRobotModel()->getJointModelGroup(arm_grp_->getName()),
             joy_.arm.axes_vals);
     joy_.arm.init_state_recorded = true;
 
@@ -272,7 +283,8 @@ void Armadillo2Teleop::update(const sensor_msgs::Joy::ConstPtr &joy_msg)
             moveHead();
     }
         /* arm mode */
-    else if (joy_.arm.init_state_recorded &&
+    else if (tele_arm_ &&
+             joy_.arm.init_state_recorded &&
              joy_.gripper.init_state_recorded)
     {
         /* move gripper */
