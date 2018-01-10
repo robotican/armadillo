@@ -33,7 +33,6 @@ find_package(catkin REQUIRED COMPONENTS
         pluginlib
         message_generation
         genmsg
-        armadillo2_msgs
 )
 
 find_package(gazebo REQUIRED)
@@ -179,13 +178,12 @@ add_dependencies(gazebo_grasp_fix ${catkin_EXPORTED_TARGETS})
 
 add_executable(point_head_action src/pick_and_place/point_head_action.cpp)
 add_dependencies(point_head_action ${${PROJECT_NAME}_EXPORTED_TARGETS})
-add_dependencies(point_head_action armadillo2_msgs_gencpp)
+add_dependencies(point_head_action armadillo2_msgs_generate_messages_cpp)
 target_link_libraries(point_head_action ${catkin_LIBRARIES} )
 
 add_executable(find_objects_node src/pick_and_place/find_objects.cpp)
 add_dependencies(find_objects_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 add_dependencies(find_objects_node ${PROJECT_NAME}_gencfg)
-add_dependencies(find_objects_node ${PROJECT_NAME}_gencpp)
 target_link_libraries(find_objects_node ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 

@@ -22,30 +22,19 @@
     <arg name="map" default="map.yaml" doc="pre-saved map path"/>
     <arg name="move_base" default="false"/>
     <arg name="robot_localization" default="false"/>
-    <arg name="twist_mux" default="true"/>
     <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
-    <arg name="joy_dev" default="/dev/input/js0"/>
-    <arg name="joy_profile" default="xbox"/>
+
     <!--uncommon settings-->
     <arg name="center_pan_tilt" default="true" doc="centers head on startup"/>
+    <arg name="joy_dev" default="/dev/input/js0"/>
+    <arg name="joy_profile" default="xbox"/>
+    <arg name="twist_mux" default="true"/>
     
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
     
-    <node name="armadillo2_services_node" pkg="armadillo2_services" type="armadillo2_services_node" respawn="false" output="screen"/>
-  
-    <!--center robot head on startup -->
-    <group if="$(arg center_pan_tilt)" >
-        
-        <!-- load joystick listener node -->
-        <node name="pan_tilt_center_node" output="screen" pkg="pan_tilt_mover" type="pan_tilt_mover_node">
-            <param name="pan_angle" value="0" />
-            <param name="tilt_angle" value="0" />
-            <param name="timeout" value="5" />
-            <param name="random" value="false" />
-        </node>
-        
-    </group>
-    
+    <node name="armadillo2_services_node" pkg="armadillo2_services" type="armadillo2_services_node" respawn="false" output="screen">
+        <param name="center_head" value="$(arg center_pan_tilt)" />
+    </node>
     
     <include file="$(find espeak_ros)/launch/espeak_ros.launch" />
     
@@ -73,7 +62,6 @@
     
     <!--load simulation stuff-->
     <group if="$(arg gazebo)">
-        
          <env name="GAZEBO_MODEL_PATH" value="$(find armadillo2_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
          <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder 
                 kinect2:=true
@@ -94,18 +82,10 @@
 	</include>
 
         <node name="armadillo2_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model armadillo2 -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y)" />
-        
     </group>
     
     <!--load hardware stuff-->
     <group unless="$(arg gazebo)">
-        
-            
-        <!--open lift_arm service to allow lifting arm from dead state-->
-        <node name="lift_arm_node" pkg="lift_arm" type="lift_arm_node" respawn="false" output="screen" />
-        <!--open prepare_shutdown service to allow lifting arm from dead state-->
-        <node name="prepare_shutdown_node" pkg="prepare_shutdown" type="prepare_shutdown_node" respawn="false" output="screen" />
-        
         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2.xacro' --inorder" />
         <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />
         
@@ -122,7 +102,6 @@
         <group if="$(arg lidar)">
             <include file="$(find lidar_urg_node)/launch/lidar.launch" />
         </group>
-
     </group>
     
     <group if="$(arg twist_mux)">
@@ -130,7 +109,6 @@
     </group>
     
    
-    
     <group if="$(arg gmapping)">
         <include file="$(find armadillo2_navigation)/launch/gmapping.launch" />
     </group>

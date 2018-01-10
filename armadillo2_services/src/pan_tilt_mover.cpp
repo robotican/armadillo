@@ -16,6 +16,11 @@ bool PanTiltMover::moveHeadCB(armadillo2_msgs::PanTilt::Request &req,
     //return publishGroupPosMsg(req.pan, req.tilt);
 }
 
+bool PanTiltMover::centerHead() const
+{
+    return publishTrajectoryMsg(0, 0);
+}
+
 bool PanTiltMover::publishTrajectoryMsg(float pan, float tilt) const
 {
     if (traj_pub_.getNumSubscribers()<=0)
