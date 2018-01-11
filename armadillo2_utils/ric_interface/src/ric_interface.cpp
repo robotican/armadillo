@@ -80,6 +80,19 @@ namespace ric_interface
 
                     break;
                 }
+                case (uint8_t) protocol::Type::ERROR:
+                {
+                    fprintf(stderr, "error comp:");
+                    protocol::error err_pkg;
+                    Communicator::fromBytes(pkg_buff_, sizeof(protocol::error), err_pkg);
+                    if (err_pkg.type == (uint8_t)protocol::Type::LOGGER)
+                    {
+                        sensors_state_.error = err_pkg;
+                        fprintf(stderr, "error comp: %i, code: %i", sensors_state_.error.comp_type, sensors_state_.error.code);
+                    }
+
+                    break;
+                }
                 case (int)protocol::Type::ULTRASONIC:
                 {
                     protocol::ultrasonic ultrasonic_pkg;

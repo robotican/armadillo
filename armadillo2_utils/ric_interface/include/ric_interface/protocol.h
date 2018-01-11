@@ -16,7 +16,8 @@ namespace ric_interface
             IMU = 104,
             GPS = 105,
             SERVO = 106,
-            EMERGENCY_ALARM = 107
+            EMERGENCY_ALARM = 107,
+            ERROR = 108
         };
 
         const uint16_t MAX_PKG_SIZE = 512;
@@ -40,6 +41,13 @@ namespace ric_interface
             logger() { type = (uint8_t)Type::LOGGER; }
             char msg[30];
             int32_t value = 0;
+        };
+
+        struct error : package
+        {
+            uint8_t code = 0;
+            uint8_t comp_type = 0;
+            error() { type = (uint8_t)Type::LOGGER; }
         };
 
         struct sensor : package
