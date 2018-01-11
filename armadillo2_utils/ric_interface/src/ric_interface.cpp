@@ -73,6 +73,7 @@ namespace ric_interface
                     Communicator::fromBytes(pkg_buff_, sizeof(protocol::logger), logger_pkg);
                     if (logger_pkg.type == (uint8_t)protocol::Type::LOGGER)
                     {
+                        got_new_logger_msg_ = true;
                         sensors_state_.logger = logger_pkg;
                         //fprintf(stderr, "logger msg: %s, code: %d\n", logger_pkg.msg, logger_pkg.value);
                     }
@@ -139,6 +140,18 @@ namespace ric_interface
             }
             clearBuffer();
         }
+    }
+
+    bool RicInterface::readLoggerMsg(std::string &msg, int32_t &value)
+    {
+        if (got_new_logger_msg_)
+        {
+            got_new_logger_msg_ = false;
+            msg = sensors_state_.logger.msg;
+            value = sensors_state_.logger.value;
+            return true;
+        }
+        return false;
     }
 
     void RicInterface::sendKeepAlive()

@@ -35,6 +35,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
             exit(1);
         }
 
+        /* torso reading low pass filter */
         torso_lpf_.setCutOffFrequency(0.3);
         torso_lpf_.setDeltaTime(0.1);
 
@@ -76,6 +77,8 @@ void RicboardPub::loop()
         ric_.loop();
         if (ric_.isBoardAlive())
         {
+            std::string logger_msg;
+            int32_t logger_val;
             ric_disconnections_counter_ = 0;
             ric_dead_timer_.stop();
             ric_pub_timer_.start();
@@ -87,6 +90,8 @@ void RicboardPub::loop()
                 ros::shutdown();
                 exit(EXIT_FAILURE);
             }
+            else if (ric_.readLoggerMsg(logger_msg, logger_val))
+                ROS_INFO("[armadillo2_hw/ricboard_pub]: ric logger is saying: '%s', value: %i", logger_msg.c_str(), logger_val);
         }
         else
         {
