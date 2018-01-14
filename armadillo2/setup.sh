@@ -91,7 +91,7 @@ printf "${WHITE_TXT}Installing xbox driver...\n${NO_COLOR}"
 sleep 1
 sudo apt-get -y install xboxdrv
 sudo apt-get -y install sysfsutils
-echo "module/bluetooth/parameters/disable_ertm = 1" >> /etc/sysfs.conf
+sudo echo "module/bluetooth/parameters/disable_ertm = 1" >> /etc/sysfs.conf
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
 
@@ -143,6 +143,7 @@ printf "${WHITE_TXT}Installing USB rules...\n${NO_COLOR}"
 sleep 1
 sudo apt -y install setserial #for setting port latency
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/usb_to_dxl.rules /etc/udev/rules.d
+sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/roboteq.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/49-teensy.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
 sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
