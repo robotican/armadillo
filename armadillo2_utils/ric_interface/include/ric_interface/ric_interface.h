@@ -23,7 +23,7 @@ namespace ric_interface
 
         /* is board sent keep alive on time */
         bool is_board_alive_ = true, got_keepalive_ = false;
-        bool got_new_logger_msg_ = false;
+        bool got_new_logger_msg_ = false, got_new_error_msg_ = false;
         Timer send_keepalive_timer_, get_keepalive_timer_;
         Communicator comm_;
         sensors_state sensors_state_;
@@ -42,6 +42,8 @@ namespace ric_interface
         sensors_state getSensorsState() { return sensors_state_; }
         void writeCmd(const protocol::actuator &actu_pkg, size_t size, protocol::Type type);
         bool readLoggerMsg(std::string &msg, int32_t &value);
+        bool readErrorMsg(protocol::error &error);
+        static std::string compType2String(const protocol::Type comp_type);
     };
 }
 

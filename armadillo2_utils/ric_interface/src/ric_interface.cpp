@@ -48,6 +48,30 @@ namespace ric_interface
         }
     }
 
+    std::string RicInterface::compType2String(const protocol::Type comp_type)
+    {
+        switch (comp_type)
+        {
+            case protocol::Type::KEEP_ALIVE:
+                return "KEEP_ALIVE";
+            case protocol::Type::LOGGER:
+                return "LOGGER";
+            case protocol::Type::ERROR:
+                return "ERROR";
+            case protocol::Type::ULTRASONIC:
+                return "ULTRASONIC";
+            case protocol::Type::IMU:
+                return "IMU";
+            case protocol::Type::LASER:
+                return "LASER";
+            case protocol::Type::GPS:
+                return "GPS";
+            case protocol::Type::EMERGENCY_ALARM:
+                return "EMERGENCY_ALARM";
+        }
+        return NULL;
+    }
+
     void RicInterface::readAndHandlePkg()
     {
         int pkg_type = comm_.read(pkg_buff_);
@@ -86,6 +110,7 @@ namespace ric_interface
                     Communicator::fromBytes(pkg_buff_, sizeof(protocol::error), err_pkg);
                     if (err_pkg.type == (uint8_t)protocol::Type::ERROR)
                     {
+                        got_new_error_msg_ = true;
                         sensors_state_.error = err_pkg;
                         //fprintf(stderr, "error comp: %i, code: %i\n", sensors_state_.error.comp_type, sensors_state_.error.code);
                     }
@@ -154,13 +179,26 @@ namespace ric_interface
         }
     }
 
+    /* read logger msg if available, and mark read */
     bool RicInterface::readLoggerMsg(std::string &msg, int32_t &value)
     {
         if (got_new_logger_msg_)
         {
-            got_new_logger_msg_ = false;
+            got_new_logger_msg_ = false; //clear msg flag
             msg = sensors_state_.logger.msg;
             value = sensors_state_.logger.value;
+            return true;
+        }
+        return false;
+    }
+
+    /* read error msg if available, and mark read */
+    bool RicInterface::readErrorMsg(protocol::error &error)
+    {
+        if (got_new_error_msg_)
+        {
+            got_new_error_msg_ = false; //clear msg flag
+            error = sensors_state_.error;
             return true;
         }
         return false;

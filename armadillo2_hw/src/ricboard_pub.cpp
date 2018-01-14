@@ -77,11 +77,13 @@ void RicboardPub::loop()
         ric_.loop();
         if (ric_.isBoardAlive())
         {
+            ric_interface::protocol::error err_msg;
             std::string logger_msg;
             int32_t logger_val;
             ric_disconnections_counter_ = 0;
             ric_dead_timer_.stop();
             ric_pub_timer_.start();
+
             /* if emergecy pin disconnected, shutdown. ric will also kill torso */
             if (ric_.getSensorsState().emrgcy_alarm.is_on)
             {
@@ -90,8 +92,13 @@ void RicboardPub::loop()
                 ros::shutdown();
                 exit(EXIT_FAILURE);
             }
-            else if (ric_.readLoggerMsg(logger_msg, logger_val))
+            if (ric_.readLoggerMsg(logger_msg, logger_val))
                 ROS_INFO("[armadillo2_hw/ricboard_pub]: ric logger is saying: '%s', value: %i", logger_msg.c_str(), logger_val);
+            if (ric_.readErrorMsg(err_msg))
+            {
+                std::string comp_name = ric_interface::RicInterface::compType2String((ric_interface::protocol::Type)err_msg.comp_type);
+                ROS_WARN("[armadillo2_hw/ricboard_pub]: ric detected error in %s", comp_name.c_str());
+            }
         }
         else
         {
