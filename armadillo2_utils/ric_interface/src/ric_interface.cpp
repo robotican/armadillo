@@ -82,13 +82,12 @@ namespace ric_interface
                 }
                 case (uint8_t) protocol::Type::ERROR:
                 {
-                    fprintf(stderr, "error comp:");
                     protocol::error err_pkg;
                     Communicator::fromBytes(pkg_buff_, sizeof(protocol::error), err_pkg);
-                    if (err_pkg.type == (uint8_t)protocol::Type::LOGGER)
+                    if (err_pkg.type == (uint8_t)protocol::Type::ERROR)
                     {
                         sensors_state_.error = err_pkg;
-                        fprintf(stderr, "error comp: %i, code: %i", sensors_state_.error.comp_type, sensors_state_.error.code);
+                        //fprintf(stderr, "error comp: %i, code: %i\n", sensors_state_.error.comp_type, sensors_state_.error.code);
                     }
 
                     break;

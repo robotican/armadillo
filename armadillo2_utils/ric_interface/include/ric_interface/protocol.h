@@ -45,9 +45,10 @@ namespace ric_interface
 
         struct error : package
         {
-            uint8_t code = 0;
-            uint8_t comp_type = 0;
-            error() { type = (uint8_t)Type::LOGGER; }
+            uint8_t code = 0; //error code
+            uint8_t comp_type = 0; //reporting component type
+            uint8_t comp_id = 0; //reporting component id
+            error() { type = (uint8_t)Type::ERROR; }
         };
 
         struct sensor : package
