@@ -91,7 +91,7 @@ printf "${WHITE_TXT}Installing xbox driver...\n${NO_COLOR}"
 sleep 1
 sudo apt-get -y install xboxdrv
 sudo apt-get -y install sysfsutils
-sudo echo "module/bluetooth/parameters/disable_ertm = 1" >> /etc/sysfs.conf
+sudo /bin/su -c "echo 'module/bluetooth/parameters/disable_ertm = 1' >> /etc/sysfs.conf"
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
 
