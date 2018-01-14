@@ -6,8 +6,7 @@ GREEN_TXT='\e[0;32m'
 WHITE_TXT='\e[1;37m'
 RED_TXT='\e[31m'
 NO_COLOR='\033[0m'
-LOGS_FOLDER='setup_logs'
-LOGS_FOLDER_PATH="~/catkin_ws/src/${LOGS_FOLDER}"
+LOGS_FOLDER_PATH="${HOME}/catkin_ws/src/setup_logs"
 
 printf "${WHITE_TXT}\n***Installing Armadillo2 ROS-Kinetic Package***\n${NO_COLOR}"
 sleep 1
@@ -43,7 +42,7 @@ printf "${GREEN_TXT}found catkin_ws/src folder${NO_COLOR}\n"
 sleep 1
 
 # preparing error logs folder #
-if [ ! -d ${LOGS_FOLDER} ]; then
+if [ ! -d ${LOGS_FOLDER_PATH} ]; then
   mkdir ${LOGS_FOLDER_PATH}
 fi
 
@@ -84,19 +83,22 @@ sudo apt-get -y install ros-kinetic-urg-node
 sudo apt-get -y install jstest-gtk
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
-} 2> ${LOGS_FOLDER_PATH}/third_party_install_error.txt
+} 2> ${LOGS_FOLDER_PATH}/third_party.txt
 
 # install xbox controller drivers #
 printf "${WHITE_TXT}Installing xbox driver...\n${NO_COLOR}"
+{
 sleep 1
 sudo apt-get -y install xboxdrv
 sudo apt-get -y install sysfsutils
 sudo /bin/su -c "echo 'module/bluetooth/parameters/disable_ertm = 1' >> /etc/sysfs.conf"
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
+} 2> ${LOGS_FOLDER_PATH}/xbox_driver.txt
 
 # install displaylink driver for mimo touch display #
 printf "${WHITE_TXT}Installing displaylink driver...\n${NO_COLOR}"
+{
 sleep 1
 sudo apt-get -y install linux-generic-lts-utopic xserver-xorg-lts-utopic 
 sudo apt-get -y install libegl1-mesa-drivers-lts-utopic 
@@ -108,15 +110,18 @@ chmod +x displaylink-driver-4.1.9.run
 sudo ./displaylink-driver-4.1.9.run
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
+} 2> ${LOGS_FOLDER_PATH}/displaylink_driver.txt
 
 # install softkinetic drivers #
 printf "${WHITE_TXT}Installing softkinetic driver...\n${NO_COLOR}"
+{
 sleep 1
 cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
 sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
+} 2> ${LOGS_FOLDER_PATH}/softkinetic_driver.txt
 
 # install kinect drivers #
 printf "${WHITE_TXT}Installing kinect driver...\n${NO_COLOR}"
@@ -135,7 +140,7 @@ cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
-} 2> ${LOGS_FOLDER_PATH}/kinect_install_error.txt
+} 2> ${LOGS_FOLDER_PATH}/kinect_driver.txt
 
 # usb rules #
 printf "${WHITE_TXT}Installing USB rules...\n${NO_COLOR}"
@@ -151,7 +156,7 @@ sudo cp ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2/platform/linux/
 sudo udevadm control --reload-rules && udevadm trigger
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
-} 2> ${LOGS_FOLDER_PATH}/usb_rules_error.txt
+} 2> ${LOGS_FOLDER_PATH}/usb_rules.txt
 
 # compiling armadillo2#
 printf "${WHITE_TXT}Compiling armadillo2 package...\n${NO_COLOR}"
@@ -162,19 +167,21 @@ catkin_make --pkg pr2_controllers_msgs robotican_msgs_srvs
 catkin_make -DCMAKE_BUILD_TYPE="Release"
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 sleep 1
-} 2> ${LOGS_FOLDER_PATH}/catkin_make_error.txt
+} 2> ${LOGS_FOLDER_PATH}/compilation.txt
 
-# remove empty log files #
-for f in $LOGS_FOLDER_PATH
+# remove empty txt files #
+for f in $LOGS_FOLDER_PATH/*.txt
 do
-    if [[ !$(find $f -type f -size +0w 2>/dev/null) ]]; then
-        rm $f
+    echo "checking $f"
+    if ! [ -s $f ]; then
+        echo "deleting $f"
+        rm -f $f
     fi
 done
 
-# if logs folder is not empty, some errors has occured"
+# if logs folder is not empty, some errors has occured #
 cd $LOGS_FOLDER_PATH
-if [ -z "$(ls)" ]; then
+if ! [ "$(ls -A $LOGS_FOLDER_PATH)" ]; then
     printf "${GREEN_TXT}Installation process finished successfully.\n\n"  ${NO_COLOR}
     printf "${GREEN_TXT}Please reboot to apply changes\n\n${NO_COLOR}"
     rmdir $LOGS_FOLDER_PATH
