@@ -5,15 +5,8 @@
 #include <ros/ros.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_srvs/Trigger.h>
-#include <sensor_msgs/JointState.h>
 #include <control_msgs/GripperCommandActionGoal.h>
-
-#define ROTATION1_JOINT_INDX 6
-#define ROTATION2_JOINT_INDX 7
-#define SHOULDER1_JOINT_INDX 8
-#define SHOULDER2_JOINT_INDX 9
-#define SHOULDER3_JOINT_INDX 10
-#define WRIST_JOINT_INDX 12
+#include <armadillo2_services/joints_state_reader.h>
 
 /* valid starting positions */
 #define VALID_START_RAD_GOAL_TOLERANCE 0.174533 //10 deg
@@ -71,37 +64,26 @@ enum class ArmPose
     GRIPPER_TO_THE_LEFT
 };
 
-struct arm_state
-{
-    double rotation1_pos_rad = 0;
-    double rotation2_pos_rad = 0;
-    double shoulder1_pos_rad = 0;
-    double shoulder2_pos_rad = 0;
-    double shoulder3_pos_rad = 0;
-    double wrist_pos_rad = 0;
-    bool got_state = false;
-};
-
 class LiftArm
 {
 private:
-    ros::NodeHandle *nh_;
+    ros::NodeHandle* nh_;
     ros::Publisher arm_pub_,
                    gripper_pub_;
-    ros::Subscriber joints_state_sub_;
     ros::ServiceServer lift_arm_srv_;
     ros::ServiceServer open_gripper_srv_;
-    arm_state arm_;
+    const JointStateReader* joint_states_;
 
     ArmPose getArmPose();
     bool liftArmCB(std_srvs::Trigger::Request  &req,
                    std_srvs::Trigger::Response &res);
-    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr& msg);
+
     bool openGripperCB(std_srvs::Trigger::Request  &req,
                        std_srvs::Trigger::Response &res);
 
 public:
-    LiftArm(ros::NodeHandle &nh);
+    LiftArm(ros::NodeHandle &nh,
+            const JointStateReader &joints_state);
 };
 
 

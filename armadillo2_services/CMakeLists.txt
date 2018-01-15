@@ -35,7 +35,7 @@ add_executable(${PROJECT_NAME}_node
         include/armadillo2_services/dxl_torque.h
         include/armadillo2_services/lift_arm.h
         include/armadillo2_services/pan_tilt_mover.h
-        include/armadillo2_services/shutdown.h)
+        include/armadillo2_services/shutdown.h src/torso.cpp include/armadillo2_services/torso.h src/joints_state_reader.cpp include/armadillo2_services/joints_state_reader.h)
 
 
 add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
