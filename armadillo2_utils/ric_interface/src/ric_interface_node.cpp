@@ -17,9 +17,8 @@ int main(int argc, char **argv)
         bm.loop();
         if (ros::Time::now() - prev_time >= ros::Duration(0.1))
         {
-            //fprintf(stderr, "here\n");
             ric_interface::protocol::servo actu_pkg;
-            actu_pkg.cmd =2000;
+            actu_pkg.cmd =1500;
             bm.writeCmd(actu_pkg, sizeof(ric_interface::protocol::servo), ric_interface::protocol::Type::SERVO);
             prev_time = ros::Time::now();
         }
