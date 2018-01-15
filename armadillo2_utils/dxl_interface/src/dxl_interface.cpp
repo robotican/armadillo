@@ -266,6 +266,7 @@ namespace dxl
             bool addparam_success = false;
 
             int32_t motor_vel_ticks = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
+
             /* dxl api interperate 0 ticks velocity as the highest velocity. */
             /* set set_first_pos_write_to_curr_pos field to true  prevent it */
             /* by setting velocity to the last non-zero value                */

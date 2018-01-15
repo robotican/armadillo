@@ -236,7 +236,7 @@ namespace internal
     pre_alloc_result_->position = command_struct_.position_;
     pre_alloc_result_->reached_goal = false;
     pre_alloc_result_->stalled = false;
-      puts("4");
+
     // ROS API: Action interface
     action_server_.reset(new ActionServer(controller_nh_, "gripper_cmd",
                       boost::bind(&GripperActionController::goalCB,   this, _1),
