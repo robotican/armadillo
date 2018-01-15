@@ -191,4 +191,4 @@ else
     exit 1
 fi
 
-
+alias clion='/opt/clion-2017.3.1/bin/clion.sh'
