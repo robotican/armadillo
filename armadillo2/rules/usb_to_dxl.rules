@@ -1,2 +1,2 @@
 SUBSYSTEMS=="usb",ATTRS{product}=="FT232R USB UART",ATTRS{serial}=="AL02L1QA", SYMLINK+="armadillo2/USB2DYNAMIXEL", MODE="0666" , RUN+="/bin/setserial /dev/armadillo2/USB2DYNAMIXEL low_latency" # armadillo2 bgu
-SUBSYSTEMS=="usb",ATTRS{product}=="FT232R USB UART",ATTRS{serial}=="A906DH9F", SYMLINK+="armadillo2/USB2DYNAMIXEL", MODE="0666" , RUN+="/bin/setserial /dev/armadillo2/USB2DYNAMIXEL low_latency" # armadillo2 c-robotics
+SUBSYSTEMS=="usb",ATTRS{product}=="USB <-> Serial Converter",SYMLINK+="armadillo2/USB2DYNAMIXEL", MODE="0666" , RUN+="/bin/setserial /dev/armadillo2/USB2DYNAMIXEL low_latency" # armadillo2 c-robotics (mini converter)
