@@ -18,12 +18,12 @@ bool LiftArm::liftArmCB(std_srvs::Trigger::Request &req, std_srvs::Trigger::Resp
 
     trajectory_msgs::JointTrajectory traj_msg;
 
-    traj_msg.joint_names.push_back(ROTATION1_JOINT_NAME);
-    traj_msg.joint_names.push_back(ROTATION2_JOINT_NAME);
-    traj_msg.joint_names.push_back(SHOULDER1_JOINT_NAME);
-    traj_msg.joint_names.push_back(SHOULDER2_JOINT_NAME);
-    traj_msg.joint_names.push_back(SHOULDER3_JOINT_NAME);
-    traj_msg.joint_names.push_back(WRIST_JOINT_NAME);
+    traj_msg.joint_names.push_back(JOINT_NAME_ROTATION1);
+    traj_msg.joint_names.push_back(JOINT_NAME_ROTATION2);
+    traj_msg.joint_names.push_back(JOINT_NAME_SHOULDER1);
+    traj_msg.joint_names.push_back(JOINT_NAME_SHOULDER2);
+    traj_msg.joint_names.push_back(JOINT_NAME_SHOULDER3);
+    traj_msg.joint_names.push_back(JOINT_NAME_WRIST);
 
     trajectory_msgs::JointTrajectoryPoint point;
 
@@ -37,34 +37,34 @@ bool LiftArm::liftArmCB(std_srvs::Trigger::Request &req, std_srvs::Trigger::Resp
         }
         case ArmPose::GRIPPER_TO_THE_LEFT :
         {
-            point.positions.push_back(ROTATION1_RAD_GOAL_LEFT_POS);
-            point.positions.push_back(ROTATION2_RAD_GOAL_LEFT_POS);
-            point.positions.push_back(SHOULDER1_RAD_GOAL_LEFT_POS);
-            point.positions.push_back(SHOULDER2_RAD_GOAL_LEFT_POS);
-            point.positions.push_back(SHOULDER3_RAD_GOAL_LEFT_POS);
-            point.positions.push_back(WRIST_RAD_GOAL_LEFT_POS);
+            point.positions.push_back(GOAL_POSE_LEFT_ROTATION1);
+            point.positions.push_back(GOAL_POSE_LEFT_ROTATION2);
+            point.positions.push_back(GOAL_POSE_LEFT_SHOULDER1);
+            point.positions.push_back(GOAL_POSE_LEFT_SHOULDER2);
+            point.positions.push_back(GOAL_POSE_LEFT_SHOULDER3);
+            point.positions.push_back(GOAL_POSE_LEFT_WRIST);
             res.message = "gripper to the left";
             break;
         }
         case ArmPose::GRIPPER_TO_THE_RIGHT :
         {
-            point.positions.push_back(ROTATION1_RAD_GOAL_RIGHT_POS);
-            point.positions.push_back(ROTATION2_RAD_GOAL_RIGHT_POS);
-            point.positions.push_back(SHOULDER1_RAD_GOAL_RIGHT_POS);
-            point.positions.push_back(SHOULDER2_RAD_GOAL_RIGHT_POS);
-            point.positions.push_back(SHOULDER3_RAD_GOAL_RIGHT_POS);
-            point.positions.push_back(WRIST_RAD_GOAL_RIGHT_POS);
+            point.positions.push_back(GOAL_POSE_RIGHT_ROTATION1);
+            point.positions.push_back(GOAL_POSE_RIGHT_ROTATION2);
+            point.positions.push_back(GOAL_POSE_RIGHT_SHOULDER1);
+            point.positions.push_back(GOAL_POSE_RIGHT_SHOULDER2);
+            point.positions.push_back(GOAL_POSE_RIGHT_SHOULDER3);
+            point.positions.push_back(GOAL_POSE_RIGHT_WRIST);
             res.message = "gripper to the right";
             break;
         }
     }
 
-    point.velocities.push_back(ROTATION1_RAD_GOAL_VEL);
-    point.velocities.push_back(ROTATION2_RAD_GOAL_VEL);
-    point.velocities.push_back(SHOULDER1_RAD_GOAL_VEL);
-    point.velocities.push_back(SHOULDER2_RAD_GOAL_VEL);
-    point.velocities.push_back(SHOULDER3_RAD_GOAL_VEL);
-    point.velocities.push_back(WRIST_RAD_GOAL_VEL);
+    point.velocities.push_back(GOAL_VEL_ROTATION1);
+    point.velocities.push_back(GOAL_VEL_ROTATION2);
+    point.velocities.push_back(GOAL_VEL_SHOULDER1);
+    point.velocities.push_back(GOAL_VEL_SHOULDER2);
+    point.velocities.push_back(GOAL_VEL_SHOULDER3);
+    point.velocities.push_back(GOAL_VEL_WRIST);
 
     point.time_from_start = ros::Duration(1);
     traj_msg.points.push_back(point);
@@ -91,51 +91,51 @@ ArmPose LiftArm::getArmPose()
 {
     armadillo2_state joints_state = joint_states_->getJointsState();
     //ROS_INFO("real %f: | lower: %f | upper: %f", arm.rotation1_pos_rad, (ROTATION1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE), (ROTATION1_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE));
-    if (joints_state.rotation1 > ROTATION1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-            joints_state.rotation1 < ROTATION1_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+    if (joints_state.rotation1 > VALID_START_POSE_LEFT_ROTATION1 - START_TOLERANCE_ROTATION1 &&
+            joints_state.rotation1 < VALID_START_POSE_LEFT_ROTATION1 + START_TOLERANCE_ROTATION1 )
     {
-        /*if (joints_state.rotation2_pos_rad > ROTATION2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-            arm_.rotation2_pos_rad < ROTATION2_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+        if (joints_state.rotation2 > VALID_START_POSE_LEFT_ROTATION2 - START_TOLERANCE_ROTATION2  &&
+                joints_state.rotation2 < VALID_START_POSE_LEFT_ROTATION2 + START_TOLERANCE_ROTATION2 )
         {
-            if (joints_state.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                joints_state.shoulder1_pos_rad < SHOULDER1_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+            if (joints_state.shoulder1 > VALID_START_POSE_LEFT_SHOULDER1 - START_TOLERANCE_SHOULDER1 &&
+                joints_state.shoulder1 < VALID_START_POSE_LEFT_SHOULDER1 + START_TOLERANCE_SHOULDER1)
             {
-                if (joints_state.shoulder2_pos_rad > SHOULDER2_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                    joints_state.shoulder2_pos_rad < SHOULDER2_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+                if (joints_state.shoulder2 > VALID_START_POSE_LEFT_SHOULDER2 - START_TOLERANCE_SHOULDER2 &&
+                    joints_state.shoulder2 < VALID_START_POSE_LEFT_SHOULDER2 + START_TOLERANCE_SHOULDER2)
                 {
-                    if (joints_state.shoulder3_pos_rad > SHOULDER3_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                        joints_state.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+                    if (joints_state.shoulder3 > VALID_START_POSE_LEFT_SHOULDER3 - START_TOLERANCE_SHOULDER3 &&
+                        joints_state.shoulder3 < VALID_START_POSE_LEFT_SHOULDER3 + START_TOLERANCE_SHOULDER3)
                     {
-                        if (joints_state.wrist_pos_rad > WRIST_VALID_START_RAD_RIGHT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            joints_state.wrist_pos_rad < WRIST_VALID_START_RAD_RIGHT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
-        return ArmPose::GRIPPER_TO_THE_RIGHT;
-        /* }
-     }
-    }
-    }*/
+                        if (joints_state.wrist > VALID_START_POSE_LEFT_WRIST - START_TOLERANCE_WRIST &&
+                            joints_state.wrist < VALID_START_POSE_LEFT_WRIST + START_TOLERANCE_WRIST)
+                            return ArmPose::GRIPPER_TO_THE_LEFT;
+                    }
+                }
+            }
         }
-        else if (joints_state.rotation1 > ROTATION1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-            joints_state.rotation1 < ROTATION1_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+    }
+    else if (joints_state.rotation1 > VALID_START_POSE_RIGHT_ROTATION1 - START_TOLERANCE_ROTATION1 &&
+             joints_state.rotation1 < VALID_START_POSE_RIGHT_ROTATION1 + START_TOLERANCE_ROTATION1 )
+    {
+        if (joints_state.rotation2 > VALID_START_POSE_RIGHT_ROTATION2 - START_TOLERANCE_ROTATION2  &&
+            joints_state.rotation2 < VALID_START_POSE_RIGHT_ROTATION2 + START_TOLERANCE_ROTATION2 )
         {
-            /*    if (joints_state.rotation2_pos_rad > ROTATION2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                    joints_state.rotation2_pos_rad < ROTATION2_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+            if (joints_state.shoulder1 > VALID_START_POSE_RIGHT_SHOULDER1 - START_TOLERANCE_SHOULDER1 &&
+                joints_state.shoulder1 < VALID_START_POSE_RIGHT_SHOULDER1 + START_TOLERANCE_SHOULDER1)
+            {
+                if (joints_state.shoulder2 > VALID_START_POSE_RIGHT_SHOULDER2 - START_TOLERANCE_SHOULDER2 &&
+                    joints_state.shoulder2 < VALID_START_POSE_RIGHT_SHOULDER2 + START_TOLERANCE_SHOULDER2)
                 {
-                    if (joints_state.shoulder1_pos_rad > SHOULDER1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                        joints_state.shoulder1_pos_rad < SHOULDER1_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
+                    if (joints_state.shoulder3 > VALID_START_POSE_RIGHT_SHOULDER3 - START_TOLERANCE_SHOULDER3 &&
+                        joints_state.shoulder3 < VALID_START_POSE_RIGHT_SHOULDER3 + START_TOLERANCE_SHOULDER3)
                     {
-                        if (joints_state.shoulder2_pos_rad > SHOULDER2_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                            joints_state.shoulder2_pos_rad < SHOULDER2_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
-                        {
-                            if (joints_state.shoulder3_pos_rad > SHOULDER3_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                                joints_state.shoulder3_pos_rad < SHOULDER3_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)
-                            {
-                                if (joints_state.wrist_pos_rad > WRIST_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE &&
-                                    joints_state.wrist_pos_rad < WRIST_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE)*/
-            return ArmPose::GRIPPER_TO_THE_LEFT;
-            /*}
+                        if (joints_state.wrist > VALID_START_POSE_RIGHT_WRIST - START_TOLERANCE_WRIST &&
+                            joints_state.wrist < VALID_START_POSE_RIGHT_WRIST + START_TOLERANCE_WRIST)
+                            return ArmPose::GRIPPER_TO_THE_RIGHT;
+                    }
+                }
+            }
         }
-    }
-    }*/
     }
     return ArmPose::INVALID;
 }

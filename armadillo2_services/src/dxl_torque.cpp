@@ -54,12 +54,12 @@ void DxlTorque::commandCurrentDxlPosition()
 
     trajectory_msgs::JointTrajectory traj_msg;
 
-    traj_msg.joint_names.push_back(ROTATION1_JOINT_NAME);
-    traj_msg.joint_names.push_back(ROTATION2_JOINT_NAME);
-    traj_msg.joint_names.push_back(SHOULDER1_JOINT_NAME);
-    traj_msg.joint_names.push_back(SHOULDER2_JOINT_NAME);
-    traj_msg.joint_names.push_back(SHOULDER3_JOINT_NAME);
-    traj_msg.joint_names.push_back(WRIST_JOINT_NAME);
+    traj_msg.joint_names.push_back(JOINT_NAME_ROTATION1);
+    traj_msg.joint_names.push_back(JOINT_NAME_ROTATION2);
+    traj_msg.joint_names.push_back(JOINT_NAME_SHOULDER1);
+    traj_msg.joint_names.push_back(JOINT_NAME_SHOULDER2);
+    traj_msg.joint_names.push_back(JOINT_NAME_SHOULDER3);
+    traj_msg.joint_names.push_back(JOINT_NAME_WRIST);
 
     trajectory_msgs::JointTrajectoryPoint point;
     point.positions.push_back(joints_state.rotation1);

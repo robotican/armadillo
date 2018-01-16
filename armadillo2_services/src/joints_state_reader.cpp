@@ -13,6 +13,7 @@ JointStateReader::JointStateReader(ros::NodeHandle nh)
 void JointStateReader::jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg)
 {
     /* save joints updated state */
+    got_state_ = true;
     armadillo_state_.pan = msg->position[INDX_JOINT_PAN];
     armadillo_state_.tilt = msg->position[INDX_JOINT_TILT];
     armadillo_state_.finger_left = msg->position[INDX_JOINT_LEFT_FINGER];

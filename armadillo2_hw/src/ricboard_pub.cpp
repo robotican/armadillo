@@ -124,7 +124,7 @@ void RicboardPub::ricDeadTimerCB(const ros::TimerEvent &event)
 
 void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 {
-    if (!load_ric_hw_)
+    if (!load_ric_hw_ || !ric_.isBoardAlive())
         return;
 
     ric_interface::sensors_state sensors = ric_.getSensorsState();
@@ -197,7 +197,7 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 
 void RicboardPub::write(const ros::Duration elapsed)
 {
-    if (!load_ric_hw_)
+    if (!load_ric_hw_ || !ric_.isBoardAlive())
         return;
 
     if (elapsed >= ros::Duration(RIC_WRITE_INTERVAL))
@@ -214,7 +214,7 @@ void RicboardPub::write(const ros::Duration elapsed)
 
 void RicboardPub::read(const ros::Duration elapsed)
 {
-    if (!load_ric_hw_)
+    if (!load_ric_hw_ || !ric_.isBoardAlive())
         return;
 
     /* update robot state according to ric sensor for controller use */

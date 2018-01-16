@@ -7,17 +7,20 @@
 
 #include <std_msgs/Float64.h>
 #include <ros/ros.h>
+#include <armadillo2_services/joints_state_reader.h>
 
 class Torso
 {
 private:
     ros::Publisher torso_pub_;
     ros::NodeHandle *nh_;
+    const JointStateReader* joints_state_;
 
 public:
-    Torso(ros::NodeHandle &nh);
-    float getElevation();
-    bool command(float elevation);
+    Torso(ros::NodeHandle &nh,
+          const JointStateReader &joints_state);
+    bool command(float position);
+    bool commandCurrentPos();
 };
 
 

@@ -53,7 +53,7 @@ private:
 public:
     JointStateReader(ros::NodeHandle nh);
     armadillo2_state getJointsState() const { return armadillo_state_; }
-    bool gotState() const { return joints_state_sub_.getNumPublishers() > 0; }
+    bool gotState() const { return got_state_; }
 };
 
 
