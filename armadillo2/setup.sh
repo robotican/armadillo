@@ -127,15 +127,15 @@ sleep 1
 printf "${WHITE_TXT}Installing kinect driver...\n${NO_COLOR}"
 {
 sleep 1
-cd ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2
 sudo apt-get -y install build-essential cmake pkg-config
 sudo apt-get -y install libusb-1.0-0-dev
 sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
 sudo apt-get -y install libglfw3-dev
+cd ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2
 mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
 make
-make install
+sudo make install
 cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
