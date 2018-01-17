@@ -83,12 +83,12 @@ arm_trajectory_controller:
   constraints:
     goal_time: 15.5                  
     stopped_velocity_tolerance: 0.05 
-    rotation1_joint: {trajectory: 0.05, goal: 0.02}
-    shoulder1_joint: {trajectory: 0.05, goal: 0.02}
-    shoulder2_joint: {trajectory: 0.05, goal: 0.02}
-    rotation2_joint: {trajectory: 0.05, goal: 0.02}
-    shoulder3_joint: {trajectory: 0.05, goal: 0.02}
-    wrist_joint: {trajectory: 0.05, goal: 0.02}
+    rotation1_joint: {trajectory: 1.2, goal: 1.2}
+    shoulder1_joint: {trajectory: 1.2, goal: 1.2}
+    shoulder2_joint: {trajectory: 1.2, goal: 1.2}
+    rotation2_joint: {trajectory: 1.2, goal: 1.2}
+    shoulder3_joint: {trajectory: 1.2, goal: 1.2}
+    wrist_joint: {trajectory: 1.2, goal: 1.2}
 
 
 gripper_controller:
