@@ -19,7 +19,7 @@ pan_tilt_controller:
 
 #control pan tilt with trajectory msgs
 pan_tilt_trajectory_controller:
-  type: position_controllers/JointTrajectoryController #pos_vel_controllers/JointTrajectoryController
+  type: position_controllers/JointTrajectoryController
   joints: ['head_pan_joint', 'head_tilt_joint']
   
 pan_tilt_posvel_trajectory_controller:

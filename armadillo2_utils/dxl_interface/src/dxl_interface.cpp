@@ -272,9 +272,6 @@ namespace dxl
             /* by setting velocity to the last non-zero value                */
             if (motor.dont_allow_zero_ticks_vel)
             {
-               // double min_ticks;
-               // if (motor.id>=1 && motor.id <=6) min_ticks=700;
-                //else min_ticks=0;
                 if (motor_vel_ticks < motor.spec.min_vel_ticks)
                     motor_vel_ticks = motor.spec.min_vel_ticks;
 

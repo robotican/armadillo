@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
             goal.min_duration = ros::Duration(0.5);
 
             //and go no faster than 0.2 rad/s
-            goal.max_velocity = 0.2;
+            goal.max_velocity = 0.3;
 
             //send the goal
             point_head_client->sendGoal(goal);

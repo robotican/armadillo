@@ -582,6 +582,15 @@ namespace armadillo2_hw
             }
             new_motor.direction = static_cast<int>(dxl_joints_config_[i]["direction"]);
 
+            if(dxl_joints_config_[i]["init_vel"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
+            {
+                ROS_ERROR("[dxl_motors_builder]: dxl motor init_vel at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            new_motor.command_velocity = static_cast<double>(dxl_joints_config_[i]["init_vel"]);
+
             motors_.push_back(new_motor);
         }
     }
