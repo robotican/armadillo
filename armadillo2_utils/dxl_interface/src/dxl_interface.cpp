@@ -265,27 +265,30 @@ namespace dxl
         {
             bool addparam_success = false;
 
-            int32_t motor_vel_ticks = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
-
             /* dxl api interperate 0 ticks velocity as the highest velocity. */
-            /* set set_first_pos_write_to_curr_pos field to true  prevent it */
-            /* by setting velocity to the last non-zero value                */
-            if (motor.dont_allow_zero_ticks_vel)
-            {
-                if (motor_vel_ticks < motor.spec.min_vel_ticks)
-                    motor_vel_ticks = motor.spec.min_vel_ticks;
+            /* dxl motor can be very dangerous to operate in high speeds.    */
+            /* following code will protect from sending 0 to motors          */
 
-                /* protect from user stupidity. if min_vel_ticks equals 0,   */
-                /* this condition will be met and prevent motor from getting */
-                /* zero ticks as velocity command (highest velocity)         */
-                if (motor_vel_ticks == 0)
-                    motor_vel_ticks = 1;
+            int8_t vel_sign = (motor.command_velocity < 0) ? -1 : 1;
+
+            if (abs(motor.command_velocity) < motor.min_vel)
+                motor.command_velocity = motor.min_vel * vel_sign;
+
+            int32_t motor_ticks_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
+
+            /* last protection layer - if 0 don't send to motors             */
+            if (motor_ticks_vel == 0)
+            {
+                std::string err_msg = "[dxl_interface]: motor id " +  std::to_string(motor.id) + " min_vel is " +
+                                      std::to_string(motor.min_vel) +
+                                      "rad/s , and was converted to 0 ticks speed. set min_vel to higher value";
+                throw std::runtime_error(err_msg);
             }
 
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.vel_write_addr,
                                                    motor.spec.len_goal_speed,
-                                                   (uint8_t*)&motor_vel_ticks);
+                                                   (uint8_t*)&motor_ticks_vel);
             if (!addparam_success)
                 return false;
         }
@@ -357,19 +360,21 @@ namespace dxl
     {
 
         if (protocol == DXL_PROTOCOL2) {
-            if (motor.spec.model==1040) {
+            if (motor.spec.model==1040)
                 return static_cast<int32_t>(round((-rads *180.0/ M_PI+180.0)/ 0.088));
-            }
-            else if (motor.spec.model==30) {
+            else if (motor.spec.model==30)
+            {
                 double cprDev2 = motor.spec.cpr / 2.0f;
                 return static_cast<int32_t>(round(cprDev2 + (rads * cprDev2 / M_PI)));
             }
-            else {
+            else
+            {
                 double cprDev2 = motor.spec.cpr / 2.0f;
                 return static_cast<int32_t>(round((rads / M_PI) * cprDev2));
             }
         }
-        else {
+        else
+        {
             double cprDev2 = motor.spec.cpr / 2.0f;
             return static_cast<int32_t>(round(cprDev2 + (rads * cprDev2 / M_PI)));
         }

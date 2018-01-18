@@ -70,7 +70,6 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
         roboteq_->initialize();
 
         ROS_INFO("[armadillo2_hw/roboteq_diff_drive]: roboteq is up");
-        ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
         espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
         /* speakMsg("robotek is up", 1); */
     }

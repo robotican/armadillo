@@ -39,8 +39,6 @@ namespace dxl
         uint16_t len_present_curr = 0;
         uint16_t len_goal_speed = 0;
         uint16_t len_goal_pos = 0;
-
-        int32_t min_vel_ticks = 1;
     };
 
     struct motor
@@ -69,20 +67,14 @@ namespace dxl
         double current = 0;
         double command_position = 0;
         double command_velocity = 0.15;
+        double min_vel = 0;
         uint8_t error;
+
+
+
 
         std::string joint_name;
         InterfaceType interface_type;
-
-        /*****************************************************************/
-        /* dxl api interperate 0 ticks velocity as the highest velocity. */
-        /* dxl motor can be very dangerous to operate in high speeds.    */
-        /* set dont_allow_zero_ticks_vel field to true prevent it from   */
-        /* commanding 0 velocity ticks. instead, if vel ticks less than  */
-        /* min_vel_ticks 0, (which also include vel ticks equals 0 case) */
-        /* then vel ticks will be set to min_vel_ticks                   */
-        bool dont_allow_zero_ticks_vel = true;
-        /*****************************************************************/
 
         /*****************************************************************/
         /* set first_pos_read to true to write current position          */

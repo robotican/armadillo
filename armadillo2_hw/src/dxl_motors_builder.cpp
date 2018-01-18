@@ -95,10 +95,19 @@ namespace armadillo2_hw
         if (!load_dxl_hw_)
             return;
         comm_mutex_.lock();
-        if (!dxl_interface_.bulkWriteVelocity(motors))
+        try
         {
-            //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
-            failed_writes_++;
+            if (!dxl_interface_.bulkWriteVelocity(motors))
+            {
+                //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
+                failed_writes_++;
+            }
+        }
+        catch (const std::runtime_error& error)
+        {
+            ROS_ERROR("%s shutting down...", error.what());
+            ros::shutdown();
+            exit(EXIT_FAILURE);
         }
 
         if (!dxl_interface_.bulkWritePosition(motors))
@@ -198,16 +207,6 @@ namespace armadillo2_hw
                 exit (EXIT_FAILURE);
             }
             spec.cpr = static_cast<int>(dxl_spec_config_[i]["cpr"]);
-
-            /* min_vel_ticks */
-            if(dxl_spec_config_[i]["min_vel_ticks"].getType() != XmlRpc::XmlRpcValue::TypeInt)
-            {
-                ROS_ERROR("[dxl_motors_builder]: spec min_vel_ticks at index %d: invalid data type or missing. "
-                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
-                ros::shutdown();
-                exit (EXIT_FAILURE);
-            }
-            spec.min_vel_ticks = static_cast<int>(dxl_spec_config_[i]["min_vel_ticks"]);
 
             /* rpm_factor */
             if(dxl_spec_config_[i]["rpm_factor"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
@@ -384,7 +383,6 @@ namespace armadillo2_hw
             {
                 motor.spec.name = specs_[motor.spec.model].name;
                 motor.spec.cpr = specs_[motor.spec.model].cpr;
-                motor.spec.min_vel_ticks = specs_[motor.spec.model].min_vel_ticks;
                 motor.spec.rpm_scale_factor = specs_[motor.spec.model].rpm_scale_factor;
                 motor.spec.torque_const_a = specs_[motor.spec.model].torque_const_a;
                 motor.spec.torque_const_b = specs_[motor.spec.model].torque_const_b;
@@ -542,8 +540,8 @@ namespace armadillo2_hw
             /* defaults to prevent bad movement on startup */
             new_motor.command_position = 0.0;
             new_motor.command_velocity = 0.5;
+            new_motor.min_vel = 0.1;
             new_motor.first_pos_read = true;
-            new_motor.dont_allow_zero_ticks_vel = true;
 
             if(dxl_joints_config_[i]["id"].getType() != XmlRpc::XmlRpcValue::TypeInt) //invalid id field
             {
@@ -582,6 +580,7 @@ namespace armadillo2_hw
             }
             new_motor.direction = static_cast<int>(dxl_joints_config_[i]["direction"]);
 
+            /* load init_vel into command_velocity as initial speed */
             if(dxl_joints_config_[i]["init_vel"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
             {
                 ROS_ERROR("[dxl_motors_builder]: dxl motor init_vel at index %d: invalid data type or missing. "
@@ -590,6 +589,15 @@ namespace armadillo2_hw
                 exit (EXIT_FAILURE);
             }
             new_motor.command_velocity = static_cast<double>(dxl_joints_config_[i]["init_vel"]);
+
+            if(dxl_joints_config_[i]["min_vel"].getType() != XmlRpc::XmlRpcValue::TypeDouble)
+            {
+                ROS_ERROR("[dxl_motors_builder]: dxl motor min_vel at index %d: invalid data type or missing. "
+                                  "make sure that this param exist in dxl_joints_config.yaml and that your launch includes this param file. shutting down...", i);
+                ros::shutdown();
+                exit (EXIT_FAILURE);
+            }
+            new_motor.min_vel = static_cast<double>(dxl_joints_config_[i]["min_vel"]);
 
             motors_.push_back(new_motor);
         }
