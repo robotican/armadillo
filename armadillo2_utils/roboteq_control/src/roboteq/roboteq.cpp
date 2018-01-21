@@ -48,7 +48,7 @@ Roboteq::Roboteq(const ros::NodeHandle &nh, const ros::NodeHandle &private_nh, s
     getRoboteqInformation();
 
     //Services
-    srv_board = private_mNh.advertiseService("system", &Roboteq::service_Callback, this);
+    //srv_board = private_mNh.advertiseService("system", &Roboteq::service_Callback, this);
 
     _first = false;
     std::vector<std::string> joint_list;
@@ -113,17 +113,17 @@ Roboteq::Roboteq(const ros::NodeHandle &nh, const ros::NodeHandle &private_nh, s
     // Add subscriber stop
     sub_stop = private_mNh.subscribe("emergency_stop", 1, &Roboteq::stop_Callback, this);
     // Initialize the peripheral publisher
-    pub_peripheral = private_mNh.advertise<roboteq_control::Peripheral>("peripheral", 10,
-                boost::bind(&Roboteq::connectionCallback, this, _1), boost::bind(&Roboteq::connectionCallback, this, _1));
+    //pub_peripheral = private_mNh.advertise<roboteq_control::Peripheral>("peripheral", 10,
+    //            boost::bind(&Roboteq::connectionCallback, this, _1), boost::bind(&Roboteq::connectionCallback, this, _1));
 
 }
 
-void Roboteq::connectionCallback(const ros::SingleSubscriberPublisher& pub) {
+/*void Roboteq::connectionCallback(const ros::SingleSubscriberPublisher& pub) {
     // Information about the subscriber
     //ROS_INFO_STREAM("Update: " << pub.getSubscriberName() << " - " << pub.getTopic());
     // Check if some subscriber is connected with peripheral publisher
-    _isGPIOreading = (pub_peripheral.getNumSubscribers() >= 1);
-}
+    //_isGPIOreading = (pub_peripheral.getNumSubscribers() >= 1);
+}*/
 
 void Roboteq::stop_Callback(const std_msgs::Bool::ConstPtr& msg)
 {
@@ -172,9 +172,9 @@ void Roboteq::initialize()
     }
 
     // Initialize parameter dynamic reconfigure
-    ds_controller = new dynamic_reconfigure::Server<roboteq_control::RoboteqControllerConfig>(private_mNh);
-    dynamic_reconfigure::Server<roboteq_control::RoboteqControllerConfig>::CallbackType cb_controller = boost::bind(&Roboteq::reconfigureCBController, this, _1, _2);
-    ds_controller->setCallback(cb_controller);
+    //ds_controller = new dynamic_reconfigure::Server<roboteq_control::RoboteqControllerConfig>(private_mNh);
+    //dynamic_reconfigure::Server<roboteq_control::RoboteqControllerConfig>::CallbackType cb_controller = boost::bind(&Roboteq::reconfigureCBController, this, _1, _2);
+    //ds_controller->setCallback(cb_controller);
 
     // Launch initialization GPIO
     for (vector<GPIOPulseConfigurator*>::iterator it = _param_pulse.begin() ; it != _param_pulse.end(); ++it)
@@ -466,7 +466,7 @@ void Roboteq::read(const ros::Time& time, const ros::Duration& period) {
         }
 
         // Send GPIO status
-        pub_peripheral.publish(msg_peripheral);
+        //pub_peripheral.publish(msg_peripheral);
     }
 }
 
@@ -670,7 +670,7 @@ void Roboteq::getControllerFromRoboteq()
     }
 }
 
-void Roboteq::reconfigureCBController(roboteq_control::RoboteqControllerConfig &config, uint32_t level)
+/*void Roboteq::reconfigureCBController(roboteq_control::RoboteqControllerConfig &config, uint32_t level)
 {
     //The first time we're called, we just want to make sure we have the
     //original configuration
@@ -770,9 +770,9 @@ void Roboteq::reconfigureCBController(roboteq_control::RoboteqControllerConfig &
 
     // Update last configuration
     _last_controller_config = config;
-}
+}*/
 
-bool Roboteq::service_Callback(roboteq_control::Service::Request &req, roboteq_control::Service::Response &msg) {
+/*bool Roboteq::service_Callback(roboteq_control::Service::Request &req, roboteq_control::Service::Response &msg) {
     // Convert to lower case
     std::transform(req.service.begin(), req.service.end(), req.service.begin(), ::tolower);
     //ROS_INFO_STREAM("Name request: " << req.service);
@@ -806,6 +806,6 @@ bool Roboteq::service_Callback(roboteq_control::Service::Request &req, roboteq_c
                           "* help      - this help.";
     }
     return true;
-}
+}*/
 
 }
