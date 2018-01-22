@@ -18,6 +18,7 @@
 #define MAX_PING_ERRORS 5
 #define MAX_READ_ERRORS 100
 #define MAX_WRITE_ERRORS 10
+#define DXL_RECOVER_TIMEOUT 0.5 //secs
 #define DXL_JOINTS_CONFIG_PARAM "dxl_joints_config"
 #define SPEC_CONFIG_PARAM "dxl_spec_config"
 #define DXL_PROTOCOL_PARAM "~dxl_protocol"
@@ -27,6 +28,19 @@
 
 namespace armadillo2_hw
 {
+
+    struct read_write_errs
+    {
+        bool read_err_pos = false;
+        bool read_err_vel = false;
+        bool read_err_load = false;
+        bool read_err_report = false;
+        int failed_reads_ = 0;
+
+        bool write_err_pos = false;
+        bool write_err_vel = false;
+        int failed_writes_ = 0;
+    };
 
     class DxlMotorsBuilder
     {
@@ -47,15 +61,15 @@ namespace armadillo2_hw
     private:
 
         ros::NodeHandle *nh_;
+        ros::Timer dxl_dead_timer_;
 
         /* handles */
         std::vector<hardware_interface::JointStateHandle> joint_state_handles_;
         std::vector<hardware_interface::PosVelJointHandle> posvel_handles_;
         std::vector<hardware_interface::JointHandle> pos_handles_;
-
+        read_write_errs comm_errs_;
         int dxl_baudrate_ = 0;
         std::string dxl_port_;
-        int failed_reads_ = 0, failed_writes_ = 0;
         float protocol_ = 0;
         bool load_dxl_hw_ = true;
         std::map<uint16_t, dxl::spec> specs_; /* key - model number, value - dxl spec */
@@ -78,6 +92,7 @@ namespace armadillo2_hw
         void loadSpecs();
         /* writing directly to motor hardware */
         void write(std::vector<dxl::motor> &motors);
+        void dxlDeadTimerCB(const ros::TimerEvent& event);
         void speakMsg(std::string msg, int sleep_time)
         {
             std_msgs::String speak_msg;

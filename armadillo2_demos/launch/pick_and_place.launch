@@ -3,8 +3,7 @@
 
 <!--EXAMPLE
 
-roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find armadillo2_demos`/worlds/armadillo2_gazebo.world" x:=0.8 y:=-0.35
-
+roslaunch armadillo2 armadillo2.launch kinect:=true gazebo:=true moveit:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world" x:=0.5 y:=-0.35
 roslaunch armadillo2_demos pick_and_place.launch  
 
 rosservice call /pick_go "{}"
@@ -22,8 +21,8 @@ rosservice call /pick_go "{}"
     
     <node name="find_object_node" pkg="armadillo2_demos" type="find_objects_node" output="screen">
         <param name="~object_id" value="1"/>
-        <param name="~depth_topic2" value="/softkinetic/depth/points"/>
-        <param name="~depth_topic1" value="/softkinetic/depth/points"/>  
+        <param name="~depth_topic1" value="/softkinetic/depth/points"/>   #/kinect2/hd/points
+        <param name="~depth_topic2" value="/kinect2/qhd/points"/>
         <rosparam file="$(find armadillo2_demos)/config/red_object.yaml" command="load"/>
     </node>
     

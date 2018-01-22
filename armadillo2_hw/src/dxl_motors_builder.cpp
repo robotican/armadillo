@@ -26,11 +26,10 @@ namespace armadillo2_hw
                           motor.id, motor.spec.model);
             }
 
-            failed_reads_ = 0;
-            failed_writes_ = 0;
-
             torque_srv_ = nh_->advertiseService("hardware/dxl_torque", &DxlMotorsBuilder::torqueServiceCB, this);
-            ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard is up");
+            dxl_dead_timer_ = nh.createTimer(ros::Duration(DXL_RECOVER_TIMEOUT), &DxlMotorsBuilder::dxlDeadTimerCB, this);
+            dxl_dead_timer_.stop();
+            ROS_INFO("[armadillo2_hw/dxl_builder]: dxl motors are up");
             espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
             /*speakMsg("dxl motors manager is up", 1);*/
         }
@@ -38,38 +37,81 @@ namespace armadillo2_hw
             ROS_WARN("[armadillo2_hw/dxl_motors_builder]: dxl motors hardware is disabled");
     }
 
-    void DxlMotorsBuilder::read()
+    void DxlMotorsBuilder::dxlDeadTimerCB(const ros::TimerEvent &event)
     {
-        if (!load_dxl_hw_)
-            return;
-        comm_mutex_.lock();
-        if (!dxl_interface_.readMotorsPos(motors_))
-        {
-            //ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
-            failed_reads_++;
-        }
-        if (!dxl_interface_.readMotorsVel(motors_))
-        {
-            //ROS_ERROR("[dxl_motors_builder]: reading motors velocity failed");
-            failed_reads_++;
-        }
-        if (!dxl_interface_.readMotorsLoad(motors_))
-        {
-            //ROS_ERROR("[dxl_motors_builder]: reading motors load failed");
-            failed_reads_++;
-        }
-        if (!dxl_interface_.readMotorsError(motors_))
-        {
-            //ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
-            failed_reads_++;
-        }
-        if (failed_reads_ >= MAX_READ_ERRORS)
+        if (comm_errs_.read_err_pos ||
+                comm_errs_.read_err_vel ||
+                comm_errs_.read_err_load ||
+                comm_errs_.read_err_report)
         {
             speakMsg("dxl motors read error", 1);
             ROS_ERROR("[dxl_motors_builder]: too many read errors, shutting down...");
             ros::shutdown();
             exit(EXIT_FAILURE);
         }
+        else
+            comm_errs_.failed_reads_ = 0;
+
+        if (comm_errs_.write_err_pos ||
+            comm_errs_.write_err_vel)
+        {
+            speakMsg("dxl motors write error", 1);
+            ROS_ERROR("[dxl_motors_builder]: too many write errors, shutting down...");
+            ros::shutdown();
+            exit(EXIT_FAILURE);
+        }
+        else
+            comm_errs_.failed_writes_ = 0;
+
+        dxl_dead_timer_.stop();
+    }
+
+    void DxlMotorsBuilder::read()
+    {
+        if (!load_dxl_hw_)
+            return;
+
+        comm_mutex_.lock();
+
+        if (!dxl_interface_.readMotorsPos(motors_))
+        {
+            //ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
+            comm_errs_.read_err_pos = true;
+            comm_errs_.failed_reads_++;
+        }
+        else
+            comm_errs_.read_err_pos = false;
+
+        if (!dxl_interface_.readMotorsVel(motors_))
+        {
+            //ROS_ERROR("[dxl_motors_builder]: reading motors velocity failed");
+            comm_errs_.read_err_vel = true;
+            comm_errs_.failed_reads_++;
+        }
+        else
+            comm_errs_.read_err_vel = false;
+
+        if (!dxl_interface_.readMotorsLoad(motors_))
+        {
+            //ROS_ERROR("[dxl_motors_builder]: reading motors load failed");
+            comm_errs_.read_err_load = true;
+            comm_errs_.failed_reads_++;
+        }
+        else
+            comm_errs_.read_err_load = false;
+
+        if (!dxl_interface_.readMotorsError(motors_))
+        {
+            //ROS_ERROR("[dxl_motors_builder]: reading motors errors failed");
+            comm_errs_.read_err_report = true;
+            comm_errs_.failed_reads_++;
+        }
+        else
+            comm_errs_.read_err_report = false;
+
+        if (comm_errs_.failed_reads_ >= MAX_READ_ERRORS)
+            dxl_dead_timer_.start();
+
         comm_mutex_.unlock();
     }
 
@@ -100,8 +142,11 @@ namespace armadillo2_hw
             if (!dxl_interface_.bulkWriteVelocity(motors))
             {
                 //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
-                failed_writes_++;
+                comm_errs_.write_err_vel = true;
+                comm_errs_.failed_writes_++;
             }
+            else
+                comm_errs_.write_err_vel = false;
         }
         catch (const std::runtime_error& error)
         {
@@ -113,10 +158,13 @@ namespace armadillo2_hw
         if (!dxl_interface_.bulkWritePosition(motors))
         {
             //ROS_ERROR("[dxl_motors_builder]: writing postision failed");
-            failed_writes_++;
+            comm_errs_.write_err_pos = true;
+            comm_errs_.failed_writes_++;
         }
+        else
+            comm_errs_.write_err_pos = false;
 
-        if (failed_writes_ >= MAX_WRITE_ERRORS)
+        if (comm_errs_.failed_writes_ >= MAX_WRITE_ERRORS)
         {
             speakMsg("dxl motors write error", 1);
             ROS_ERROR("[dxl_motors_builder]: too many write errors, shutting down...");

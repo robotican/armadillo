@@ -123,6 +123,8 @@ void obj_msgCallback(const boost::shared_ptr<const geometry_msgs::PoseStamped>& 
         listener_ptr->transformPose("base_footprint", *point_ptr, base_object_pose);
         base_object_pose.pose.orientation= tf::createQuaternionMsgFromRollPitchYaw(0.0,0.0,0.0);
 
+        ROS_WARN("Z: %f", base_object_pose.pose.position.z);
+
 		//simulate alvar msgs, to get tf
         ar_track_alvar_msgs::AlvarMarkers msg;
         msg.header.stamp=base_object_pose.header.stamp;
@@ -319,6 +321,8 @@ int main(int argc, char **argv) {
 
     tf::MessageFilter<geometry_msgs::PoseStamped> tf_filter(point_sub_, listener, "base_footprint", 10);
     tf_filter.registerCallback( boost::bind(obj_msgCallback, _1) );
+
+
 
 
 ros::ServiceServer switch_sub = n.advertiseService("switch_pcl_topic", &switch_pcl_topic);
