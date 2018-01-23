@@ -1888,6 +1888,7 @@ should look similar to what is below.</p>
 <div><span style="color: #0000ff;"></span></div>
 <p>&nbsp;</p>
 <p>If that is the case,&nbsp;<span>then it should be visible to the xserver, and the xrandr comm</span>and above should be able to enable it.&nbsp;</p>
+<b><p>PUT THE FOLLOWING LINE IN /etc/X11/Xsession BEFORE exit 0 LAST LINE : </p></b>
 <p><span>xrandr --output DVI-1-0 --auto </span></p>
 <p><span>You will probably want to add a '--pos' to the xrandr or it will enable on top of any other displays attached.&nbsp;</span></p>
 <p>&nbsp;<span>These commands can be added to your X session startup 
@@ -1938,7 +1939,7 @@ xserver-xorg-lts-utopic packages:&nbsp;</span><br><br><code>sudo&nbsp;apt-get&nb
 <li>Make the <code>.run</code> file executable by right clicking on the file and choose "Properties".<br><span><img src="How%20to%20install%20Mimo%20Monitors%20on%20Ubuntu%2014.04%20and%20newer_files/ubuntu%2520run%2520file%2520properties.png"></span><span><br>Check the "Allow executing file as a program" box.</span>
 </li>
 <li><span>Install the DKMS framework from a Terminal using the command <code>sudo apt-get install dkms</code></span></li>
-<li><span>﻿Execute the Mimo&nbsp;<code>.run</code> file using the Terminal, by cding to the directory containing the <code>.run</code> file and running the command <code>sudo ./mimo-driver-xxxxx.run</code> (where xxxx is the version number)<code><br></code></span></li>
+<li><span>Execute the Mimo&nbsp;<code>.run</code> file using the Terminal, by cding to the directory containing the <code>.run</code> file and running the command <code>sudo ./mimo-driver-xxxxx.run</code> (where xxxx is the version number)<code><br></code></span></li>
 <li><span>The Mimo&nbsp;software should install as shown below.<br><span><img src="How%20to%20install%20Mimo%20Monitors%20on%20Ubuntu%2014.04%20and%20newer_files/ubuntu%2520install%2520complete.png"></span></span></li>
 <li><span><span>You can now connect your Mimo&nbsp;products to the computer</span></span></li>
 </ol>
