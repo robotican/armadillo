@@ -20,6 +20,12 @@ namespace ric_interface
             ERROR = 108
         };
 
+        enum class ErrCode
+        {
+            INIT = 50,
+            READ = 51
+        };
+
         const uint16_t MAX_PKG_SIZE = 512;
         const uint8_t HEADER_CODE = 200;
         const uint8_t HEADER_INDX = 0;
