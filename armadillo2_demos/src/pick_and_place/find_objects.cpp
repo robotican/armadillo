@@ -123,7 +123,7 @@ void obj_msgCallback(const boost::shared_ptr<const geometry_msgs::PoseStamped>& 
         listener_ptr->transformPose("base_footprint", *point_ptr, base_object_pose);
         base_object_pose.pose.orientation= tf::createQuaternionMsgFromRollPitchYaw(0.0,0.0,0.0);
 
-        ROS_WARN("Z: %f", base_object_pose.pose.position.z);
+        //ROS_WARN("Z: %f", base_object_pose.pose.position.z);
 
 		//simulate alvar msgs, to get tf
         ar_track_alvar_msgs::AlvarMarkers msg;
