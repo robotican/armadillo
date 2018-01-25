@@ -1888,12 +1888,11 @@ should look similar to what is below.</p>
 <div><span style="color: #0000ff;"></span></div>
 <p>&nbsp;</p>
 <p>If that is the case,&nbsp;<span>then it should be visible to the xserver, and the xrandr comm</span>and above should be able to enable it.&nbsp;</p>
-<b><p>PUT THE FOLLOWING LINE IN /etc/X11/Xsession BEFORE exit 0 LAST LINE : </p></b>
 <p><span>xrandr --output DVI-1-0 --auto </span></p>
 <p><span>You will probably want to add a '--pos' to the xrandr or it will enable on top of any other displays attached.&nbsp;</span></p>
-<p>&nbsp;<span>These commands can be added to your X session startup 
+<p>&nbsp;<span><b>These commands can be added to your X session startup 
 scripts, for example by putting them in $HOME/.xinitrc before running 
-startx.</span></p>
+startx.</span></p></b>
 <p>&nbsp;</p>
 <blockquote>
 <h1>If this doesn't work, you may be using the nVidia driver. &nbsp;</h1>
