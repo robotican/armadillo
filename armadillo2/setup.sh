@@ -84,6 +84,9 @@ sudo apt-get -y install dkms
 cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
 chmod +x displaylink-driver-4.1.9.run
 sudo ./displaylink-driver-4.1.9.run
+touch ~/.xinitrc
+echo '#!/bin/bash' > ~/.xinitrc
+echo 'xrandr --output DVI-I-1-1 --auto' >> ~/.xinitrc
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install softkinetic drivers #
