@@ -174,6 +174,8 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     {
         sensor_msgs::NavSatFix gps_msg;
         sensor_msgs::NavSatStatus gps_status;
+        gps_msg.header.stamp = ros::Time::now();
+        gps_msg.header.frame_id = "base_link";
         gps_status.status = sensor_msgs::NavSatStatus::STATUS_SBAS_FIX;
         gps_status.status = sensor_msgs::NavSatStatus::SERVICE_GPS;
 
