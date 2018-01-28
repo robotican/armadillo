@@ -142,7 +142,8 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
 
     /* publish imu */
     sensor_msgs::Imu imu_msg;
-
+    imu_msg.header.stamp = ros::Time::now();
+    imu_msg.header.frame_id = "base_link";
     tf::Quaternion orientation_q = tf::createQuaternionFromRPY(sensors.imu.roll_rad,
                                                                sensors.imu.pitch_rad,
                                                                sensors.imu.yaw_rad);
