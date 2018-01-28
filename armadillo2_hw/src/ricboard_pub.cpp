@@ -97,7 +97,16 @@ void RicboardPub::loop()
             if (ric_.readErrorMsg(err_msg))
             {
                 std::string comp_name = ric_interface::RicInterface::compType2String((ric_interface::protocol::Type)err_msg.comp_type);
-                ROS_WARN("[armadillo2_hw/ricboard_pub]: ric detected error in %s", comp_name.c_str());
+                std::string err_desc = ric_interface::RicInterface::errCode2String((ric_interface::protocol::ErrCode)err_msg.code);
+                if (err_msg.code != (uint8_t)ric_interface::protocol::ErrCode::CALIB)
+                {
+                    ROS_ERROR("[armadillo2_hw/ricboard_pub]: ric detected critical '%s' error in %s. shutting down...",
+                              err_desc.c_str(), comp_name.c_str());
+                    ros::shutdown();
+                    exit(EXIT_FAILURE);
+                }
+                ROS_WARN("[armadillo2_hw/ricboard_pub]: ric detected '%s' warning in %s",
+                         err_desc.c_str(), comp_name.c_str());
             }
         }
         else

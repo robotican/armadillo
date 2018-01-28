@@ -23,7 +23,8 @@ namespace ric_interface
         enum class ErrCode
         {
             INIT = 50,
-            READ = 51
+            READ = 51,
+            CALIB = 52
         };
 
         const uint16_t MAX_PKG_SIZE = 512;
