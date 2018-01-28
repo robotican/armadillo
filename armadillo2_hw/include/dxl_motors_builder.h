@@ -17,7 +17,7 @@
 
 #define MAX_PING_ERRORS 5
 #define MAX_READ_ERRORS 100
-#define MAX_WRITE_ERRORS 10
+#define MAX_WRITE_ERRORS 100
 #define DXL_RECOVER_TIMEOUT 0.5 //secs
 #define DXL_JOINTS_CONFIG_PARAM "dxl_joints_config"
 #define SPEC_CONFIG_PARAM "dxl_spec_config"
