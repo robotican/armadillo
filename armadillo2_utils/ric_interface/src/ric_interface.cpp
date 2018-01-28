@@ -149,11 +149,11 @@ namespace ric_interface
                     if (imu_pkg.type == (uint8_t)protocol::Type::IMU)
                     {
                         sensors_state_.imu = imu_pkg;
-                        fprintf(stderr, "imu:\troll: %f,\tpitch: %f,\tyaw: %f \n",
+                        /*fprintf(stderr, "imu:\troll: %f,\tpitch: %f,\tyaw: %f \n",
                                 sensors_state_.imu.roll_rad * 180 / M_PI,
                                 sensors_state_.imu.pitch_rad * 180 / M_PI,
                                 sensors_state_.imu.yaw_rad * 180 / M_PI);
-                        /*fprintf(stderr, "imu:\taccl_x: %f,\taccl_y: %f,\taccl_z: %f \n",
+                        fprintf(stderr, "imu:\taccl_x: %f,\taccl_y: %f,\taccl_z: %f \n",
                                 sensors_state_.imu.accl_x_rad * 180 / M_PI,
                                 sensors_state_.imu.accl_y_rad * 180 / M_PI,
                                 sensors_state_.imu.accl_z_rad * 180 / M_PI);
