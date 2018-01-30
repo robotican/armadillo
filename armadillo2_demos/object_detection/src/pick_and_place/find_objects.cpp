@@ -107,8 +107,7 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input) {
         target_pose.pose.position.y = obj.y;
         target_pose.pose.position.z = obj.z;
         target_pose.pose.orientation.w=1;
-         pose_pub.publish(target_pose);
-
+        pose_pub.publish(target_pose);
     }
 
 
@@ -135,9 +134,10 @@ void obj_msgCallback(const boost::shared_ptr<const geometry_msgs::PoseStamped>& 
         m.header.stamp=base_object_pose.header.stamp;
         m.header.frame_id="base_footprint";
       m.pose=base_object_pose;
+      m.pose.pose.position.z+=0.02;
         msg.markers.push_back(m);
 
-        m.pose.pose.position.z-=0.1;
+        m.pose.pose.position.z-=0.08;
         m.id=2;
          msg.markers.push_back(m);
 

@@ -84,7 +84,7 @@ shape_msgs::SolidPrimitive object_primitive;
 if (id==1) {
 object_primitive.type = object_primitive.CYLINDER;
 object_primitive.dimensions.resize(2);
-object_primitive.dimensions[0] = 0.17;
+object_primitive.dimensions[0] = 0.145;
 object_primitive.dimensions[1] = 0.03;
 }
 else {
