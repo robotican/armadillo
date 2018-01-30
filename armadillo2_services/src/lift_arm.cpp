@@ -79,7 +79,7 @@ bool LiftArm::openGripperCB(std_srvs::Trigger::Request &req, std_srvs::Trigger::
 {
     control_msgs::GripperCommandActionGoal gripper_msg;
     gripper_msg.header.stamp = ros::Time::now();
-    gripper_msg.goal.command.position = 0.5;
+    gripper_msg.goal.command.position = 0.05;
     gripper_msg.goal.command.max_effort = 0.4;
     gripper_pub_.publish(gripper_msg);
     res.message = "gripper open request was sent";
