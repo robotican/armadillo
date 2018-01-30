@@ -1,0 +1,12 @@
+H_min: 3
+H_max: 160
+S_min: 70
+S_max: 255
+V_min: 10
+V_max: 255
+A_min: 0
+A_max: 50000
+gaussian_ksize: 0
+gaussian_sigma: 0
+morph_size: 0
+invert_Hue: true
