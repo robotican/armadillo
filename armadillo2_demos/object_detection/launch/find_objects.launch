@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find robotican_common`/worlds/armadillo2_gazebo.world"
+roslaunch armadillo2 armadillo2.launch gazebo:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world"
 
 roslaunch object_detection find_objects.launch  
 
@@ -12,7 +12,7 @@ roslaunch object_detection find_objects.launch
         <param name="~object_id" value="1"/>
         <param name="~depth_topic1" value="/kinect2/qhd/points"/>
         <param name="~depth_topic2" value="/softkinetic/depth/points"/>  
-        <rosparam file="$(find armadillo2_demos)/config/red_object.yaml" command="load"/>
+        <rosparam file="$(find object_detection)/config/red_object.yaml" command="load"/>
     </node> 
     
     <node name="objects_handler" pkg="object_detection" type="objects_handler" output="screen">

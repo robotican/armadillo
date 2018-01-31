@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--EXAMPLE:
-roslaunch armadillo2 armadillo2.launch sim:=true kinect:=true lidar:=true move_base:=true gmapping:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world"
+roslaunch armadillo2 armadillo2.launch gazebo:=true kinect:=true lidar:=true move_base:=true gmapping:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world"
 
 roslaunch object_detection drive_and_pick.launch 	
 -->
@@ -35,11 +35,11 @@ roslaunch object_detection drive_and_pick.launch
     
     
     
-    <node name="objects_handler" pkg="armadillo2_demos" type="objects_handler" output="screen">
+    <node name="objects_handler" pkg="object_detection" type="objects_handler" output="screen">
         <param name="~db_path" value=""/>
     </node> 
     
-    <node name="drive_and_pick" pkg="armadillo2_demos" type="drive_and_pick" output="screen" required="true"/> 
+    <node name="drive_and_pick" pkg="object_detection" type="drive_and_pick" output="screen" required="true"/> 
     
 </launch>
 
