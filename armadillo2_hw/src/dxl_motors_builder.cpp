@@ -52,7 +52,7 @@ namespace armadillo2_hw
         else
         {
             comm_errs_.failed_reads_ = 0;
-            ROS_INFO("[dxl_motors_builder]: resetting reads errors");
+            //ROS_INFO("[dxl_motors_builder]: resetting reads errors");
         }
 
         if (comm_errs_.write_err_pos ||
@@ -66,7 +66,7 @@ namespace armadillo2_hw
         else
         {
             comm_errs_.failed_writes_ = 0;
-            ROS_INFO("[dxl_motors_builder]: resetting writes errors");
+            //ROS_INFO("[dxl_motors_builder]: resetting writes errors");
         }
 
         dxl_dead_timer_.stop();
@@ -81,7 +81,7 @@ namespace armadillo2_hw
 
         if (!dxl_interface_.readMotorsPos(motors_))
         {
-            ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
+            //ROS_ERROR("[dxl_motors_builder]: reading motors position failed");
             comm_errs_.read_err_pos = true;
             comm_errs_.failed_reads_++;
         }
@@ -147,7 +147,7 @@ namespace armadillo2_hw
         {
             if (!dxl_interface_.bulkWriteVelocity(motors))
             {
-                ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
+                //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
                 comm_errs_.write_err_vel = true;
                 comm_errs_.failed_writes_++;
             }
