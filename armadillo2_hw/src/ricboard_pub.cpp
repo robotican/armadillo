@@ -174,15 +174,16 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     {
         sensor_msgs::NavSatFix gps_msg;
         sensor_msgs::NavSatStatus gps_status;
+
+        gps_status.status = sensor_msgs::NavSatStatus::STATUS_SBAS_FIX;
+        gps_status.service = sensor_msgs::NavSatStatus::SERVICE_GPS;
+
         gps_msg.header.stamp = ros::Time::now();
         gps_msg.header.frame_id = "base_link";
-        gps_status.status = sensor_msgs::NavSatStatus::STATUS_SBAS_FIX;
-        gps_status.status = sensor_msgs::NavSatStatus::SERVICE_GPS;
-
         gps_msg.latitude = sensors.gps.lat;
         gps_msg.longitude = sensors.gps.lon;
+        gps_msg.altitude = sensors.gps.alt;
         gps_msg.status = gps_status;
-        gps_msg.header.stamp = ros::Time::now();
 
         ric_gps_pub_.publish(gps_msg);
     }
