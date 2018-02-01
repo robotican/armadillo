@@ -2,7 +2,7 @@ dxl_spec_config: [
 {
     name: H54-200-S500-R, 
     model: 54024, 
-    cpr: 501900, 
+    cpr: 501923, 
     rpm_factor: 0.00199234,
     torque_const_a: 4.337606, 
     torque_const_b: -2.69444,
@@ -24,7 +24,7 @@ dxl_spec_config: [
 {
     name: H54-100-S500-R, 
     model: 53768, 
-    cpr: 502000, 
+    cpr: 501923, 
     rpm_factor: 0.00199234,
     torque_const_a: 4.1, 
     torque_const_b: -2.4,
@@ -46,7 +46,7 @@ dxl_spec_config: [
 {
     name: H42-20-S300-R, 
     model: 51200, 
-    cpr: 303800, 
+    cpr: 303750, 
     rpm_factor: 0.00329218,
     torque_const_a: 2.8125, 
     torque_const_b: -0.46875,
