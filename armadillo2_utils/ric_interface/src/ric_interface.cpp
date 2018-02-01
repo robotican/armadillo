@@ -126,7 +126,7 @@ namespace ric_interface
                     {
                         got_new_error_msg_ = true;
                         sensors_state_.error = err_pkg;
-                        //fprintf(stderr, "error comp: %i, code: %i\n", sensors_state_.error.comp_type, sensors_state_.error.code);
+                        fprintf(stderr, "error comp: %i, code: %i\n", sensors_state_.error.comp_type, sensors_state_.error.code);
                     }
 
                     break;

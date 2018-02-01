@@ -3,7 +3,7 @@
 
 <!--EXAMPLE
 
-roslaunch armadillo2 armadillo2.launch sim:=true world_name:="`rospack find object_detection`/worlds/armadillo2_gazebo.world"
+roslaunch armadillo2 armadillo2.launch gazebo:=true world_name:="`rospack find object_detection`/worlds/objects_on_table.world"
 
 roslaunch object_detection point_head.launch 
 

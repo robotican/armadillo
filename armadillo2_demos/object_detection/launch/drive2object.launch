@@ -2,7 +2,7 @@
 
 <!--EXAMPLE: 
 
-roslaunch armadillo2 armadillo2.launch sim:=true kinect:=true lidar:=true move_base:=true moveit:=true gmapping:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world"
+roslaunch armadillo2 armadillo2.launch gazebo:=true kinect:=true lidar:=true move_base:=true moveit:=true gmapping:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world"
 
 roslaunch object_detection drive2object.launch 
 
