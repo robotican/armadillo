@@ -333,51 +333,82 @@ namespace dxl
     {
         if (protocol == DXL_PROTOCOL2)
         {
-            if (motor.spec.model==1040)
+            switch (motor.spec.model)
             {
-                const double FromTicks = 1.0 / (motor.spec.cpr / 2.0);
-                return static_cast<double>(M_PI-(ticks) * FromTicks * M_PI);
-            }
-            else if (motor.spec.model==30)
-            {
-                double cprDev2 = motor.spec.cpr / 2.0f;
-                return (static_cast<double>(ticks) - cprDev2) * M_PI / cprDev2;
-            }
-            else
-            {
-                const double FromTicks = 1.0 / (motor.spec.cpr / 2.0);
-                return static_cast<double>((ticks) * FromTicks * M_PI);
+                case (uint16_t)DxlModel::XH430_V350_R :
+                {
+                    const double from_ticks = 1.0 / (motor.spec.cpr / 2.0);
+                    return static_cast<double>(M_PI-(ticks) * from_ticks * M_PI);
+                }
+                case (uint16_t)DxlModel::MX28 :
+                {
+                    double cprDev2 = motor.spec.cpr / 2.0f;
+                    return (static_cast<double>(ticks) - cprDev2) * M_PI / cprDev2;
+                }
+                case (uint16_t)DxlModel::H42_20_S300_R :
+                {
+                    const double from_ticks = 1.0 / (motor.spec.cpr / 2.0);
+                    return static_cast<double>((ticks) * from_ticks * M_PI);
+                }
+                case (uint16_t)DxlModel::X54_100_S500_R :
+                {
+                    const double from_ticks = 1.0 / (motor.spec.cpr / 2.0);
+                    return static_cast<double>((ticks) * from_ticks * M_PI);
+                }
+                case (uint16_t)DxlModel::X54_200_S500_R :
+                {
+                    const double from_ticks = 1.0 / (motor.spec.cpr / 2.0);
+                    return static_cast<double>((ticks) * from_ticks * M_PI);
+                }
             }
         }
-        else
+        else if (protocol == DXL_PROTOCOL1)
         {
             double cprDev2 = motor.spec.cpr / 2.0f;
             return (static_cast<double>(ticks) - cprDev2) * M_PI / cprDev2;
         }
+        return 0;
     }
 
     int32_t convertions::rads2ticks(double rads, struct motor &motor, float protocol)
     {
 
-        if (protocol == DXL_PROTOCOL2) {
-            if (motor.spec.model==1040)
-                return static_cast<int32_t>(round((-rads *180.0/ M_PI+180.0)/ 0.088));
-            else if (motor.spec.model==30)
-            {
-                double cprDev2 = motor.spec.cpr / 2.0f;
-                return static_cast<int32_t>(round(cprDev2 + (rads * cprDev2 / M_PI)));
-            }
-            else
-            {
-                double cprDev2 = motor.spec.cpr / 2.0f;
-                return static_cast<int32_t>(round((rads / M_PI) * cprDev2));
-            }
-        }
-        else
+        if (protocol == DXL_PROTOCOL2)
         {
-            double cprDev2 = motor.spec.cpr / 2.0f;
-            return static_cast<int32_t>(round(cprDev2 + (rads * cprDev2 / M_PI)));
+            switch (motor.spec.model)
+            {
+                case (uint16_t)DxlModel::XH430_V350_R :
+                {
+                    return static_cast<int32_t>(round((-rads *180.0/ M_PI+180.0)/ 0.088));
+                }
+                case (uint16_t)DxlModel::MX28 :
+                {
+                    double half_cpr = motor.spec.cpr / 2.0f;
+                    return static_cast<int32_t>(round(half_cpr + (rads * half_cpr / M_PI)));
+                }
+                case (uint16_t)DxlModel::H42_20_S300_R :
+                {
+                    double half_cpr = motor.spec.cpr / 2.0f;
+                    return static_cast<int32_t>(round((rads / M_PI) * half_cpr));
+                }
+                case (uint16_t)DxlModel::X54_100_S500_R :
+                {
+                    double half_cpr = motor.spec.cpr / 2.0f;
+                    return static_cast<int32_t>(round((rads / M_PI) * half_cpr));
+                }
+                case (uint16_t)DxlModel::X54_200_S500_R :
+                {
+                    double half_cpr = motor.spec.cpr / 2.0f;
+                    return static_cast<int32_t>(round((rads / M_PI) * half_cpr));
+                }
+            }
         }
+        else if (protocol == DXL_PROTOCOL1)
+        {
+            double half_cpr = motor.spec.cpr / 2.0f;
+            return static_cast<int32_t>(round(half_cpr + (rads * half_cpr / M_PI)));
+        }
+        return 0;
     }
 
     /* rads per sec to ticks per sec */

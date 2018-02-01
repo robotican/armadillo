@@ -15,6 +15,15 @@
 
 namespace dxl
 {
+    enum class DxlModel
+    {
+        X54_200_S500_R  = 54024,
+        X54_100_S500_R  = 53768,
+        H42_20_S300_R   = 51200,
+        XH430_V350_R    = 1040,
+        MX28            = 30
+    };
+
     struct spec
     {
         std::string name;

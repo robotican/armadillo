@@ -1,5 +1,5 @@
 dxl_joints_config: [
-{
+{ #motor model name: X54-200-S500-R, num: 54024
     id: 1,
     joint_name: rotation1_joint,
     interface: PosVel,
@@ -8,7 +8,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: X54-200-S500-R, num: 54024
     id: 2,
     joint_name: shoulder1_joint,
     interface: PosVel,
@@ -17,7 +17,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: X54-100-S500-R, num: 53768
     id: 3,
     joint_name: shoulder2_joint,
     interface: PosVel,
@@ -26,7 +26,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: X54-100-S500-R, num: 53768
     id: 4,
     joint_name: rotation2_joint,
     interface: PosVel,
@@ -35,7 +35,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: H42-20-S300-R, num: 51200
     id: 5,
     joint_name: shoulder3_joint,
     interface: PosVel,
@@ -44,7 +44,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: H42-20-S300-R, num: 51200
     id: 6,
     joint_name: wrist_joint,
     interface: PosVel,
@@ -53,7 +53,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: XH430-V350-R, num: 1040
     id: 7,
     joint_name: left_finger_joint,
     interface: PosVel,
@@ -62,7 +62,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: XH430-V350-R, num: 1040
     id: 8,
     joint_name: right_finger_joint,
     interface: PosVel,
@@ -71,7 +71,7 @@ dxl_joints_config: [
     direction: 1
 },
 
-{
+{ #motor model name: XH430-V350-R, num: 1040
     id: 9,
     joint_name: head_pan_joint,
     interface: Position,
@@ -80,7 +80,7 @@ dxl_joints_config: [
     direction: -1
 },
 
-{
+{ #motor model name: XH430-V350-R, num: 1040
     id: 10,
     joint_name: head_tilt_joint,
     interface: Position,
