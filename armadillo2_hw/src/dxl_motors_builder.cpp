@@ -142,24 +142,17 @@ namespace armadillo2_hw
     {
         if (!load_dxl_hw_)
             return;
+
         comm_mutex_.lock();
-        try
+
+        if (!dxl_interface_.bulkWriteVelocity(motors))
         {
-            if (!dxl_interface_.bulkWriteVelocity(motors))
-            {
-                //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
-                comm_errs_.write_err_vel = true;
-                comm_errs_.failed_writes_++;
-            }
-            else
-                comm_errs_.write_err_vel = false;
+            //ROS_ERROR("[dxl_motors_builder]: writing velocity failed");
+            comm_errs_.write_err_vel = true;
+            comm_errs_.failed_writes_++;
         }
-        catch (const std::runtime_error& error)
-        {
-            ROS_ERROR("%s shutting down...", error.what());
-            ros::shutdown();
-            exit(EXIT_FAILURE);
-        }
+        else
+            comm_errs_.write_err_vel = false;
 
         if (!dxl_interface_.bulkWritePosition(motors))
         {

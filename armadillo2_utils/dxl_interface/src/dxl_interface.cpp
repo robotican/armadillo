@@ -271,19 +271,14 @@ namespace dxl
 
             int8_t vel_sign = (motor.command_velocity < 0) ? -1 : 1;
 
-            if (abs(motor.command_velocity) < motor.min_vel)
+            if (fabs(motor.command_velocity) < motor.min_vel)
                 motor.command_velocity = motor.min_vel * vel_sign;
 
             int32_t motor_ticks_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
 
-            /* last protection layer - if 0 don't send to motors             */
+            /* last protection layer - if 0 send 1 tick (slowest possible)    */
             if (motor_ticks_vel == 0)
-            {
-                std::string err_msg = "[dxl_interface]: motor id " +  std::to_string(motor.id) + " min_vel is " +
-                                      std::to_string(motor.min_vel) +
-                                      "rad/s , and was converted to 0 ticks speed. set min_vel to higher value";
-                throw std::runtime_error(err_msg);
-            }
+                motor_ticks_vel = vel_sign;
 
             addparam_success = bulk_write.addParam(motor.id,
                                                    motor.spec.vel_write_addr,
