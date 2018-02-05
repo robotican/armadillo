@@ -12,6 +12,10 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "armadillo2_services_node");
     ros::NodeHandle nh;
 
+    /* give controllers time to load before */
+    /* trying to send commands              */
+    ros::Duration(3).sleep();
+
     JointStateReader joints_state(nh);
     LiftArm arm_lifter(nh, joints_state);
     PanTiltMover head_mover(nh);
