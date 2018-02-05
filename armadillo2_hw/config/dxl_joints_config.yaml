@@ -3,8 +3,8 @@ dxl_joints_config: [
     id: 1,
     joint_name: rotation1_joint,
     interface: PosVel,
-    init_vel: 0.5,
-    min_vel: 0.5,
+    init_vel: 0.05,
+    min_vel: 0.05,
     direction: 1
 },
 
@@ -12,8 +12,8 @@ dxl_joints_config: [
     id: 2,
     joint_name: shoulder1_joint,
     interface: PosVel,
-    init_vel: 0.5,
-    min_vel: 0.5,
+    init_vel: 0.05,
+    min_vel: 0.05,
     direction: 1
 },
 
@@ -21,8 +21,8 @@ dxl_joints_config: [
     id: 3,
     joint_name: shoulder2_joint,
     interface: PosVel,
-    init_vel: 0.5,
-    min_vel: 0.5,
+    init_vel: 0.1,
+    min_vel: 0.1,
     direction: 1
 },
 
@@ -30,8 +30,8 @@ dxl_joints_config: [
     id: 4,
     joint_name: rotation2_joint,
     interface: PosVel,
-    init_vel: 0.5,
-    min_vel: 0.5,
+    init_vel: 0.05,
+    min_vel: 0.05,
     direction: 1
 },
 
@@ -39,8 +39,8 @@ dxl_joints_config: [
     id: 5,
     joint_name: shoulder3_joint,
     interface: PosVel,
-    init_vel: 0.5,
-    min_vel: 0.5,
+    init_vel: 0.05,
+    min_vel: 0.05,
     direction: 1
 },
 
@@ -48,8 +48,8 @@ dxl_joints_config: [
     id: 6,
     joint_name: wrist_joint,
     interface: PosVel,
-    init_vel: 0.5,
-    min_vel: 0.5,
+    init_vel: 0.05,
+    min_vel: 0.05,
     direction: 1
 },
 

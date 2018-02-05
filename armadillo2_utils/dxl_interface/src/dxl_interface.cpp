@@ -271,22 +271,11 @@ namespace dxl
 
             int8_t vel_sign = (motor.command_velocity < 0) ? -1 : 1;
 
-
-            //TODO: uncomment this code - this is the right logic///////////////////////
-            //if (fabs(motor.command_velocity) < motor.min_vel)
-            //    motor.command_velocity = motor.min_vel * vel_sign;
+            if (fabs(motor.command_velocity) < motor.min_vel)
+                motor.command_velocity = motor.min_vel * vel_sign;
 
 
             int32_t motor_ticks_vel = convertions::rad_s2ticks_s(motor.command_velocity, motor, protocol_);
-
-
-
-            //TODO: delete this temporary fix                   ///////////////////////
-            if (abs(motor_ticks_vel) < 700)
-                motor_ticks_vel = 700;
-
-
-
 
             /* last protection layer - if 0 send 1 tick (slowest possible)    */
             if (motor_ticks_vel == 0)
