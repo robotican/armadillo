@@ -43,7 +43,7 @@
         <include file="$(find armadillo2_teleop)/launch/armadillo2_teleop.launch">
             <arg name="joy_dev" value="$(arg joy_dev)"/>
             <arg name="joy_profile" value="$(arg joy_profile)"/>
-            <arg name="tele_arm" value="$(arg joy_profile)"/>
+            <arg name="tele_arm" value="$(arg tele_arm)"/>
         </include>
     </group>
     
