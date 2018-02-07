@@ -1,9 +1,9 @@
 //
-// Created by armadillo2 on 15/01/18.
+// Created by sub on 07/02/18.
 //
 
-#ifndef ARMADILLO2_SERVICES_JOINTS_STATE_READER_H
-#define ARMADILLO2_SERVICES_JOINTS_STATE_READER_H
+#ifndef TRACK_FACE_BASE_TRACKER_H
+#define TRACK_FACE_BASE_TRACKER_H
 
 #define INDX_JOINT_PAN 0
 #define INDX_JOINT_TILT 1
@@ -20,7 +20,12 @@
 #define INDX_JOIN_WRIST 12
 
 #include <ros/ros.h>
+#include <opencv-3.3.1/opencv2/objdetect.hpp>
+#include <std_srvs/SetBool.h>
 #include <sensor_msgs/JointState.h>
+#include <geometry_msgs/Twist.h>
+
+#include <face_detector.h>
 
 struct armadillo2_state
 {
@@ -40,21 +45,29 @@ struct armadillo2_state
 
 };
 
-class JointStateReader
+class BaseTracker
 {
 private:
     ros::NodeHandle *nh_;
+    ros::ServiceServer start_track_srv_;
     ros::Subscriber joints_state_sub_;
+    ros::Publisher twise_pub_;
+
+    bool track_face_ = false;
     armadillo2_state armadillo_state_;
     bool got_state_ = false;
 
-    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr& msg);
+
 
 public:
-    JointStateReader(ros::NodeHandle nh);
-    armadillo2_state getJointsState() const { return armadillo_state_; }
-    bool gotState() const { return got_state_; }
+    BaseTracker(ros::NodeHandle &nh);
+    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg);
+    void trackFace(const CvPoint& face, const cv::Rect& frame);
+    void trackPan();
+    bool startTrackingCB(std_srvs::SetBool::Request &req,
+                         std_srvs::SetBool::Response &res);
+
 };
 
 
-#endif //ARMADILLO2_SERVICES_JOINTS_STATE_READER_H
+#endif //TRACK_FACE_BASE_TRACKER_H

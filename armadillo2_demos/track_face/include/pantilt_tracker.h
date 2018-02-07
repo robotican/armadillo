@@ -6,6 +6,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <std_msgs/Float32.h>
+#include <face_detector.h>
 #include <math.h>
 
 class PanTiltTracker
@@ -19,11 +20,7 @@ private:
 public:
     PanTiltTracker(ros::NodeHandle &nh);
     void trackFace(const CvPoint &face, const cv::Rect& frame);
-    static double map(double input_start,
-                      double input_end,
-                      double output_start,
-                      double output_end,
-                      double input);
+
 };
 
 

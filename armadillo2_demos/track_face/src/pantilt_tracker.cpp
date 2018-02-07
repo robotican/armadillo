@@ -15,8 +15,8 @@ void PanTiltTracker::trackFace(const CvPoint &face, const cv::Rect& frame)
     double tilt_min = -M_PI / 6;//rad
     double tilt_max = (50 * M_PI) / 180;//rad
 
-    double pan_goal = map(0, frame.width, pan_min, pan_max, face.x);
-    double tilt_goal = map(0, frame.height, tilt_min, tilt_max, face.y);
+    double pan_goal = FaceDetector::map(0, frame.width, pan_min, pan_max, face.x);
+    double tilt_goal = FaceDetector::map(0, frame.height, tilt_min, tilt_max, face.y);
 
     trajectory_msgs::JointTrajectory traj;
     traj.header.stamp = ros::Time::now();
@@ -26,7 +26,7 @@ void PanTiltTracker::trackFace(const CvPoint &face, const cv::Rect& frame)
     traj.points[0].time_from_start = ros::Duration(1.0);
     std::vector<double> q_goal(2);
 
-    ROS_INFO("pan: %f, tilt: %f", pan_goal*180/M_PI, tilt_goal*180/M_PI);
+    //ROS_INFO("pan: %f, tilt: %f", pan_goal*180/M_PI, tilt_goal*180/M_PI);
 
     q_goal[0] = pan_goal;
     q_goal[1] = tilt_goal;
@@ -34,14 +34,5 @@ void PanTiltTracker::trackFace(const CvPoint &face, const cv::Rect& frame)
     traj.points[0].velocities.push_back(0.1);
     traj.points[0].velocities.push_back(0.1);
     traj_pub_.publish(traj);
-}
-
-double PanTiltTracker::map(double input_start,
-                           double input_end,
-                           double output_start,
-                           double output_end,
-                           double input)
-{
-    return output_start + ((output_end - output_start) / (input_end - input_start)) * (input - input_start);
 }
 

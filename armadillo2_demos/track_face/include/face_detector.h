@@ -31,6 +31,11 @@ public:
 
     FaceDetector();
     bool detectAndDisplay(CvPoint&, cv::Rect&);
+    static double map(double input_start,
+                      double input_end,
+                      double output_start,
+                      double output_end,
+                      double input);
 
 };
 

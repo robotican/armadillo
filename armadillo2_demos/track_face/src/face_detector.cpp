@@ -22,6 +22,7 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data)
 {
     cv::Mat frame;
     cap_ >> frame;
+
     if (frame.empty())
         return false;
 
@@ -90,4 +91,13 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data)
 
     return false;
 
+}
+
+double FaceDetector::map(double input_start,
+                           double input_end,
+                           double output_start,
+                           double output_end,
+                           double input)
+{
+    return output_start + ((output_end - output_start) / (input_end - input_start)) * (input - input_start);
 }

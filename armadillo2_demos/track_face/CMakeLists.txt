@@ -49,9 +49,11 @@ include_directories(
          src/track_face_node.cpp
          src/face_detector.cpp
          src/pantilt_tracker.cpp
+         src/base_tracker.cpp
 
          include/face_detector.h
          include/pantilt_tracker.h
+         include/base_tracker.h
          )
 
 
