@@ -11,7 +11,7 @@
 
 #include <pcl_conversions/pcl_conversions.h>
 #include <tf/transform_listener.h>
-#include <armadillo2_demos/FindObjectDynParamConfig.h>
+#include <object_detection/FindObjectDynParamConfig.h>
 #include <dynamic_reconfigure/server.h>
 
 #include <tf/transform_broadcaster.h>
