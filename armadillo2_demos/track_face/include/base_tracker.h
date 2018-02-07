@@ -19,13 +19,24 @@
 #define INDX_JOINT_TORSO 11
 #define INDX_JOIN_WRIST 12
 
+#define SAFTY_MIN_URF 1.1 //meters
+
 #include <ros/ros.h>
 #include <opencv-3.3.1/opencv2/objdetect.hpp>
 #include <std_srvs/SetBool.h>
 #include <sensor_msgs/JointState.h>
 #include <geometry_msgs/Twist.h>
-
+#include <sensor_msgs/Range.h>
 #include <face_detector.h>
+
+enum class OpMode
+{
+    PAN                 = 1, /* base stationary (only head pan tracking face)                        */
+    PAN_ROTATE          = 2, /* base rotating in place to follow head pan                            */
+    PAN_ROTATE_DRIVE    = 3, /* base rotating to follow head pan and moving fw                       */
+    PAN_FACE            = 4, /* if pan is stationary, this will move base to track face              */
+    PAN_FACE_DRIVE      = 5  /* if pan is stationary, rotate and move base fw to track face (fw)     */
+};
 
 struct armadillo2_state
 {
@@ -42,7 +53,7 @@ struct armadillo2_state
     double torso = 0; //m
     double wheel_left = 0; //rad
     double wheel_right = 0; //rad
-
+    double urf = 0; //meters
 };
 
 class BaseTracker
@@ -51,22 +62,26 @@ private:
     ros::NodeHandle *nh_;
     ros::ServiceServer start_track_srv_;
     ros::Subscriber joints_state_sub_;
+    ros::Subscriber urf_sub_;
     ros::Publisher twise_pub_;
 
-    bool track_face_ = false;
     armadillo2_state armadillo_state_;
     bool got_state_ = false;
 
-
+    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg);
+    void urfCB(const sensor_msgs::Range &msg);
+    void stop();
+    void drive(double linear_vel, double angular_vel);
 
 public:
     BaseTracker(ros::NodeHandle &nh);
-    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg);
-    void trackFace(const CvPoint& face, const cv::Rect& frame);
-    void trackPan();
-    bool startTrackingCB(std_srvs::SetBool::Request &req,
-                         std_srvs::SetBool::Response &res);
+    void track(OpMode op_mode, const CvPoint& face, const cv::Rect& frame);
 
+    static double panMin() { return -M_PI / 4; } //rad
+    static double panMax() { return M_PI / 4; } //rad
+    static double angularMax() { return 0.3; } //rad
+    static double angularMin() { return -0.3; } //rad
+    static double forwardVel() { return 0.3; } //rad / s
 };
 
 

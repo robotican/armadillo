@@ -9,7 +9,7 @@ FaceDetector::FaceDetector()
         exit(EXIT_FAILURE);
     }
 
-    cap_.open(0);
+    cap_.open(2);
     if (!cap_.isOpened())
     {
         ROS_ERROR("[face_detector]: error opening camera stream");

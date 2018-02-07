@@ -4,16 +4,9 @@
 BaseTracker::BaseTracker(ros::NodeHandle &nh)
 {
     nh_ = &nh;
-    start_track_srv_ = nh_->advertiseService("start_base_tracking", &BaseTracker::startTrackingCB, this);
-    joints_state_sub_ = nh_->subscribe("joint_states", 5, &BaseTracker::jointsUpdateCB, this);
+    joints_state_sub_ = nh_->subscribe("joint_states", 10, &BaseTracker::jointsUpdateCB, this);
+    urf_sub_ = nh_->subscribe("URF/front", 10, &BaseTracker::urfCB, this);
     twise_pub_ = nh_->advertise<geometry_msgs::Twist>("/cmd_vel", 5);
-}
-
-
-bool BaseTracker::startTrackingCB(std_srvs::SetBool::Request &req,
-                                  std_srvs::SetBool::Response &res)
-{
-    track_face_ = !track_face_;
 }
 
 void BaseTracker::jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg)
@@ -36,41 +29,78 @@ void BaseTracker::jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg)
 
 }
 
-/* if pan is stationary, this will move base to track face */
-void BaseTracker::trackFace(const CvPoint &face, const cv::Rect& frame)
+void BaseTracker::urfCB(const sensor_msgs::Range &msg)
 {
-    if (!got_state_ || !track_face_)
-        return;
-    double const fw_speed = 0.3;
-    double const max_angular = 0.3;
-    double const min_angular = -0.3;
-
-    double angular_speed = FaceDetector::map(0, frame.width, min_angular, max_angular, face.x);
-
-    geometry_msgs::Twist twist_msg;
-    twist_msg.linear.x = fw_speed;
-    twist_msg.angular.x = angular_speed;
-    twise_pub_.publish(twist_msg);
+    armadillo_state_.urf = msg.range;
 }
 
+
+
 /* if pan tracking face, this will make base follow pan movement */
-void BaseTracker::trackPan()
+void BaseTracker::track(OpMode op_mode, const CvPoint& face, const cv::Rect& frame)
 {
-    if (!got_state_ || !track_face_)
+    if (!got_state_)
         return;
-    double pan_min = -M_PI / 4;//rad
-    double pan_max =  M_PI / 4;//rad
-    double const max_angular = 0.3;
-    double const min_angular = -0.3;
-    double const fw_speed = 0.3;
 
-    double angular_speed = FaceDetector::map(pan_min, pan_max, min_angular, max_angular, armadillo_state_.pan);
+    //ROS_WARN("URF: %f",armadillo_state_.urf );
 
-    ROS_INFO("angular speed: %f", angular_speed);
+    if (armadillo_state_.urf <= SAFTY_MIN_URF)
+    {
+        stop();
+        return;
+    }
 
+    switch (op_mode)
+    {
+        case OpMode::PAN:
+        {
+            // DO NOTHING
+            return;
+        }
+        case OpMode::PAN_ROTATE:
+        {
+            double angular_speed = FaceDetector::map(panMin(), panMax(), angularMin(), angularMax(), armadillo_state_.pan);
+            //ROS_INFO("angular speed: %f", angular_speed);
+            drive(0, angular_speed);
+            break;
+        }
+        case OpMode::PAN_ROTATE_DRIVE:
+        {
+            double angular_speed = FaceDetector::map(panMin(), panMax(), angularMin(), angularMax(), armadillo_state_.pan);
+            //ROS_INFO("angular speed: %f", angular_speed);
+            drive(forwardVel(), angular_speed);
+            break;
+        }
+        case OpMode::PAN_FACE:
+        {
+            double angular_speed = FaceDetector::map(0, frame.width, angularMin(), angularMax(), face.x);
+            drive(0, angular_speed);
+            break;
+        }
+        case OpMode::PAN_FACE_DRIVE:
+        {
+            double angular_speed = FaceDetector::map(0, frame.width, angularMin(), angularMax(), face.x);
+            drive(forwardVel(), angular_speed);
+            break;
+        }
+        default:
+        {
+            ROS_WARN("[track_face]: invalid operating mode");
+            break;
+        }
+    }
+}
+
+void BaseTracker::stop()
+{
+    drive(0, 0);
+}
+
+void BaseTracker::drive(double linear_vel, double angular_vel)
+{
     geometry_msgs::Twist twist_msg;
-    //twist_msg.linear.x = fw_speed;
-    twist_msg.angular.z = angular_speed;
+    twist_msg.linear.x = linear_vel;
+    twist_msg.angular.z = angular_vel;
     twise_pub_.publish(twist_msg);
 }
 

@@ -13,6 +13,8 @@ int main(int argc, char** argv)
     BaseTracker base_tracker(nh);
     PanTiltTracker pantilt_tracker(nh);
 
+    //TODO: GET OP MODE AS PARAM FROM LAUNCH FILE
+    OpMode operation_mode = OpMode::PAN_ROTATE_DRIVE;
 
     while(ros::ok())
     {
@@ -25,7 +27,7 @@ int main(int argc, char** argv)
         if (detected)
         {
             pantilt_tracker.trackFace(face_xy, frame);
-            base_tracker.trackPan();
+            base_tracker.track(operation_mode, face_xy, frame);
         }
 
         int c = cv::waitKey(10);
