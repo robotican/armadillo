@@ -9,19 +9,22 @@ FaceDetector::FaceDetector()
         exit(EXIT_FAILURE);
     }
 
-    cap_.open(2);
+    /*cap_.open(2);
     if (!cap_.isOpened())
     {
         ROS_ERROR("[face_detector]: error opening camera stream");
         exit(EXIT_FAILURE);
-    }
+    }*/
+
 
 }
 
-bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data)
+bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data, cv::Mat& frame)
 {
-    cv::Mat frame;
-    cap_ >> frame;
+    //cv::Mat frame;
+    //cap_ >> frame;
+    //cv::Mat frame_/* = cv_img_->image*/;
+
 
     if (frame.empty())
         return false;
@@ -41,7 +44,11 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data)
     for (int face_indx = 0; face_indx < faces.size(); face_indx++)
     {
         if (faces[face_indx].empty())
+        {
+            imshow(DETECTION_WINDOW_NAME, frame );
             return false;
+        }
+
 
         cv::Mat faceROI = frame_gray( faces[face_indx] );
 
@@ -89,6 +96,7 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data)
         face_indx++;
     }
 
+    imshow(DETECTION_WINDOW_NAME, frame );
     return false;
 
 }

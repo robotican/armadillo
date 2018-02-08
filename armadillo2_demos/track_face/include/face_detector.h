@@ -7,6 +7,8 @@
 #include <opencv-3.3.1/opencv2/imgproc.hpp>
 #include <opencv-3.3.1/opencv2/objdetect.hpp>
 #include <ros/ros.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/Image.h>
 
 #define FACE_DATA_PATH "/home/sub/Desktop/drive2person/data/haarcascade_frontalface_alt.xml"
 #define EYES_DATA_PATH "/home/sub/Desktop/drive2person/data/haarcascade_eye_tree_eyeglasses.xml"
@@ -22,7 +24,6 @@ class FaceDetector
 
 private:
     CvCapture* capture_;
-    cv::Mat frame_;
     cv::CascadeClassifier face_cascade;
     cv::CascadeClassifier eyes_cascade;
     cv::VideoCapture cap_;
@@ -30,7 +31,7 @@ private:
 public:
 
     FaceDetector();
-    bool detectAndDisplay(CvPoint&, cv::Rect&);
+    bool detectAndDisplay(CvPoint&, cv::Rect&, cv::Mat& frame);
     static double map(double input_start,
                       double input_end,
                       double output_start,
