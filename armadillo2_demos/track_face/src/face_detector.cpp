@@ -1,7 +1,7 @@
 
 #include <face_detector.h>
 
-FaceDetector::FaceDetector(ros::NodeHandle& nh)
+FaceDetector::FaceDetector(ros::NodeHandle& nh, std::string image_topic)
 {
     nh_ = &nh;
     if( !face_cascade.load( FACE_DATA_PATH ) || !eyes_cascade.load( EYES_DATA_PATH ))
@@ -10,16 +10,7 @@ FaceDetector::FaceDetector(ros::NodeHandle& nh)
         exit(EXIT_FAILURE);
     }
 
-    img_sub_ = nh_->subscribe("/kinect2/qhd/image_color_rect", 10, &FaceDetector::onIncomingImage, this);
-
-    /*cap_.open(2);
-    if (!cap_.isOpened())
-    {
-        ROS_ERROR("[face_detector]: error opening camera stream");
-        exit(EXIT_FAILURE);
-    }*/
-
-
+    img_sub_ = nh_->subscribe(image_topic, 10, &FaceDetector::onIncomingImage, this);
 }
 
 void FaceDetector::onIncomingImage(const sensor_msgs::Image &msg)

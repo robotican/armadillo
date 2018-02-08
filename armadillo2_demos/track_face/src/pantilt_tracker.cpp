@@ -18,7 +18,7 @@ void PanTiltTracker::trackFace(const CvPoint &face, const cv::Rect& frame)
     double pan_goal = FaceDetector::map(0, frame.width, pan_min, pan_max, face.x);
     double tilt_goal = FaceDetector::map(0, frame.height, tilt_min, tilt_max, face.y);
 
-    move(pan_goal, tilt_goal);
+    move(pan_goal, tilt_goal * P_GAIN);
 }
 
 void PanTiltTracker::move(double pan, double tilt)

@@ -9,6 +9,8 @@
 #include <face_detector.h>
 #include <math.h>
 
+#define P_GAIN 0.5
+
 class PanTiltTracker
 {
 private:

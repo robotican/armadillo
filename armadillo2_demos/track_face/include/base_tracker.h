@@ -79,7 +79,7 @@ public:
     static double panMax() { return M_PI / 4; } //rad
     static double angularMax() { return 0.3; } //rad
     static double angularMin() { return -0.3; } //rad
-    static double forwardVel() { return 0.3; } //rad / s
+    static double forwardVel() { return 0.07; } //rad / s
     void stop();
     void drive(double linear_vel, double angular_vel);
 };

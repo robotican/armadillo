@@ -4,8 +4,8 @@
 BaseTracker::BaseTracker(ros::NodeHandle &nh)
 {
     nh_ = &nh;
-    joints_state_sub_ = nh_->subscribe("joint_states", 10, &BaseTracker::jointsUpdateCB, this);
-    urf_sub_ = nh_->subscribe("URF/front", 10, &BaseTracker::urfCB, this);
+    joints_state_sub_ = nh_->subscribe("/joint_states", 10, &BaseTracker::jointsUpdateCB, this);
+    urf_sub_ = nh_->subscribe("/URF/front", 10, &BaseTracker::urfCB, this);
     twise_pub_ = nh_->advertise<geometry_msgs::Twist>("/cmd_vel", 5);
 }
 

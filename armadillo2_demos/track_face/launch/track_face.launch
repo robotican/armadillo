@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+    <node name="track_face_node" pkg="track_face" type="track_face_node" respawn="false" output="screen">
+        <param name="~image" value="/kinect2/qhd/image_color_rect" />
+        <param name="~mode" value="3" />
+    </node>
+
+    <!--
+             modes:
+             PAN                 = 1, /* base stationary (only head pan tracking face)                        */
+             PAN_ROTATE          = 2, /* base rotating in place to follow head pan                            */
+             PAN_ROTATE_DRIVE    = 3, /* base rotating to follow head pan and moving fw                       */
+             PAN_FACE            = 4, /* if pan is stationary, this will move base to track face              */
+             PAN_FACE_DRIVE      = 5  /* if pan is stationary, rotate and move base fw to track face (fw)     */
+    -->
+</launch>
