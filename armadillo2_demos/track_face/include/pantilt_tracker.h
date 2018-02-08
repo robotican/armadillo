@@ -20,6 +20,7 @@ private:
 public:
     PanTiltTracker(ros::NodeHandle &nh);
     void trackFace(const CvPoint &face, const cv::Rect& frame);
+    void move(double pan, double tilt);
 
 };
 

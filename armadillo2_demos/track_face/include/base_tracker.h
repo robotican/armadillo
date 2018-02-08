@@ -70,8 +70,6 @@ private:
 
     void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg);
     void urfCB(const sensor_msgs::Range &msg);
-    void stop();
-    void drive(double linear_vel, double angular_vel);
 
 public:
     BaseTracker(ros::NodeHandle &nh);
@@ -82,6 +80,8 @@ public:
     static double angularMax() { return 0.3; } //rad
     static double angularMin() { return -0.3; } //rad
     static double forwardVel() { return 0.3; } //rad / s
+    void stop();
+    void drive(double linear_vel, double angular_vel);
 };
 
 

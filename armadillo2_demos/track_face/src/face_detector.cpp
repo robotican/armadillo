@@ -1,13 +1,16 @@
 
 #include <face_detector.h>
 
-FaceDetector::FaceDetector()
+FaceDetector::FaceDetector(ros::NodeHandle& nh)
 {
+    nh_ = &nh;
     if( !face_cascade.load( FACE_DATA_PATH ) || !eyes_cascade.load( EYES_DATA_PATH ))
     {
         ROS_ERROR("[face_detector]: error loading data file");
         exit(EXIT_FAILURE);
     }
+
+    img_sub_ = nh_->subscribe("/kinect2/qhd/image_color_rect", 10, &FaceDetector::onIncomingImage, this);
 
     /*cap_.open(2);
     if (!cap_.isOpened())
@@ -19,20 +22,27 @@ FaceDetector::FaceDetector()
 
 }
 
-bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data, cv::Mat& frame)
+void FaceDetector::onIncomingImage(const sensor_msgs::Image &msg)
+{
+    cv_bridge::CvImagePtr img = cv_bridge::toCvCopy(msg);
+    img->image.copyTo(frame_);
+}
+
+
+bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data)
 {
     //cv::Mat frame;
     //cap_ >> frame;
     //cv::Mat frame_/* = cv_img_->image*/;
 
 
-    if (frame.empty())
+    if (frame_.empty())
         return false;
 
     std::vector<cv::Rect> faces, eyes;
     cv::Mat frame_gray;
 
-    cvtColor( frame, frame_gray, CV_BGR2GRAY );
+    cvtColor( frame_, frame_gray, CV_BGR2GRAY );
     equalizeHist( frame_gray, frame_gray );
 
     /* detect faces */
@@ -45,7 +55,7 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data, c
     {
         if (faces[face_indx].empty())
         {
-            imshow(DETECTION_WINDOW_NAME, frame );
+            imshow(DETECTION_WINDOW_NAME, frame_ );
             return false;
         }
 
@@ -60,14 +70,14 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data, c
         {
             face_point.x = faces[face_indx].x +  faces[face_indx].width / 2;
             face_point.y = faces[face_indx].y + faces[face_indx].height / 2;
-            frame_data.width = frame.cols;
-            frame_data.height = frame.rows;
+            frame_data.width = frame_.cols;
+            frame_data.height = frame_.rows;
 
-            rectangle(frame, CvPoint(faces[face_indx].x, faces[face_indx].y),
+            rectangle(frame_, CvPoint(faces[face_indx].x, faces[face_indx].y),
                       CvPoint(faces[face_indx].x + faces[face_indx].width,
                               faces[face_indx].y + faces[face_indx].height), 2, 8, 0 );
 
-            imshow(DETECTION_WINDOW_NAME, frame );
+            imshow(DETECTION_WINDOW_NAME, frame_ );
 
             return true;
         }
@@ -81,14 +91,14 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data, c
             {
                 face_point.x = faces[biggest_face_indx].x;
                 face_point.y = faces[biggest_face_indx].y;
-                frame_data.width = frame.cols;
-                frame_data.height = frame.rows;
+                frame_data.width = frame_.cols;
+                frame_data.height = frame_.rows;
 
-                rectangle(frame, CvPoint(faces[biggest_face_indx].x, faces[biggest_face_indx].y),
+                rectangle(frame_, CvPoint(faces[biggest_face_indx].x, faces[biggest_face_indx].y),
                           CvPoint(faces[biggest_face_indx].x + faces[biggest_face_indx].width,
                                   faces[biggest_face_indx].y + faces[biggest_face_indx].height), 2, 8, 0 );
 
-                imshow(DETECTION_WINDOW_NAME, frame );
+                imshow(DETECTION_WINDOW_NAME, frame_ );
                 return true;
             }
         }
@@ -96,7 +106,7 @@ bool FaceDetector::detectAndDisplay(CvPoint& face_point, cv::Rect& frame_data, c
         face_indx++;
     }
 
-    imshow(DETECTION_WINDOW_NAME, frame );
+    imshow(DETECTION_WINDOW_NAME, frame_ );
     return false;
 
 }

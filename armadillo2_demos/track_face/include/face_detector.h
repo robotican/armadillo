@@ -27,11 +27,17 @@ private:
     cv::CascadeClassifier face_cascade;
     cv::CascadeClassifier eyes_cascade;
     cv::VideoCapture cap_;
+    cv::Mat frame_;
+
+    ros::NodeHandle *nh_;
+    ros::Subscriber img_sub_;
+
+    void onIncomingImage(const sensor_msgs::Image &msg);
 
 public:
 
-    FaceDetector();
-    bool detectAndDisplay(CvPoint&, cv::Rect&, cv::Mat& frame);
+    FaceDetector(ros::NodeHandle& nh);
+    bool detectAndDisplay(CvPoint&, cv::Rect&);
     static double map(double input_start,
                       double input_end,
                       double output_start,
