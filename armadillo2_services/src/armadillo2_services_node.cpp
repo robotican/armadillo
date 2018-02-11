@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 
     /* give controllers time to load before */
     /* trying to send commands              */
-    ros::Duration(3).sleep();
+    ros::Duration(5).sleep();
 
     JointStateReader joints_state(nh);
     LiftArm arm_lifter(nh, joints_state);
