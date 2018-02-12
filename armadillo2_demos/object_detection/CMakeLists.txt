@@ -97,25 +97,30 @@ add_library(gazebo_grasp_fix SHARED
 add_dependencies(gazebo_grasp_fix ${catkin_EXPORTED_TARGETS})
 
 add_executable(point_head_action src/pick_and_place/point_head_action.cpp)
+add_dependencies(point_head_action armadillo2_msgs_generate_messages_cpp)
 add_dependencies(point_head_action ${${PROJECT_NAME}_EXPORTED_TARGETS})
 add_dependencies(point_head_action armadillo2_msgs_generate_messages_cpp)
 target_link_libraries(point_head_action ${catkin_LIBRARIES} )
 
 add_executable(find_objects_node src/pick_and_place/find_objects.cpp)
+add_dependencies(find_objects_node armadillo2_msgs_generate_messages_cpp)
 add_dependencies(find_objects_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 add_dependencies(find_objects_node ${PROJECT_NAME}_gencfg)
 target_link_libraries(find_objects_node ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 
 add_executable(pan_tilt_object_tracking_node src/pick_and_place/pan_tilt_object_tracking.cpp)
+add_dependencies(pan_tilt_object_tracking_node armadillo2_msgs_generate_messages_cpp)
 add_dependencies(pan_tilt_object_tracking_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(pan_tilt_object_tracking_node ${catkin_LIBRARIES})
 
 add_executable(drive2object_node src/pick_and_place/drive2object.cpp)
+add_dependencies(drive2object_node armadillo2_msgs_generate_messages_cpp)
 add_dependencies(drive2object_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(drive2object_node ${catkin_LIBRARIES})
 
 add_executable(drive_and_pick src/pick_and_place/drive_and_pick.cpp)
+add_dependencies(drive_and_pick armadillo2_msgs_generate_messages_cpp)
 add_dependencies(drive_and_pick ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(drive_and_pick ${catkin_LIBRARIES})
 
