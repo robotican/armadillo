@@ -52,7 +52,7 @@ private:
     ros::Timer ric_pub_timer_,
                ric_dead_timer_;
     torso_joint torso_;
-    LowPassFilter torso_lpf_;
+    //LowPassFilter torso_lpf_;
     ric_interface::RicInterface ric_;
     ros::NodeHandle *nh_;
     boost::thread* t;

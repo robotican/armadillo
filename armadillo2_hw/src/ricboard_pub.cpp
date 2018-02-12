@@ -36,8 +36,8 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         }
 
         /* torso reading low pass filter */
-        torso_lpf_.setCutOffFrequency(0.3);
-        torso_lpf_.setDeltaTime(0.1);
+        // torso_lpf_.setCutOffFrequency(0.3);
+        // torso_lpf_.setDeltaTime(0.1);
 
         /* ric publishers */
         ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("GPS/fix", 10);
@@ -233,9 +233,9 @@ void RicboardPub::read(const ros::Duration elapsed)
     /* update robot state according to ric sensor for controller use */
     ric_interface::sensors_state sensors = ric_.getSensorsState();
     double torso_pos = sensors.laser.distance_mm / 1000.0;
-    double lpf_pos = torso_lpf_.update(torso_pos);
+    //double lpf_pos = torso_lpf_.update(torso_pos); //apply low pass filter
     //ROS_INFO("real: %f, lpf: %f", torso_pos, lpf_pos);
-    torso_.pos =  lpf_pos;//sensors.laser.distance_mm / 1000.0;
+    torso_.pos = torso_pos;
     torso_.vel = (torso_.pos - torso_.prev_pos) / elapsed.sec;
     torso_.effort = torso_.command_effort;
     torso_.prev_pos = torso_.pos;
