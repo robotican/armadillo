@@ -47,7 +47,6 @@ int main(int argc, char** argv)
             {
                 following_detections = 0;
                 pantilt_tracker.trackFace(face_xy, frame);
-                ROS_WARN("%i", operation_mode);
                 base_tracker.track(operation_mode, face_xy, frame);
             }
         }
