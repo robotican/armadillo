@@ -75,7 +75,8 @@ sudo apt-get -y install sysfsutils
 sudo /bin/su -c "echo 'module/bluetooth/parameters/disable_ertm = 1' >> /etc/sysfs.conf"
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
-# install displaylink driver for mimo touch display #
+# install displaylink driver for mimo touch display, #
+# and place xprofile script to enforce resulotion    #
 sudo apt-get -y install linux-generic-lts-utopic xserver-xorg-lts-utopic 
 sudo apt-get -y install libegl1-mesa-drivers-lts-utopic 
 sudo apt-get -y install xserver-xorg-video-all-lts-utopic 
@@ -84,9 +85,7 @@ sudo apt-get -y install dkms
 cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
 chmod +x displaylink-driver-4.1.9.run
 sudo ./displaylink-driver-4.1.9.run
-touch ~/.xinitrc
-echo '#!/bin/bash' > ~/.xinitrc
-echo 'xrandr --output DVI-I-1-1 --auto' >> ~/.xinitrc
+cp .xprofile ~/
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install softkinetic drivers #
