@@ -5,7 +5,7 @@ topics:
   gripper: /gripper_controller/gripper_cmd
 
 limits:
-  driving: {scale_limit_linear: 0.5, scale_limit_angular: 0.5} # m/s
+  driving: {scale_limit_linear: 0.07, scale_limit_angular: 0.3} # m/s
   torso: {lower: 0.05, upper: 0.4} # meters
   head: {pan_lower: -40, pan_upper: 40, tilt_lower: -30, tilt_upper: 50} # degrees
   gripper: {limit_lower: 0.01, limit_upper: 0.15, max_effort: 0.5}
