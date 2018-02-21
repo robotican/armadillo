@@ -853,7 +853,7 @@
               <Node Text="Turns Min to Max" Value="100">
                 <Nodes />
               </Node>
-              <Node Text="Proportional Gain" Value="50">
+              <Node Text="Proportional Gain" Value="100">
                 <Nodes />
               </Node>
               <Node Text="Integral Gain" Value="55">
@@ -934,7 +934,7 @@
               <Node Text="Position Turns Min to Max" Value="238094">
                 <Nodes />
               </Node>
-              <Node Text="Proportional Gain" Value="50">
+              <Node Text="Proportional Gain" Value="100">
                 <Nodes />
               </Node>
               <Node Text="Integral Gain" Value="45">
