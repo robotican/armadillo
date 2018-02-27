@@ -120,29 +120,25 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
 fi
 
 # install softkinetic drivers #
-if [ "$INSTALL_HW_COMPS" = true ] ; then
-    printf "${WHITE_TXT}\nInstalling softkinetic driver...\n${NO_COLOR}"
-    cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
-    sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
-    sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
-fi
+printf "${WHITE_TXT}\nInstalling softkinetic driver...\n${NO_COLOR}"
+cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
+sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
+sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 
 # install kinect drivers #
-if [ "$INSTALL_HW_COMPS" = true ] ; then
-    printf "${WHITE_TXT}\nInstalling kinect driver...\n${NO_COLOR}"
-    sudo apt-get -y install build-essential cmake pkg-config
-    sudo apt-get -y install libusb-1.0-0-dev
-    sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
-    sudo apt-get -y install libglfw3-dev
-    cd ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2
-    mkdir build && cd build
-    cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
-    make
-    sudo make install
-    cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
-    rosdep install -r --from-paths .
-    printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
-fi
+printf "${WHITE_TXT}\nInstalling kinect driver...\n${NO_COLOR}"
+sudo apt-get -y install build-essential cmake pkg-config
+sudo apt-get -y install libusb-1.0-0-dev
+sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
+sudo apt-get -y install libglfw3-dev
+cd ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
+make
+sudo make install
+cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
+rosdep install -r --from-paths .
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # usb rules #
 if [ "$INSTALL_HW_COMPS" = true ] ; then
