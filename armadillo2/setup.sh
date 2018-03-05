@@ -140,6 +140,12 @@ cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
+# install armadillo2 ric interface #
+printf "${WHITE_TXT}\nInstalling ric interface...\n${NO_COLOR}"
+cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
+sudo dpkg -i ros-kinetic-ric-interface_0.0.0-0xenial_amd64.deb
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
 # usb rules #
 if [ "$INSTALL_HW_COMPS" = true ] ; then
     printf "${WHITE_TXT}\nInstalling USB rules...\n${NO_COLOR}"
