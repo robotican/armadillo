@@ -1,6 +1,3 @@
-//
-// Created by Eli Eli on 18/11/2017.
-//
 
 #ifndef RIC_INTERFACE_RIC_EXCEPTION_H
 #define RIC_INTERFACE_RIC_EXCEPTION_H
@@ -10,7 +7,7 @@
 //#include <stdexcept>
 //#include <sstream>
 
-namespace ric_interface
+namespace ric
 {
     struct RicException : public std::runtime_error
     {

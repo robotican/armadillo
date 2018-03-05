@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-namespace ric_interface
+namespace ric
 {
     namespace protocol
     {

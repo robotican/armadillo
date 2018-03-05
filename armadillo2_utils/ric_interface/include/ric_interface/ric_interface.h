@@ -1,6 +1,4 @@
-//
-// Created by Eli Eli on 18/11/2017.
-//
+
 
 #ifndef RIC_INTERFACE_BOARD_MANAGER_H
 #define RIC_INTERFACE_BOARD_MANAGER_H
@@ -13,7 +11,7 @@
 #include <string.h>
 #include <iostream>
 
-namespace ric_interface
+namespace ric
 {
     class RicInterface
     {

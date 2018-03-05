@@ -31,13 +31,14 @@ set(
         include/${PROJECT_NAME}/sensors_state.h
         include/${PROJECT_NAME}/crc8.h
         src/ric_interface_node.cpp
-)
+        src/communicator.cpp
+        src/crc8.cpp)
 
 ## Declare a C++ library
 add_library(
         ${PROJECT_NAME}
         ${PROJECT_FILES}
-        )
+        src/crc8.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -54,7 +55,7 @@ add_dependencies(
 add_executable(
         ${PROJECT_NAME}_node
         ${PROJECT_FILES}
-        )
+        src/crc8.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

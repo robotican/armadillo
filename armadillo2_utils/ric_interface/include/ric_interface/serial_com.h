@@ -1,6 +1,4 @@
-//
-// Created by sub on 18/12/17.
-//
+
 
 #ifndef RIC_INTERFACE_SERIALCOM_H
 #define RIC_INTERFACE_SERIALCOM_H

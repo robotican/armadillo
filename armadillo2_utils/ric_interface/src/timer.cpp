@@ -1,6 +1,4 @@
-//
-// Created by Eli Eli on 18/11/2017.
-//
+
 
 #include <ric_interface/timer.h>
 

@@ -2,7 +2,7 @@
 #include <ric_interface/ric_interface.h>
 
 
-namespace ric_interface
+namespace ric
 {
     RicInterface::RicInterface()
     {

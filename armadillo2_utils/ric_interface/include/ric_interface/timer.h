@@ -1,6 +1,3 @@
-//
-// Created by Eli Eli on 18/11/2017.
-//
 
 #ifndef RIC_INTERFACE_TIMER_H
 #define RIC_INTERFACE_TIMER_H
