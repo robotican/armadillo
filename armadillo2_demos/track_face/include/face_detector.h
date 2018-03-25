@@ -28,6 +28,9 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+/* Author: Elchay Rauper*/
+
+
 #ifndef TRACK_FACE_FACE_DETECTOR_H
 #define TRACK_FACE_FACE_DETECTOR_H
 

@@ -27,6 +27,8 @@
 * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
+/* Author: Elchay Rauper*/
+
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <armadillo2_teleop/armadillo_teleop.h>

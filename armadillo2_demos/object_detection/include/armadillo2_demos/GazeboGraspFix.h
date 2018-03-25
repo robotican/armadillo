@@ -28,7 +28,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-/* Author: */
+/* Author: Elchay Rauper*/
 
 #ifndef ROBOTICAN_COMMON_GAZEBOGRASPFIX_H
 #define ROBOTICAN_COMMON_GAZEBOGRASPFIX_H

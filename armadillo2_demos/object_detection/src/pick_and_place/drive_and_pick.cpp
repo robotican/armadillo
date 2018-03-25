@@ -28,7 +28,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-/* : */
+/* Author: Elchay Rauper*/
 
 
 #include <ros/ros.h>

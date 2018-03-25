@@ -28,6 +28,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+/* Author: Elchay Rauper*/
 
 #include <armadillo2_services/joints_state_reader.h>
 
