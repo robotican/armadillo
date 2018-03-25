@@ -798,7 +798,7 @@
               <Node Text="Motor Direction" Value="1">
                 <Nodes />
               </Node>
-              <Node Text="Stall Detection" Value="2">
+              <Node Text="Stall Detection" Value="3">
                 <Nodes />
               </Node>
             </Nodes>
@@ -853,10 +853,10 @@
               <Node Text="Turns Min to Max" Value="100">
                 <Nodes />
               </Node>
-              <Node Text="Proportional Gain" Value="100">
+              <Node Text="Proportional Gain" Value="200">
                 <Nodes />
               </Node>
-              <Node Text="Integral Gain" Value="55">
+              <Node Text="Integral Gain" Value="80">
                 <Nodes />
               </Node>
               <Node Text="Differential Gain" Value="0">
@@ -879,7 +879,7 @@
               <Node Text="Motor Direction" Value="0">
                 <Nodes />
               </Node>
-              <Node Text="Stall Detection" Value="2">
+              <Node Text="Stall Detection" Value="3">
                 <Nodes />
               </Node>
             </Nodes>
@@ -934,10 +934,10 @@
               <Node Text="Position Turns Min to Max" Value="238094">
                 <Nodes />
               </Node>
-              <Node Text="Proportional Gain" Value="100">
+              <Node Text="Proportional Gain" Value="200">
                 <Nodes />
               </Node>
-              <Node Text="Integral Gain" Value="45">
+              <Node Text="Integral Gain" Value="80">
                 <Nodes />
               </Node>
               <Node Text="Differential Gain" Value="0">
