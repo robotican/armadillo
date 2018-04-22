@@ -160,6 +160,11 @@ void Roboteq::getRoboteqInformation()
 Roboteq::~Roboteq()
 {
     // ROS_INFO_STREAM("Script: " << script(false));
+    puts("Stopping motors");
+    mSerial->command("G 1 0");
+    mSerial->command("G 2 0");
+    mSerial->command("MS 1");
+    mSerial->command("MS 2");
 }
 
 void Roboteq::initialize()
