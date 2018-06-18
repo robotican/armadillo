@@ -21,14 +21,14 @@
       <origin
         xyz="-0.012353 0.000122 0.17716"
         rpy="0 0 0" />
-       <mass value="30.65"/>
+       <mass value="100.65"/>
        <inertia
-        ixx="0.61639"
+        ixx="0.31639"
         ixy="-9.1727E-05"
         ixz="-0.093044"
-        iyy="0.57997"
+        iyy="0.17997"
         iyz="5.3231E-05"
-        izz="0.36693" />
+        izz="0.16693" />
 
     </inertial>
     <visual>
@@ -61,7 +61,7 @@
     <joint name="caster_front_left_joint" type="fixed">
       <parent link="base_link"/>
       <child link="caster_front_left_link"/>
-      <origin xyz="0.2 0.24 ${-WHEEL_RADIUS+0.0115+0.05+0.005}" rpy="${-M_PI/2} 0 0"/>
+      <origin xyz="0.2 0.24 ${-WHEEL_RADIUS+0.0115+0.05+0.015}" rpy="${-M_PI/2} 0 0"/>
     </joint>
     <link name="caster_front_left_link">
       <collision>
@@ -103,7 +103,7 @@
         <joint name="caster_front_right_joint" type="fixed">
       <parent link="base_link"/>
       <child link="caster_front_right_link"/>
-      <origin xyz="0.2 -0.24 ${-WHEEL_RADIUS+0.0115+0.05+0.005}" rpy="${-M_PI/2} 0 0"/>
+      <origin xyz="0.2 -0.24 ${-WHEEL_RADIUS+0.0115+0.05+0.015}" rpy="${-M_PI/2} 0 0"/>
     </joint>
     <link name="caster_front_right_link">
       <collision>
@@ -370,10 +370,10 @@
      <mass
         value="0.035511" />
       <inertia
-        ixx="0.19579"
+        ixx="0.09579"
         ixy="2.4285E-05"
         ixz="-0.0045097"
-        iyy="0.16807"
+        iyy="0.06807"
         iyz="-7.4938E-05"
         izz="0.072852" />
     </inertial> 
@@ -495,6 +495,7 @@
 
   <link
     name="head_tilt_link">
+      
     <inertial>
       <origin
         xyz="0.014321 0.00038338 0.064622"
@@ -556,6 +557,20 @@
 
   <link
     name="kinect2_link" />
+   <inertial>
+      <origin
+        xyz="0.014321 0.00038338 0.064622"
+        rpy="0 0 0" />
+      <mass
+        value="0.00232" />
+      <inertia
+        ixx="0.00056403"
+        ixy="-2.0419E-05"
+        ixz="1.476E-05"
+        iyy="0.00012267"
+        iyz="1.5926E-07"
+        izz="0.00057848" />
+    </inertial> 
   <joint
     name="kinect2_joint"
     type="fixed">
