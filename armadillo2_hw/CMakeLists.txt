@@ -21,7 +21,6 @@ catkin_package(
   LIBRARIES armadillo2_hw
   CATKIN_DEPENDS bms_interface
         dxl_interface
-        ric_interface
         roboteq_control
         filters
 DEPENDS

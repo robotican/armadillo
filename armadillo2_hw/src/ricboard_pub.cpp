@@ -59,7 +59,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         try{
             ric_.connect(ric_port_);
             ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard port opened successfully \nport name: %s \nbaudrate: 115200", ric_port_.c_str());
-        }catch (ric_interface::ConnectionExeption e) {
+        }catch (ric::ConnectionExeption e) {
             ROS_ERROR("[armadillo2_hw/ricboard_pub]: can't open ricboard port. make sure that ricboard is connected. shutting down...");
             ros::shutdown();
             exit(1);
@@ -107,7 +107,7 @@ void RicboardPub::loop()
         ric_.loop();
         if (ric_.isBoardAlive())
         {
-            ric_interface::protocol::error err_msg;
+            ric::protocol::error err_msg;
             std::string logger_msg;
             int32_t logger_val;
             ric_disconnections_counter_ = 0;
@@ -126,9 +126,9 @@ void RicboardPub::loop()
                 ROS_INFO("[armadillo2_hw/ricboard_pub]: ric logger is saying: '%s', value: %i", logger_msg.c_str(), logger_val);
             if (ric_.readErrorMsg(err_msg))
             {
-                std::string comp_name = ric_interface::RicInterface::compType2String((ric_interface::protocol::Type)err_msg.comp_type);
-                std::string err_desc = ric_interface::RicInterface::errCode2String((ric_interface::protocol::ErrCode)err_msg.code);
-                if (err_msg.code != (uint8_t)ric_interface::protocol::ErrCode::CALIB)
+                std::string comp_name = ric::RicInterface::compType2String((ric::protocol::Type)err_msg.comp_type);
+                std::string err_desc = ric::RicInterface::errCode2String((ric::protocol::ErrCode)err_msg.code);
+                if (err_msg.code != (uint8_t)ric::protocol::ErrCode::CALIB)
                 {
                     ROS_ERROR("[armadillo2_hw/ricboard_pub]: ric detected critical '%s' error in %s. shutting down...",
                               err_desc.c_str(), comp_name.c_str());
@@ -166,7 +166,7 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     if (!load_ric_hw_ || !ric_.isBoardAlive())
         return;
 
-    ric_interface::sensors_state sensors = ric_.getSensorsState();
+    ric::sensors_state sensors = ric_.getSensorsState();
 
     /* publish ultrasonic */
     sensor_msgs::Range range_msg;
@@ -245,13 +245,13 @@ void RicboardPub::write(const ros::Duration elapsed)
 
     if (elapsed >= ros::Duration(RIC_WRITE_INTERVAL))
     {
-        ric_interface::protocol::servo torso_pkg;
+        ric::protocol::servo torso_pkg;
         /* add 1500 offset because torso limits in */
         /* armadillo2 xacro are b/w -500 - 500,    */
         /* and ric servo get value b/w 1000-2000   */
         torso_pkg.cmd = torso_.command_effort + SERVO_NEUTRAL;
         //ROS_WARN("torso_.command_effort: %f, RIC CMD: %d ", torso_.command_effort, torso_pkg.cmd);
-        ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
+        ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric::protocol::Type::SERVO);
     }
 }
 
@@ -261,7 +261,7 @@ void RicboardPub::read(const ros::Duration elapsed)
         return;
 
     /* update robot state according to ric sensor for controller use */
-    ric_interface::sensors_state sensors = ric_.getSensorsState();
+    ric::sensors_state sensors = ric_.getSensorsState();
     double torso_pos = sensors.laser.distance_mm / 1000.0;
     //double lpf_pos = torso_lpf_.update(torso_pos); //apply low pass filter
     //ROS_INFO("real: %f, lpf: %f", torso_pos, lpf_pos);

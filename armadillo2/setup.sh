@@ -2,12 +2,20 @@
 
 # installation file for armadillo2 over ROS Kinetic and ubuntu 16.04 #
 
+# exit and notify immediately if a command exits with a non-zero status
+set -eb
+
 GREEN_TXT='\e[0;32m'
 WHITE_TXT='\e[1;37m'
 RED_TXT='\e[31m'
 NO_COLOR='\033[0m'
 LOGS_FOLDER_PATH="${HOME}/catkin_ws/src/setup_logs"
 INSTALL_HW_COMPS=false #deremine if this script will install armadillo2 hardware drivers
+
+# get package folder path. this must be executed before other commands
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR && cd ..
+PKG_PATH=`pwd`
 
 printf "${WHITE_TXT}\n***Installing Armadillo2 ROS-Kinetic Package***\n${NO_COLOR}"
 
@@ -29,12 +37,6 @@ else
     printf "${RED_TXT}\nToo many arguments. Only one argument named hw is allowed ${NO_COLOR}\n"
     exit 1
 fi
-
-
-
-#if [ "$INSTALL_HW_COMPS" = true ] ; then
-#    echo 'INSTALL_HW_COMPS is true'
-#fi
 
 # validate ros version #
 printf "${WHITE_TXT}\nChecking ROS Version...\n${NO_COLOR}"
@@ -58,9 +60,12 @@ if [ ! -d "src" ]; then
   printf "${RED_TXT}~/catkin_ws/src folder does not exist. Create workspace named catkin_ws with src directory inside ${NO_COLOR}\n"
   exit 1
 fi
-
-fi
 printf "${GREEN_TXT}found catkin_ws/src folder${NO_COLOR}\n"
+fi
+
+
+
+
 
 printf "${WHITE_TXT}\nInstalling 3rd party packages...\n${NO_COLOR}"
 # third party packages #
@@ -112,7 +117,7 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     sudo apt-get -y install xserver-xorg-video-all-lts-utopic 
     sudo apt-get -y install xserver-xorg-input-all-lts-utopic
     sudo apt-get -y install dkms
-    cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
+    cd $PKG_PATH/armadillo2/third_party_files/
     chmod +x displaylink-driver-4.1.9.run
     sudo ./displaylink-driver-4.1.9.run
     cp .xprofile ~/
@@ -121,7 +126,7 @@ fi
 
 # install softkinetic drivers #
 printf "${WHITE_TXT}\nInstalling softkinetic driver...\n${NO_COLOR}"
-cd ~/catkin_ws/src/armadillo2/armadillo2/third_party_files/
+cd $PKG_PATH/armadillo2/third_party_files/
 sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 
@@ -131,25 +136,31 @@ sudo apt-get -y install build-essential cmake pkg-config
 sudo apt-get -y install libusb-1.0-0-dev
 sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
 sudo apt-get -y install libglfw3-dev
-cd ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2
+cd $PKG_PATH/armadillo2_utils/libfreenect2
 mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
 make
 sudo make install
-cd ~/catkin_ws/src/armadillo2/armadillo2_utils/iai_kinect2/iai_kinect2
+cd $PKG_PATH/armadillo2_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
+# install armadillo2 ric interface #
+printf "${WHITE_TXT}\nInstalling ric interface...\n${NO_COLOR}"
+cd $PKG_PATH/armadillo2/third_party_files/
+sudo dpkg -i ros-kinetic-ric-interface_0.0.0-0xenial_amd64.deb
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # usb rules #
 if [ "$INSTALL_HW_COMPS" = true ] ; then
     printf "${WHITE_TXT}\nInstalling USB rules...\n${NO_COLOR}"
     sudo apt -y install setserial #for setting port latency
-    sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/usb_to_dxl.rules /etc/udev/rules.d
-    sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/roboteq.rules /etc/udev/rules.d
-    sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/49-teensy.rules /etc/udev/rules.d
-    sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
-    sudo cp ~/catkin_ws/src/armadillo2/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
-    sudo cp ~/catkin_ws/src/armadillo2/armadillo2_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
+    sudo cp $PKG_PATH/armadillo2/rules/usb_to_dxl.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo2/rules/roboteq.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo2/rules/49-teensy.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
+    sudo cp $PKG_PATH/armadillo2_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
     sudo udevadm control --reload-rules && udevadm trigger
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 fi
