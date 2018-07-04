@@ -124,11 +124,25 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 fi
 
-# install softkinetic drivers #
-printf "${WHITE_TXT}\nInstalling softkinetic driver...\n${NO_COLOR}"
-cd $PKG_PATH/armadillo2/third_party_files/
-sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
-sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
+# realsense depth camera 
+if [ "$INSTALL_HW_COMPS" = true ] ; then
+    printf "${WHITE_TXT}\nInstalling depth camera...\n${NO_COLOR}"
+    cd ~/catkin_ws/src/
+    wget https://github.com/intel-ros/realsense/archive/2.0.3.tar.gz
+    tar -xvzf 2.0.3.tar.gz
+    rm 2.0.3.tar.gz     
+    wget https://github.com/IntelRealSense/librealsense/archive/v2.10.3.tar.gz
+    tar -xvzf v2.10.3.tar.gz
+    rm v2.10.3.tar.gz
+    sudo apt-get -y install libusb-1.0-0-dev pkg-config libgtk-3-dev
+    sudo apt-get -y install libglfw3-dev                                                                                                                                                
+    cd librealsense-2.10.3                                                                                                                                                               
+    mkdir build && cd build               
+    cmake ../  
+    sudo make uninstall && make clean && make -j8 && sudo make install
+    printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+fi
+
 
 # install kinect drivers #
 printf "${WHITE_TXT}\nInstalling kinect driver...\n${NO_COLOR}"
