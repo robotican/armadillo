@@ -174,6 +174,7 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     sudo cp $PKG_PATH/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
     sudo cp $PKG_PATH/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
     sudo cp $PKG_PATH/armadillo2_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
+    sudo cp $PKG_PATH/armadillo2/rules/99-realsense-libusb.rules /etc/udev/rules.d
     sudo udevadm control --reload-rules && udevadm trigger
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 fi
