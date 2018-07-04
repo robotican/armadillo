@@ -12,7 +12,7 @@
     <arg name="z" default="0.0"/>
     <arg name="Y" default="0.0" />
     <arg name="moveit" default="false"/>
-    <arg name="softkinetic" default="false"/>
+    <arg name="intel_cam" default="false"/>
     <arg name="kinect" default="false"/>
     <arg name="lidar" default="false"/>
     <arg name="gmapping" default="false"/>
@@ -74,7 +74,7 @@
                 imu:=true
                 gps:=true
                 lidar:=true
-                softkinetic:=$(arg softkinetic)" />
+                intel_cam:=$(arg intel_cam)" />
         
         <include file="$(find armadillo2_control)/launch/armadillo2_gazebo_controllers.launch" />
 
@@ -93,8 +93,8 @@
         
         <include file="$(find armadillo2_control)/launch/armadillo2_hw_controllers.launch" />
         
-        <group if="$(arg softkinetic)">
-            <include file="$(find softkinetic_camera)/launch/softkinetic_camera_ds325.launch" />
+        <group if="$(arg intel_cam)">
+            <include file="$(find intel_d435)/launch/d435.launch" />
         </group>
     
         <group if="$(arg kinect)">

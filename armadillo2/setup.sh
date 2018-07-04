@@ -143,7 +143,6 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 fi
 
-
 # install kinect drivers #
 printf "${WHITE_TXT}\nInstalling kinect driver...\n${NO_COLOR}"
 sudo apt-get -y install build-essential cmake pkg-config

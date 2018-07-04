@@ -3,7 +3,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo2_robot" description="ARMadillo2 Robot">
     
     <xacro:include filename="$(find armadillo2_description)/urdf/armadillo2.xacro" />
-    <xacro:include filename="$(find armadillo2_gazebo)/macros/softkinetic_camera_ds325.xacro" />
+    <xacro:include filename="$(find armadillo2_gazebo)/macros/intel_cam.xacro" />
     
     
     <xacro:arg name="kinect2" default="true"/>
@@ -15,12 +15,12 @@
     <xacro:arg name="imu" default="true"/>
     <xacro:arg name="gps" default="true"/>
     <xacro:arg name="lidar" default="true"/>
-    <xacro:arg name="softkinetic" default="true"/>
+    <xacro:arg name="intel_cam" default="true"/>
     
-    <!-- softkinetic -->
-    <xacro:if value="$(arg softkinetic)">
-        
-        <xacro:softkinetic_gazebo name="softkinetic_rgb" ros_topic="softkinetic"/> 
+    <!-- intel_cam -->
+    <xacro:if value="$(arg intel_cam)">        
+        <xacro:include filename="$(find armadillo2_gazebo)/macros/intel_cam.xacro" />
+        <xacro:intel_d435_gazebo name="intel_d435" ros_topic="intel_cam"/> 
     </xacro:if>
     
     
