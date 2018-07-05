@@ -4,6 +4,8 @@
 
  <xacro:property name="M_PI" value="3.1415926535897931" />
  <xacro:property name="WHEEL_RADIUS" value="0.095" />
+ 
+ <xacro:include filename="$(find armadillo2_description)/urdf/intel_d435.urdf"/> 
 
 <link name="base_footprint"/>
   
@@ -1106,27 +1108,42 @@
       velocity="0.1" /> 
 <dynamics damping="0.5" friction="0.5"/>
   </joint>
+
+ <!-- <joint
+    name="intel_d435_joint"
+    type="fixed">
+    <origin
+      xyz="0 0.0143 -0.049"
+      rpy="-3.1416 0 1.5708" />
+    <parent
+      link="wrist_link" />
+    <child
+      link="intel_d435_link" />
+    <axis
+      xyz="0 0 0" />
+    </joint>-->
+    
+    
   <link
     name="intel_d435_link">
-  
     <inertial>
       <origin
-        xyz="-1.1102E-16 -0.015598 0.034754"
+        xyz="0.00209672590490473 0.00107373429916791 -0.0124264025663287"
         rpy="0 0 0" />
       <mass
-        value="0.0000017" />
+        value="0.0446256012085417" />
       <inertia
-        ixx="1.4683E-05"
-        ixy="2.0869E-20"
-        ixz="-3.5787E-20"
-        iyy="1.7304E-05"
-        iyz="-9.2811E-07"
-        izz="4.5506E-06" />
+        ixx="2.62358816469287E-05"
+        ixy="3.51148589025883E-07"
+        ixz="3.91275343984781E-11"
+        iyy="4.02618646244092E-06"
+        iyz="-6.05255657169474E-09"
+        izz="2.64982132448102E-05" />
     </inertial>
     <visual>
       <origin
-        xyz="-0.013021 0.04474 -0.012"
-        rpy="0 0 -1.5708" />
+        xyz="0 0 0.0125"
+        rpy="0 0 0" />
       <geometry>
         <mesh
           filename="package://armadillo2_description/mesh/intel_d435.STL" />
@@ -1134,7 +1151,7 @@
       <material
         name="">
         <color
-          rgba="0.25098 0.25098 0.25098 1" />
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
       </material>
     </visual>
     <collision>
@@ -1147,95 +1164,20 @@
       </geometry>
     </collision>
   </link>
-
-  <joint
+      
+    <joint
     name="intel_d435_joint"
     type="fixed">
     <origin
-      xyz="0 0.0143 -0.049"
-      rpy="-3.1416 0 1.5708" />
+      xyz="0 0.0143 -0.0495"
+      rpy="-3.1416 6.1062E-16 1.5708" />
     <parent
       link="wrist_link" />
     <child
       link="intel_d435_link" />
     <axis
       xyz="0 0 0" />
-    </joint>
+  </joint>
  
-<!--
-License: Apache 2.0. See LICENSE file in root directory.
-Copyright(c) 2017 Intel Corporation. All Rights Reserved
-the following is the URDF model for the Intel RealSense 430 intel_d435, in it's
-aluminum peripherial evaluation case.
-  
-Edited by RoboTiCan
--->
-   
-    <!-- camera depth joints and links -->
-    <joint name="intel_d435_depth_joint" type="fixed">
-      <origin xyz="0 -0.0122 0" rpy="0 0 0"/>
-      <parent link="intel_d435_link"/>
-      <child link="intel_d435_depth_frame" />
-    </joint>
-    
-    <link name="intel_d435_depth_frame"/>
-
-    <joint name="intel_d435_depth_optical_joint" type="fixed">
-      <origin xyz="0.0125 0 0.0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
-      <parent link="intel_d435_depth_frame" />
-      <child link="intel_d435_depth_optical_frame" />
-    </joint>
-    
-    <link name="intel_d435_depth_optical_frame"/>
-      
-    <!-- intel_d435 left IR joints and links -->
-    <joint name="intel_d435_left_ir_joint" type="fixed">
-      <origin xyz="0 -0.0322 0" rpy="0 0 0" />
-      <parent link="intel_d435_link" />
-      <child link="intel_d435_left_ir_frame" />
-    </joint>
-    
-    <link name="intel_d435_left_ir_frame"/>
-
-    <joint name="intel_d435_left_ir_optical_joint" type="fixed">
-      <origin xyz="0.0125 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
-      <parent link="intel_d435_left_ir_frame" />
-      <child link="intel_d435_left_ir_optical_frame" />
-    </joint>
-    
-    <link name="intel_d435_left_ir_optical_frame"/>
-
-    <!-- intel_d435 right IR joints and links -->
-    <joint name="intel_d435_right_ir_joint" type="fixed">
-      <origin xyz="0 0.0178 0" rpy="0 0 0" />
-      <parent link="intel_d435_link" />
-      <child link="intel_d435_right_ir_frame" />
-    </joint>
-    
-    <link name="intel_d435_right_ir_frame"/>
-
-    <joint name="intel_d435_right_ir_optical_joint" type="fixed">
-      <origin xyz="0.0125 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
-      <parent link="intel_d435_right_ir_frame" />
-      <child link="intel_d435_right_ir_optical_frame" />
-    </joint>
-    
-    <link name="intel_d435_right_ir_optical_frame"/>
-
-    <!-- intel_d435 fisheye joints and links -->
-    <joint name="intel_d435_fisheye_joint" type="fixed">
-      <origin xyz="0 0.0322 0" rpy="0 0 0" />
-      <parent link="intel_d435_link" />
-      <child link="intel_d435_fisheye_frame" />
-    </joint>
-    
-    <link name="intel_d435_fisheye_frame"/>
-
-    <joint name="intel_d435_fisheye_optical_joint" type="fixed">
-      <origin xyz="0.0125 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
-      <parent link="intel_d435_fisheye_frame" />
-      <child link="intel_d435_fisheye_optical_frame" />
-    </joint>
-    <link name="intel_d435_fisheye_optical_frame"/>
 
 </robot>
