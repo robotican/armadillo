@@ -1124,7 +1124,7 @@
     </joint>-->
     
     
-  <link
+  <!--<link
     name="intel_d435_link">
     <inertial>
       <origin
@@ -1163,7 +1163,7 @@
           filename="package://armadillo2_description/mesh/intel_d435.STL" />
       </geometry>
     </collision>
-  </link>
+  </link>-->
       
     <joint
     name="intel_d435_joint"
@@ -1174,7 +1174,7 @@
     <parent
       link="wrist_link" />
     <child
-      link="intel_d435_link" />
+      link="camera_link" />
     <axis
       xyz="0 0 0" />
   </joint>

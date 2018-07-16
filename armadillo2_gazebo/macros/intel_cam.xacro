@@ -25,7 +25,7 @@
              <plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
              <alwaysOn>true</alwaysOn>
                 <updateRate>10.0</updateRate>
-                <cameraName>${name}</cameraName>
+                <cameraName>${ros_topic}</cameraName>
                 <frameName>${name}_depth_optical_frame</frameName>                   
             <imageTopicName>color/image_raw</imageTopicName>
             <depthImageTopicName>depth/color/image_raw</depthImageTopicName>
