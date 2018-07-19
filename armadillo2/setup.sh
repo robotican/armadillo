@@ -2,9 +2,6 @@
 
 # installation file for armadillo2 over ROS Kinetic and ubuntu 16.04 #
 
-# exit and notify immediately if a command exits with a non-zero status
-set -eb
-
 GREEN_TXT='\e[0;32m'
 WHITE_TXT='\e[1;37m'
 RED_TXT='\e[31m'
@@ -72,6 +69,10 @@ printf "${WHITE_TXT}\nInstalling 3rd party packages...\n${NO_COLOR}"
 sudo apt-get update
 sudo apt-get dist-upgrade 
 sudo apt-get upgrade 
+
+# from this point on, exit and notify immediately if a command exits with a non-zero status
+set -eb
+
 sudo apt-get -y install ros-kinetic-controller-manager 
 sudo apt-get -y install ros-kinetic-control-toolbox  
 sudo apt-get -y install ros-kinetic-transmission-interface 
