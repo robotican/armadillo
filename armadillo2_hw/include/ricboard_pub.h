@@ -40,6 +40,7 @@
 #include <sensor_msgs/Range.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/MagneticField.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/String.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -56,6 +57,8 @@
 #define RIC_DEAD_TIMEOUT 1 //secs
 #define MAX_RIC_DISCONNECTIONS 5
 #define SERVO_NEUTRAL 1500
+#define G_FORCE 9.80665
+
 
 struct torso_joint
 {
@@ -78,6 +81,7 @@ private:
     ros::Publisher ric_gps_pub_;
     ros::Publisher ric_ultrasonic_pub_;
     ros::Publisher ric_imu_pub_;
+    ros::Publisher ric_mag_pub_;
 
     ros::Timer ric_pub_timer_,
                ric_dead_timer_;
