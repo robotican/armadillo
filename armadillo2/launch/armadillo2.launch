@@ -27,7 +27,7 @@
     <!--uncommon settings-->
     <arg name="center_pan_tilt" default="true" doc="centers head on startup"/>
     <arg name="joy_dev" default="/dev/input/js0"/>
-    <arg name="joy_profile" default="xbox"/>
+    <arg name="joy_profile" default="steelseries"/>
     <arg name="twist_mux" default="true"/>
     <arg name="tele_arm" default="false" doc="allow armadillo2 arm joy teleop. set teleop:=true, moveit:=true"/>
     

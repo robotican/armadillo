@@ -31,8 +31,8 @@ xbox:
   safety_btn: 7
 
 steelseries:
-  twist: {joy_axis_linear: 2,
-          joy_axis_angular: 3,
+  twist: {joy_axis_linear: 3,
+          joy_axis_angular: 2,
           scale_angular: 1,
           scale_linear: 1}
 
