@@ -193,7 +193,7 @@ fi
 # compiling armadillo2 #
 printf "${WHITE_TXT}Compiling armadillo2 package...\n${NO_COLOR}"
 cd ~/catkin_ws
-catkin_make -DCMAKE_BUILD_TYPE="Release"
+catkin_make
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 printf "${GREEN_TXT}Installation process finished.\n\n"  ${NO_COLOR}
