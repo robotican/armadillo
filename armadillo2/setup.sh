@@ -14,6 +14,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR && cd ..
 PKG_PATH=`pwd`
 
+
+printf "${GREEN_TXT}\n
+______  __    ___    __     ___  _____      ___   ___         ______
+ _____ |__\  |   |  |  \   |   |   |    |  |     /   \  |\  | _____
+  ____ | \   |   |  |__|_  |   |   |    |  |     |___|  | \ | ____
+   ___ |  \  |___|  |____| |___|   |    |  |___  |   |  |  \| ___
+
+\n${NO_COLOR}"
+
+
 printf "${WHITE_TXT}\n***Installing Armadillo2 ROS-Kinetic Package***\n${NO_COLOR}"
 
 # check for hardware argument, and determine installation type #
