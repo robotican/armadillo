@@ -29,7 +29,7 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#include <armadillo2_services/dxl_torque.h>
+#include <armadillo_services/dxl_torque.h>
 
 
 DxlTorque::DxlTorque(ros::NodeHandle& nh,
@@ -80,7 +80,7 @@ bool DxlTorque::setTorqueCB(std_srvs::SetBool::Request &req, std_srvs::SetBool::
 /* to position before torque off                    */
 void DxlTorque::commandCurrentDxlPosition()
 {
-    armadillo2_state joints_state = joint_states_->getJointsState();
+    armadillo_state joints_state = joint_states_->getJointsState();
 
     trajectory_msgs::JointTrajectory traj_msg;
 

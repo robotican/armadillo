@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- armadillo2 top-level launch -->
+<!-- armadillo top-level launch -->
 
 <launch>
     
     <!--common settings-->
-    <arg name="gazebo" default="false" doc="execute armadillo2 inside gazebo sim"/>
+    <arg name="gazebo" default="false" doc="execute armadillo inside gazebo sim"/>
     <arg name="world_name" default="worlds/empty.world"/> 
     <arg name="x" default="0.0"/>
     <arg name="y" default="0.0"/>
@@ -22,25 +22,25 @@
     <arg name="map" default="map.yaml" doc="pre-saved map path"/>
     <arg name="move_base" default="false"/>
     <arg name="robot_localization" default="false"/>
-    <arg name="teleop" default="false" doc="allow armadillo2 joy teleop"/>
+    <arg name="teleop" default="false" doc="allow armadillo joy teleop"/>
 
     <!--uncommon settings-->
     <arg name="center_pan_tilt" default="true" doc="centers head on startup"/>
     <arg name="joy_dev" default="/dev/input/js0"/>
     <arg name="joy_profile" default="steelseries"/>
     <arg name="twist_mux" default="true"/>
-    <arg name="tele_arm" default="false" doc="allow armadillo2 arm joy teleop. set teleop:=true, moveit:=true"/>
+    <arg name="tele_arm" default="false" doc="allow armadillo arm joy teleop. set teleop:=true, moveit:=true"/>
     
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
     
-    <node name="armadillo2_services_node" pkg="armadillo2_services" type="armadillo2_services_node" respawn="false" output="screen">
+    <node name="armadillo_services_node" pkg="armadillo_services" type="armadillo_services_node" respawn="false" output="screen">
         <param name="center_head" value="$(arg center_pan_tilt)" />
     </node>
     
     <include file="$(find espeak_ros)/launch/espeak_ros.launch" />
     
     <group if="$(arg teleop)" >
-        <include file="$(find armadillo2_teleop)/launch/armadillo2_teleop.launch">
+        <include file="$(find armadillo_teleop)/launch/armadillo_teleop.launch">
             <arg name="joy_dev" value="$(arg joy_dev)"/>
             <arg name="joy_profile" value="$(arg joy_profile)"/>
             <arg name="tele_arm" value="$(arg tele_arm)"/>
@@ -64,8 +64,8 @@
     
     <!--load simulation stuff-->
     <group if="$(arg gazebo)">
-         <env name="GAZEBO_MODEL_PATH" value="$(find armadillo2_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
-         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder 
+         <env name="GAZEBO_MODEL_PATH" value="$(find armadillo_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo_description)/urdf/armadillo_gazebo.xacro' --inorder 
                 kinect2:=$(arg kinect)
                 kinect2_hz:=30.0
                 kinect2_hd:=false
@@ -76,22 +76,22 @@
                 lidar:=true
                 intel_cam:=$(arg intel_cam)" />
         
-        <include file="$(find armadillo2_control)/launch/armadillo2_gazebo_controllers.launch" />
+        <include file="$(find armadillo_control)/launch/armadillo_gazebo_controllers.launch" />
 
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">	    
               <arg name="world_name" value="$(arg world_name)"/>
 	      <arg name="gui" value="true"/>	     
 	</include>
 
-        <node name="armadillo2_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model armadillo2 -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y)" />
+        <node name="armadillo_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model armadillo -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg Y)" />
     </group>
     
     <!--load hardware stuff-->
     <group unless="$(arg gazebo)">
-        <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2.xacro' --inorder" />
-        <include file="$(find armadillo2_hw)/launch/armadillo2_hw.launch" />
+        <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo_description)/urdf/armadillo.xacro' --inorder" />
+        <include file="$(find armadillo_hw)/launch/armadillo_hw.launch" />
         
-        <include file="$(find armadillo2_control)/launch/armadillo2_hw_controllers.launch" />
+        <include file="$(find armadillo_control)/launch/armadillo_hw_controllers.launch" />
         
         <group if="$(arg intel_cam)">
             <include file="$(find intel_d435)/launch/d435.launch" />
@@ -112,19 +112,19 @@
     
    
     <group if="$(arg gmapping)">
-        <include file="$(find armadillo2_navigation)/launch/gmapping.launch" />
+        <include file="$(find armadillo_navigation)/launch/gmapping.launch" />
     </group>
     
     <group if="$(arg hector_slam)">
-        <include file="$(find armadillo2_navigation)/launch/hector_slam.launch" />
+        <include file="$(find armadillo_navigation)/launch/hector_slam.launch" />
     </group>
 
         <group if="$(arg robot_localization)">
-        <include file="$(find armadillo2_navigation)/launch/robot_localization.launch" />
+        <include file="$(find armadillo_navigation)/launch/robot_localization.launch" />
     </group>
 
     <group if="$(arg amcl)">
-        <include file="$(find armadillo2_navigation)/launch/amcl.launch" >
+        <include file="$(find armadillo_navigation)/launch/amcl.launch" >
             <arg name="x" value="$(arg x)"/>
             <arg name="y" value="$(arg y)"/>
             <arg name="Y" value="$(arg Y)"/>
@@ -132,17 +132,17 @@
     </group>
     
     <group if="$(arg moveit)">
-        <include file="$(find armadillo2_moveit_config)/launch/move_group.launch" />
+        <include file="$(find armadillo_moveit_config)/launch/move_group.launch" />
     </group>
     
     
     <group if="$(arg move_base)">
-        <include file="$(find armadillo2_navigation)/launch/move_base.launch" />
-        <rosparam file="$(find armadillo2_navigation)/config/move_base_params.yaml" command="load" ns="move_base"/>
-        <rosparam file="$(find armadillo2_navigation)/config/costmap_common_params.yaml" command="load" ns="move_base/global_costmap" />
-        <rosparam file="$(find armadillo2_navigation)/config/costmap_common_params.yaml" command="load" ns="move_base/local_costmap" />
-        <rosparam file="$(find armadillo2_navigation)/config/local_costmap_params.yaml" command="load" ns="move_base/local_costmap" />
-        <rosparam file="$(find armadillo2_navigation)/config/global_costmap_params.yaml" command="load" ns="move_base/global_costmap"/>
+        <include file="$(find armadillo_navigation)/launch/move_base.launch" />
+        <rosparam file="$(find armadillo_navigation)/config/move_base_params.yaml" command="load" ns="move_base"/>
+        <rosparam file="$(find armadillo_navigation)/config/costmap_common_params.yaml" command="load" ns="move_base/global_costmap" />
+        <rosparam file="$(find armadillo_navigation)/config/costmap_common_params.yaml" command="load" ns="move_base/local_costmap" />
+        <rosparam file="$(find armadillo_navigation)/config/local_costmap_params.yaml" command="load" ns="move_base/local_costmap" />
+        <rosparam file="$(find armadillo_navigation)/config/global_costmap_params.yaml" command="load" ns="move_base/global_costmap"/>
     </group>
     
 </launch>

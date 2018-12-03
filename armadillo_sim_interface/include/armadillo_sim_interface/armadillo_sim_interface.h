@@ -39,8 +39,8 @@
 */
 
 
-#ifndef ARMADILLO2_SIM_INTERFACE_ARMADILLO2_SIM_INTERFACE_H
-#define ARMADILLO2_SIM_INTERFACE_ARMADILLO2_SIM_INTERFACE_H
+#ifndef ARMADILLO_SIM_INTERFACE_ARMADILLO_SIM_INTERFACE_H
+#define ARMADILLO_SIM_INTERFACE_ARMADILLO_SIM_INTERFACE_H
 
 // ros_control
 #include <control_toolbox/pid.h>
@@ -71,7 +71,7 @@
 
 namespace gazebo_ros_control {
 
-    class Armadillo2RobotHWSim : public gazebo_ros_control::RobotHWSim
+    class ArmadilloRobotHWSim : public gazebo_ros_control::RobotHWSim
     {
     public:
 
@@ -148,7 +148,7 @@ namespace gazebo_ros_control {
         bool e_stop_active_, last_e_stop_active_;
     };
 
-    typedef boost::shared_ptr<Armadillo2RobotHWSim> DefaultRobotHWSimPtr;
+    typedef boost::shared_ptr<ArmadilloRobotHWSim> DefaultRobotHWSimPtr;
 }
 
-#endif //ARMADILLO2_SIM_INTERFACE_ARMADILLO2_SIM_INTERFACE_H
+#endif //ARMADILLO_SIM_INTERFACE_ARMADILLO_SIM_INTERFACE_H

@@ -37,7 +37,7 @@
 #include <gazebo/common/common.hh>
 #include <stdio.h>
 
-#include <armadillo2_demos/GazeboGraspFix.h>
+#include <armadillo_demos/GazeboGraspFix.h>
 
 using gazebo::GazeboGraspFix;
 

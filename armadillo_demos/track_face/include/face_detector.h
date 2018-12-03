@@ -41,8 +41,8 @@
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/Image.h>
-#define FACE_DATA_PATH "/home/armadillo2/catkin_ws/src/armadillo2/armadillo2_demos/track_face/data/haarcascade_frontalface_alt.xml"
-#define EYES_DATA_PATH "/home/armadillo2/catkin_ws/src/armadillo2/armadillo2_demos/track_face/data/haarcascade_eye_tree_eyeglasses.xml"
+#define FACE_DATA_PATH "/home/armadillo/catkin_ws/src/armadillo/armadillo_demos/track_face/data/haarcascade_frontalface_alt.xml"
+#define EYES_DATA_PATH "/home/armadillo/catkin_ws/src/armadillo/armadillo_demos/track_face/data/haarcascade_eye_tree_eyeglasses.xml"
 #define DETECTION_WINDOW_NAME "Face Detection"
 
 struct FaceLocation

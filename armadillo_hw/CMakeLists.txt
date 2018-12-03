@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(armadillo2_hw)
+project(armadillo_hw)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -18,7 +18,7 @@ find_package(
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES armadillo2_hw
+  LIBRARIES armadillo_hw
   CATKIN_DEPENDS bms_interface
         dxl_interface
         roboteq_control
@@ -34,9 +34,9 @@ include_directories(
 )
 
  add_executable(${PROJECT_NAME}_node
-                src/armadillo2_hw.cpp
-                include/armadillo2_hw.h
-         src/armadillo2_hw_node.cpp
+                src/armadillo_hw.cpp
+                include/armadillo_hw.h
+         src/armadillo_hw_node.cpp
          src/dxl_motors_builder.cpp
          include/dxl_motors_builder.h
          src/battery_pub.cpp

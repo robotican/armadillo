@@ -30,7 +30,7 @@
 
 /* Author: Elchay Rauper*/
 
-#include <armadillo2_services/joints_state_reader.h>
+#include <armadillo_services/joints_state_reader.h>
 
 JointStateReader::JointStateReader(ros::NodeHandle nh)
 {

@@ -30,8 +30,8 @@
 /* Author: Elchay Rauper*/
 
 
-#ifndef ARMADILLO2_HW_BATTERY_PUB_H
-#define ARMADILLO2_HW_BATTERY_PUB_H
+#ifndef ARMADILLO_HW_BATTERY_PUB_H
+#define ARMADILLO_HW_BATTERY_PUB_H
 
 #include <ros/ros.h>
 #include <bms_interface/bms_interface.h>
@@ -43,7 +43,7 @@
 #define SPEAK_LOW_BAT_INTERVAL 30 //secs
 #define BATT_PORT_PARAM "~batt_port"
 
-namespace armadillo2_hw
+namespace armadillo_hw
 {
     class BatteryPub
     {
@@ -80,4 +80,4 @@ namespace armadillo2_hw
 
 
 
-#endif //ARMADILLO2_HW_BATTERY_PUB_H
+#endif //ARMADILLO_HW_BATTERY_PUB_H

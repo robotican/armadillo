@@ -29,31 +29,61 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
+#ifndef ARMADILLO_HW_ARMADILLO_HW_H
+#define ARMADILLO_HW_ARMADILLO_HW_H
 
-#ifndef ARMADILLO2_SERVICES_SHUTDOWN_H
-#define ARMADILLO2_SERVICES_SHUTDOWN_H
-
-#include <armadillo2_services/dxl_torque.h>
-#include <armadillo2_services/pan_tilt_mover.h>
-#include <std_srvs/Trigger.h>
+#include "dxl_motors_builder.h"
+#include "battery_pub.h"
+#include "ricboard_pub.h"
+#include "roboteq_diff_drive.h"
+#include <hardware_interface/robot_hw.h>
+#include <hardware_interface/joint_command_interface.h>
+#include <hardware_interface/joint_state_interface.h>
+#include <hardware_interface/posvel_command_interface.h>
 #include <std_msgs/String.h>
 
-class Shutdown
+
+namespace armadillo_hw
 {
-private:
-    ros::NodeHandle *nh_;
-    ros::ServiceServer shutdown_srv_;
-    ros::Publisher espeak_pub_;
-    const PanTiltMover* head_mover_;
-    DxlTorque* dxl_torque_;
+    class ArmadilloHW : public hardware_interface::RobotHW
+    {
+    private:
 
-    bool shutdownCB(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+        ros::Time prev_time_;
+        ros::NodeHandle *node_handle_;
 
-public:
-    Shutdown(ros::NodeHandle &nh,
-             const PanTiltMover &head_mover,
-             DxlTorque &dxl_torque);
-};
+        /* interfaces */
+        hardware_interface::JointStateInterface joint_state_interface_;
+        hardware_interface::PositionJointInterface position_interface_;
+        hardware_interface::PosVelJointInterface posvel_interface_;
+        hardware_interface::VelocityJointInterface velocity_interface_;
+        hardware_interface::EffortJointInterface effort_interface_;
 
+        /* robot close loop components */
+        DxlMotorsBuilder dxl_motors_;
+        BatteryPub battery_;
+        RicboardPub ric_;
+        RoboteqDiffDrive roboteq_;
 
-#endif //ARMADILLO2_SERVICES_SHUTDOWN_H
+        ros::Publisher espeak_pub_;
+
+        void registerInterfaces();
+        void straighHead();
+        void speakMsg(std::string msg, int sleep_time)
+        {
+            std_msgs::String speak_msg;
+            speak_msg.data = msg;
+            espeak_pub_.publish(speak_msg);
+            if (sleep_time > 0)
+                sleep(sleep_time);
+        }
+
+    public:
+
+        ArmadilloHW(ros::NodeHandle &nh);
+        void read();
+        void write();
+    };
+}
+
+#endif //ARMADILLO_HW_ARMADILLO_HW_H

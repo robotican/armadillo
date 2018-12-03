@@ -37,7 +37,7 @@
 #include <gazebo/common/common.hh>
 #include <stdio.h>
 
-#include <armadillo2_demos/GazeboGraspGripper.h>
+#include <armadillo_demos/GazeboGraspGripper.h>
 
 using gazebo::GazeboGraspGripper;
 

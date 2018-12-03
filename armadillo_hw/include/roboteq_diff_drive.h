@@ -30,8 +30,8 @@
 /* Author: Elchay Rauper*/
 
 
-#ifndef ARMADILLO2_HW_ROBOTEQ_DIFF_DRIVE_H
-#define ARMADILLO2_HW_ROBOTEQ_DIFF_DRIVE_H
+#ifndef ARMADILLO_HW_ROBOTEQ_DIFF_DRIVE_H
+#define ARMADILLO_HW_ROBOTEQ_DIFF_DRIVE_H
 
 #include <ros/ros.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -83,4 +83,4 @@ public:
 };
 
 
-#endif //ARMADILLO2_HW_ROBOTEQ_DIFF_DRIVE_H
+#endif //ARMADILLO_HW_ROBOTEQ_DIFF_DRIVE_H

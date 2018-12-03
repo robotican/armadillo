@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo2_robot" description="ARMadillo2 Robot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo_robot" description="armadillo robot">
     
-    <xacro:include filename="$(find armadillo2_description)/urdf/armadillo2.xacro" />
-    <xacro:include filename="$(find armadillo2_gazebo)/macros/intel_cam.xacro" />
+    <xacro:include filename="$(find armadillo_description)/urdf/armadillo.xacro" />
+    <xacro:include filename="$(find armadillo_gazebo)/macros/intel_cam.xacro" />
     
     
     <xacro:arg name="kinect2" default="true"/>
@@ -19,7 +19,7 @@
     
     <!-- intel_cam -->
     <xacro:if value="$(arg intel_cam)">        
-        <xacro:include filename="$(find armadillo2_gazebo)/macros/intel_cam.xacro" />
+        <xacro:include filename="$(find armadillo_gazebo)/macros/intel_cam.xacro" />
         <xacro:intel_d435_gazebo name="camera" ros_topic="intel_cam"/> 
     </xacro:if>
     
@@ -31,40 +31,40 @@
         <xacro:property name="kinect2_hd" value="$(arg kinect2_hd)"/>
         <xacro:property name="kinect2_qhd" value="$(arg kinect2_qhd)"/>
         <xacro:property name="kinect2_sd" value="$(arg kinect2_sd)"/>
-        <xacro:include filename="$(find armadillo2_gazebo)/macros/kinect2.xacro" />
+        <xacro:include filename="$(find armadillo_gazebo)/macros/kinect2.xacro" />
     </xacro:if>
     
     
     
     <!-- Sonars -->
     <xacro:if value="$(arg urf)">
-        <xacro:include filename="$(find armadillo2_gazebo)/macros/urf.xacro" />
+        <xacro:include filename="$(find armadillo_gazebo)/macros/urf.xacro" />
         <xacro:urf name="front" link="front_urf_link" topic="URF/front" fov="${10.0*M_PI/180.0}" min="0.2" max="5.0"/>
     </xacro:if>
     
     
     <!-- hokuyo  utm-30lx -->
     <xacro:if value="$(arg lidar)">
-        <xacro:include filename="$(find armadillo2_gazebo)/macros/hokuyo.xacro" />
+        <xacro:include filename="$(find armadillo_gazebo)/macros/hokuyo.xacro" />
         <xacro:lidar link="laser_link" topic="scan" samples="720" resolution="1" min_angle="-1.5707963" max_angle="1.5707963" range_min="0.1" range_max="30" range_resolution="0.03" />
     </xacro:if>
     
     
     <!-- GPS   -->
     <xacro:if value="$(arg gps)">
-        <xacro:include filename="$(find armadillo2_gazebo)/macros/gps.xacro" />
+        <xacro:include filename="$(find armadillo_gazebo)/macros/gps.xacro" />
         <xacro:gps link="base_link" hz="5" topic="GPS" lat="31.262218" long="34.80146100" alt="298"/>
     </xacro:if>
     
     <!-- IMU   -->
     <xacro:if value="$(arg imu)">
-        <xacro:include filename="$(find armadillo2_gazebo)/macros/imu.xacro" />
+        <xacro:include filename="$(find armadillo_gazebo)/macros/imu.xacro" />
         <xacro:imu link="base_link" hz="50" topic="IMU" />
     </xacro:if>
     
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-            <robotSimType>gazebo_ros_control/Armadillo2RobotHWSim</robotSimType> 
+            <robotSimType>gazebo_ros_control/ArmadilloRobotHWSim</robotSimType> 
         </plugin>
     </gazebo>
     

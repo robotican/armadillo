@@ -33,12 +33,12 @@
 #include <std_msgs/Float64MultiArray.h>
 #include <tf/transform_listener.h>
 #include <actionlib/client/simple_action_client.h>
-#include <armadillo2_msgs/PointHeadAction.h>
+#include <armadillo_msgs/PointHeadAction.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <std_srvs/SetBool.h>
 
 // Our Action interface type, provided as a typedef for convenience
-typedef actionlib::SimpleActionClient<armadillo2_msgs::PointHeadAction> PointHeadClient;
+typedef actionlib::SimpleActionClient<armadillo_msgs::PointHeadAction> PointHeadClient;
 
 
 void callback(const geometry_msgs::PoseStamped::ConstPtr& pose);
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
         if (it != poses.end()) {
             moveit_msgs::CollisionObject obj=it->second;
             //the goal message we will be sending
-            armadillo2_msgs::PointHeadGoal goal;
+            armadillo_msgs::PointHeadGoal goal;
 
             //the target point, expressed in the requested frame
 

@@ -61,9 +61,9 @@
 #include <urdf/model.h>
 
 #include <trajectory_msgs/JointTrajectory.h>
-#include <armadillo2_msgs/PointHeadAction.h>
-#include <armadillo2_msgs/QueryTrajectoryState.h>
-#include <armadillo2_msgs/JointTrajectoryControllerState.h>
+#include <armadillo_msgs/PointHeadAction.h>
+#include <armadillo_msgs/QueryTrajectoryState.h>
+#include <armadillo_msgs/JointTrajectoryControllerState.h>
 
 
 void printVector3(const char * label, tf::Vector3 v)
@@ -75,7 +75,7 @@ void printVector3(const char * label, tf::Vector3 v)
 class ControlHead
 {
 private:
-  typedef actionlib::ActionServer<armadillo2_msgs::PointHeadAction> PHAS;
+  typedef actionlib::ActionServer<armadillo_msgs::PointHeadAction> PHAS;
   typedef PHAS::GoalHandle GoalHandle;
 
   std::string node_name_;
@@ -138,7 +138,7 @@ public:
     sub_controller_state_ =
       nh_.subscribe("state", 1, &ControlHead::controllerStateCB, this);
     cli_query_traj_ =
-        nh_.serviceClient<armadillo2_msgs::QueryTrajectoryState>("/pan_tilt_trajectory_controller/query_state");
+        nh_.serviceClient<armadillo_msgs::QueryTrajectoryState>("/pan_tilt_trajectory_controller/query_state");
 
     // Should only ever happen on first call... move to constructor?
     if(tree_.getNrOfJoints() == 0)
@@ -284,7 +284,7 @@ public:
     KDL::JntArray jnt_pos(joints), jnt_eff(joints);
     KDL::Jacobian jacobian(joints);
 
-    armadillo2_msgs::QueryTrajectoryState traj_state;
+    armadillo_msgs::QueryTrajectoryState traj_state;
     traj_state.request.time = ros::Time::now() + ros::Duration(0.01);
     if (!cli_query_traj_.call(traj_state))
     {
@@ -484,8 +484,8 @@ public:
     }
   }
 
-    armadillo2_msgs::JointTrajectoryControllerStateConstPtr last_controller_state_;
-  void controllerStateCB(const armadillo2_msgs::JointTrajectoryControllerStateConstPtr &msg)
+    armadillo_msgs::JointTrajectoryControllerStateConstPtr last_controller_state_;
+  void controllerStateCB(const armadillo_msgs::JointTrajectoryControllerStateConstPtr &msg)
   {
     last_controller_state_ = msg;
     ros::Time now = ros::Time::now();
@@ -512,7 +512,7 @@ public:
       target_from_frame.normalize();
       tf::Vector3 current_in_frame = frame_in_root.getBasis().inverse()*target_from_frame;
 
-      armadillo2_msgs::PointHeadFeedback feedback;
+      armadillo_msgs::PointHeadFeedback feedback;
       feedback.pointing_angle_error = current_in_frame.angle(axis_in_frame);
       active_goal_.publishFeedback(feedback);
 

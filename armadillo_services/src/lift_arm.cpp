@@ -30,7 +30,7 @@
 /* Author: Elchay Rauper*/
 
 
-#include <armadillo2_services/lift_arm.h>
+#include <armadillo_services/lift_arm.h>
 
 LiftArm::LiftArm(ros::NodeHandle &nh, const JointStateReader &joints_state)
 {
@@ -119,7 +119,7 @@ bool LiftArm::openGripperCB(std_srvs::Trigger::Request &req, std_srvs::Trigger::
 
 ArmPose LiftArm::getArmPose()
 {
-    armadillo2_state joints_state = joint_states_->getJointsState();
+    armadillo_state joints_state = joint_states_->getJointsState();
     //ROS_INFO("real %f: | lower: %f | upper: %f", arm.rotation1_pos_rad, (ROTATION1_VALID_START_RAD_LEFT_POS - VALID_START_RAD_GOAL_TOLERANCE), (ROTATION1_VALID_START_RAD_LEFT_POS + VALID_START_RAD_GOAL_TOLERANCE));
     if (joints_state.rotation1 > VALID_START_POSE_LEFT_ROTATION1 - START_TOLERANCE_ROTATION1 &&
             joints_state.rotation1 < VALID_START_POSE_LEFT_ROTATION1 + START_TOLERANCE_ROTATION1 )

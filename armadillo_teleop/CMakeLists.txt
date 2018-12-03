@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES armadillo2_teleop
+#  LIBRARIES armadillo_teleop
   CATKIN_DEPENDS joy roscpp actionlib
 #  DEPENDS system_lib
 )

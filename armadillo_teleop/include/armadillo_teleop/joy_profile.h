@@ -29,8 +29,8 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#ifndef ARMADILLO2_TELEOP_JOY_PROFILE_H
-#define ARMADILLO2_TELEOP_JOY_PROFILE_H
+#ifndef ARMADILLO_TELEOP_JOY_PROFILE_H
+#define ARMADILLO_TELEOP_JOY_PROFILE_H
 
 struct joy_puppet
 {
@@ -137,4 +137,4 @@ struct joy_profile
 };
 
 
-#endif //ARMADILLO2_TELEOP_JOY_PROFILE_H
+#endif //ARMADILLO_TELEOP_JOY_PROFILE_H

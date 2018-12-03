@@ -31,7 +31,7 @@
 
 #include "dxl_motors_builder.h"
 
-namespace armadillo2_hw
+namespace armadillo_hw
 {
     DxlMotorsBuilder::DxlMotorsBuilder(ros::NodeHandle &nh)
     {
@@ -50,19 +50,19 @@ namespace armadillo2_hw
 
             for (dxl::motor &motor :  motors_)
             {
-                ROS_INFO ("[armadillo2_hw/dxl_motors_builder]: done building motor id: %d, model: %d",
+                ROS_INFO ("[armadillo_hw/dxl_motors_builder]: done building motor id: %d, model: %d",
                           motor.id, motor.spec.model);
             }
 
             torque_srv_ = nh_->advertiseService("hardware/dxl_torque", &DxlMotorsBuilder::torqueServiceCB, this);
             dxl_dead_timer_ = nh.createTimer(ros::Duration(DXL_RECOVER_TIMEOUT), &DxlMotorsBuilder::dxlDeadTimerCB, this);
             dxl_dead_timer_.stop();
-            ROS_INFO("[armadillo2_hw/dxl_builder]: dxl motors are up");
+            ROS_INFO("[armadillo_hw/dxl_builder]: dxl motors are up");
             espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
             /*speakMsg("dxl motors manager is up", 1);*/
         }
         else
-            ROS_WARN("[armadillo2_hw/dxl_motors_builder]: dxl motors hardware is disabled");
+            ROS_WARN("[armadillo_hw/dxl_motors_builder]: dxl motors hardware is disabled");
     }
 
     void DxlMotorsBuilder::dxlDeadTimerCB(const ros::TimerEvent &event)

@@ -39,7 +39,7 @@
 #include <gazebo/common/common.hh>
 #include <gazebo/transport/TransportTypes.hh>
 #include <stdio.h>
-#include <armadillo2_demos/GazeboGraspGripper.h>
+#include <armadillo_demos/GazeboGraspGripper.h>
 // #include <gazebo_grasp_plugin/CollidingPoint.h>
 
 namespace gazebo {

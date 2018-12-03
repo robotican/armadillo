@@ -66,7 +66,7 @@ enum class OpMode
     PAN_FACE_DRIVE      = 5  /* if pan is stationary, rotate and move base fw to track face (fw)     */
 };
 
-struct armadillo2_state
+struct armadillo_state
 {
     double rotation1 = 0; //rad
     double rotation2 = 0; //rad
@@ -93,7 +93,7 @@ private:
     ros::Subscriber urf_sub_;
     ros::Publisher twise_pub_;
 
-    armadillo2_state armadillo_state_;
+    armadillo_state armadillo_state_;
     bool got_state_ = false;
 
     void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr &msg);

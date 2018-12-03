@@ -40,7 +40,7 @@
 
 
 
-#include "armadillo2_sim_interface/armadillo2_sim_interface.h"
+#include "armadillo_sim_interface/armadillo_sim_interface.h"
 namespace
 {
 
@@ -55,7 +55,7 @@ namespace gazebo_ros_control
 {
 
 
-    bool Armadillo2RobotHWSim::initSim(
+    bool ArmadilloRobotHWSim::initSim(
             const std::string& robot_namespace,
             ros::NodeHandle model_nh,
             gazebo::physics::ModelPtr parent_model,
@@ -139,7 +139,7 @@ namespace gazebo_ros_control
             const std::string& hardware_interface = joint_interfaces.front();
 
             // Debug
-            ROS_DEBUG_STREAM_NAMED("armadillo2_hw_sim","Loading joint '" << joint_names_[j]
+            ROS_DEBUG_STREAM_NAMED("armadillo_hw_sim","Loading joint '" << joint_names_[j]
                                                                             << "' of type '" << hardware_interface << "'");
 
             // Create joint state interface for all joints
@@ -265,7 +265,7 @@ namespace gazebo_ros_control
         return true;
     }
 
-    void Armadillo2RobotHWSim::readSim(ros::Time time, ros::Duration period)
+    void ArmadilloRobotHWSim::readSim(ros::Time time, ros::Duration period)
     {
         for(unsigned int j=0; j < n_dof_; j++)
         {
@@ -284,7 +284,7 @@ namespace gazebo_ros_control
         }
     }
 
-    void Armadillo2RobotHWSim::writeSim(ros::Time time, ros::Duration period)
+    void ArmadilloRobotHWSim::writeSim(ros::Time time, ros::Duration period)
     {
         // If the E-stop is active, joints controlled by position commands will maintain their positions.
         if (e_stop_active_)
@@ -387,7 +387,7 @@ namespace gazebo_ros_control
         }
     }
 
-    void Armadillo2RobotHWSim::eStopActive(const bool active)
+    void ArmadilloRobotHWSim::eStopActive(const bool active)
     {
         e_stop_active_ = active;
     }
@@ -395,7 +395,7 @@ namespace gazebo_ros_control
 // Register the limits of the joint specified by joint_name and joint_handle. The limits are
 // retrieved from joint_limit_nh. If urdf_model is not NULL, limits are retrieved from it also.
 // Return the joint's type, lower position limit, upper position limit, and effort limit.
-    void Armadillo2RobotHWSim::registerJointLimits(const std::string& joint_name,
+    void ArmadilloRobotHWSim::registerJointLimits(const std::string& joint_name,
                                                    const hardware_interface::JointHandle& joint_handle,
                                                    const ControlMethod ctrl_method,
                                                    const ros::NodeHandle& joint_limit_nh,
@@ -515,7 +515,7 @@ namespace gazebo_ros_control
     }
 
 
-    void Armadillo2RobotHWSim::registerJointLimits(const std::string& joint_name,
+    void ArmadilloRobotHWSim::registerJointLimits(const std::string& joint_name,
                                                    const hardware_interface::PosVelJointHandle& joint_handle,
                                                    const ControlMethod ctrl_method,
                                                    const ros::NodeHandle& joint_limit_nh,
@@ -618,7 +618,7 @@ namespace gazebo_ros_control
               }
           }*/
     }
-    PLUGINLIB_EXPORT_CLASS(gazebo_ros_control::Armadillo2RobotHWSim, gazebo_ros_control::RobotHWSim)
+    PLUGINLIB_EXPORT_CLASS(gazebo_ros_control::ArmadilloRobotHWSim, gazebo_ros_control::RobotHWSim)
 }
 
 

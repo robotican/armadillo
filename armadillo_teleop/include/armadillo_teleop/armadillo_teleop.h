@@ -29,46 +29,68 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#ifndef ARMADILLO2_SERVICES_DXL_TORQUE_H
-#define ARMADILLO2_SERVICES_DXL_TORQUE_H
 
+#ifndef ARMADILLO_TELEOP_ARMADILLO_JOY_H
+#define ARMADILLO_TELEOP_ARMADILLO_JOY_H
+
+#include <ros/forwards.h>
 #include <ros/ros.h>
-#include <std_srvs/SetBool.h>
+#include <geometry_msgs/Twist.h>
+#include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
+#include <sensor_msgs/Joy.h>
 #include <trajectory_msgs/JointTrajectory.h>
-#include <sensor_msgs/JointState.h>
-#include <armadillo2_services/lift_arm.h>
-#include <armadillo2_services/pan_tilt_mover.h>
-#include <armadillo2_services/joints_state_reader.h>
+#include <control_msgs/GripperCommandAction.h>
+#include <actionlib/client/simple_action_client.h>
+#include <moveit/move_group_interface/move_group_interface.h>
+#include <moveit/planning_scene_interface/planning_scene_interface.h>
+#include "joy_profile.h"
 
-struct head_state
+struct joints_state_indx
 {
-    double pan_pos_rad = 0;
-    double tilt_pos_rad = 0;
-    bool got_state = false;
+    static const uint8_t TORSO = 11;
+    static const uint8_t PAN = 0;
+    static const uint8_t TILT = 1;
 };
 
-class DxlTorque
+class ArmadilloTeleop
 {
 private:
-    ros::NodeHandle* nh_;
-    ros::Publisher dxl_traj_pub_;
-    ros::ServiceServer set_torque_srv_;
-    ros::ServiceClient set_torque_client_;
-    const JointStateReader* joint_states_;
+    //ros::NodeHandle *nh_;
+    ros::Publisher torso_real_pub_,
+                   torso_sim_pub_,
+                   twist_pub_,
+                   head_pub_;
+    ros::Subscriber joy_sub_,
+                    joints_states_sub_,
+                    gripper_sub_;
+    ros::NodeHandle nh_;
+    moveit::planning_interface::MoveGroupInterface *arm_grp_;
+    actionlib::SimpleActionClient<control_msgs::GripperCommandAction> *gripper_client_;
 
+    joints_state_indx states_;
+    joy_profile joy_;
+    bool tele_arm_ = false;
 
-    const PanTiltMover *head_mover_;
-
-    bool setTorqueCB(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
-    void commandCurrentDxlPosition();
+    void drive();
+    void moveTorso();
+    void moveArm();
+    void moveGripper();
+    void moveHead();
+    void resetArm();
+    void update(const sensor_msgs::Joy::ConstPtr& joy);
+    void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
+    bool loadProfile(const std::string &profile_name);
+    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr& msg);
+    void gripperGapCB(const std_msgs::Float32::ConstPtr& msg);
 
 public:
-    DxlTorque(ros::NodeHandle& nh,
-              const PanTiltMover &head_mover,
-              const JointStateReader &joints_state);
-    bool setTorque(bool onoff);
-
+    ArmadilloTeleop();
+    ~ArmadilloTeleop()
+    {
+        delete gripper_client_;
+        delete arm_grp_;
+    }
 };
 
-
-#endif //ARMADILLO2_SERVICES_DXL_TORQUE_H
+#endif //ARMADILLO_TELEOP_ARMADILLO_JOY_H

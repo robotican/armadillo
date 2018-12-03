@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(armadillo2_sim_interface)
+project(armadillo_sim_interface)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -33,7 +33,7 @@ catkin_package(
         urdf
         angles
         INCLUDE_DIRS include
-        LIBRARIES armadillo2_sim_interface
+        LIBRARIES armadillo_sim_interface
 )
 
 link_directories(
@@ -49,11 +49,11 @@ include_directories(include
 #add_library(${PROJECT_NAME} src/gazebo_ros_control_plugin.cpp)
 #target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_library(armadillo2_sim_interface src/armadillo2_sim_interface.cpp include/armadillo2_sim_interface/armadillo2_sim_interface.h)
-target_link_libraries(armadillo2_sim_interface ${catkin_LIBRARIES})
+add_library(armadillo_sim_interface src/armadillo_sim_interface.cpp include/armadillo_sim_interface/armadillo_sim_interface.h)
+target_link_libraries(armadillo_sim_interface ${catkin_LIBRARIES})
 
 ## Install
-install(TARGETS armadillo2_sim_interface
+install(TARGETS armadillo_sim_interface
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -64,6 +64,6 @@ install(DIRECTORY include/${PROJECT_NAME}/
         )
 
 
-install(FILES armadillo2_sim_plugins.xml
+install(FILES armadillo_sim_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         )

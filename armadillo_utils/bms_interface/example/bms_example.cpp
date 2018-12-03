@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     bms::BMSInterface bms;
     try
     {
-        bms.connect("/dev/armadillo2/BMS");
+        bms.connect("/dev/armadillo/BMS");
     }
     catch (bms::BMSException exp)
     {

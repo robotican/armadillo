@@ -13,7 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES armadillo2_msgs
+#  LIBRARIES armadillo_msgs
   CATKIN_DEPENDS
         message_runtime
         roscpp

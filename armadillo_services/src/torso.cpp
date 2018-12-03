@@ -30,7 +30,7 @@
 /* Author: Elchay Rauper*/
 
 
-#include <armadillo2_services/torso.h>
+#include <armadillo_services/torso.h>
 
 Torso::Torso(ros::NodeHandle &nh, const JointStateReader &joints_state)
 {

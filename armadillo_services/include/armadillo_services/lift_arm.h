@@ -29,15 +29,15 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#ifndef ARMADILLO2_SERVICES_LIFT_ARM_H
-#define ARMADILLO2_SERVICES_LIFT_ARM_H
+#ifndef ARMADILLO_SERVICES_LIFT_ARM_H
+#define ARMADILLO_SERVICES_LIFT_ARM_H
 
 
 #include <ros/ros.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_srvs/Trigger.h>
 #include <control_msgs/GripperCommandActionGoal.h>
-#include <armadillo2_services/joints_state_reader.h>
+#include <armadillo_services/joints_state_reader.h>
 
 /* valid starting positions (rad) */
 #define START_TOLERANCE_ROTATION1 0.174533 //10 deg
@@ -123,4 +123,4 @@ public:
 };
 
 
-#endif //ARMADILLO2_SERVICES_LIFT_ARM_H
+#endif //ARMADILLO_SERVICES_LIFT_ARM_H

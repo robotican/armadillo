@@ -29,27 +29,36 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
+#ifndef ARMADILLO_SERVICES_PAN_TILT_MOVER_H
+#define ARMADILLO_SERVICES_PAN_TILT_MOVER_H
 
-#ifndef ARMADILLO2_SERVICES_TORSO_H
-#define ARMADILLO2_SERVICES_TORSO_H
-
-#include <std_msgs/Float64.h>
 #include <ros/ros.h>
-#include <armadillo2_services/joints_state_reader.h>
+#include <trajectory_msgs/JointTrajectory.h>
+#include <std_msgs/Float64MultiArray.h>
+#include <std_msgs/Float32.h>
+#include <armadillo_msgs/PanTilt.h>
 
-class Torso
+class PanTiltMover
 {
 private:
-    ros::Publisher torso_pub_;
+    ros::Publisher traj_pub_,
+                   grp_pos_pub_;
+    ros::ServiceServer mover_srv_;
     ros::NodeHandle *nh_;
-    const JointStateReader* joints_state_;
+
+    double pan_goal = 0,
+           tilt_goal = 0;
+
+    bool moveHeadCB(armadillo_msgs::PanTilt::Request &req,
+                    armadillo_msgs::PanTilt::Response &res);
 
 public:
-    Torso(ros::NodeHandle &nh,
-          const JointStateReader &joints_state);
-    bool command(float position);
-    bool commandCurrentPos();
+    PanTiltMover(ros::NodeHandle &nh);
+    bool publishTrajectoryMsg(float pan, float tilt) const;
+    bool publishGroupPosMsg(float pan, float tilt) const;
+    bool centerHead() const;
+
 };
 
 
-#endif //ARMADILLO2_SERVICES_TORSO_H
+#endif //ARMADILLO_SERVICES_PAN_TILT_MOVER_H

@@ -29,9 +29,9 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#include "armadillo2_hw.h"
+#include "armadillo_hw.h"
 
-namespace armadillo2_hw
+namespace armadillo_hw
 {
 
     ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :
@@ -59,7 +59,7 @@ namespace armadillo2_hw
 
         ric_.startLoop();
 
-        ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
+        ROS_INFO("[armadillo_hw]: armadillo hardware interface loaded successfully");
         espeak_pub_ = node_handle_->advertise<std_msgs::String>("/espeak_node/speak_line", 10);
         speakMsg("i am ready", 1);
     }

@@ -28,7 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
         trajectory_msgs
         gazebo_ros
         ar_track_alvar
-        armadillo2_msgs
+        armadillo_msgs
         gazebo_dev
         pluginlib
         message_generation
@@ -64,7 +64,7 @@ link_directories(
 
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES armadillo2_demos
+#  LIBRARIES armadillo_demos
   CATKIN_DEPENDS
         roscpp
         actionlib
@@ -92,41 +92,41 @@ catkin_package(
 add_library(gazebo_grasp_fix SHARED
         src/pick_and_place/GazeboGraspFix.cpp
         src/pick_and_place/GazeboGraspGripper.cpp
-        include/armadillo2_demos/GazeboGraspFix.h
-        include/armadillo2_demos/GazeboGraspGripper.h)
+        include/armadillo_demos/GazeboGraspFix.h
+        include/armadillo_demos/GazeboGraspGripper.h)
 add_dependencies(gazebo_grasp_fix ${catkin_EXPORTED_TARGETS})
 
 add_executable(point_head_action src/pick_and_place/point_head_action.cpp)
-add_dependencies(point_head_action armadillo2_msgs_generate_messages_cpp)
+add_dependencies(point_head_action armadillo_msgs_generate_messages_cpp)
 add_dependencies(point_head_action ${${PROJECT_NAME}_EXPORTED_TARGETS})
-add_dependencies(point_head_action armadillo2_msgs_generate_messages_cpp)
+add_dependencies(point_head_action armadillo_msgs_generate_messages_cpp)
 target_link_libraries(point_head_action ${catkin_LIBRARIES} )
 
 add_executable(find_objects_node src/pick_and_place/find_objects.cpp)
-add_dependencies(find_objects_node armadillo2_msgs_generate_messages_cpp)
+add_dependencies(find_objects_node armadillo_msgs_generate_messages_cpp)
 add_dependencies(find_objects_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 add_dependencies(find_objects_node ${PROJECT_NAME}_gencfg)
 target_link_libraries(find_objects_node ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 
 add_executable(pan_tilt_object_tracking_node src/pick_and_place/pan_tilt_object_tracking.cpp)
-add_dependencies(pan_tilt_object_tracking_node armadillo2_msgs_generate_messages_cpp)
+add_dependencies(pan_tilt_object_tracking_node armadillo_msgs_generate_messages_cpp)
 add_dependencies(pan_tilt_object_tracking_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(pan_tilt_object_tracking_node ${catkin_LIBRARIES})
 
 add_executable(drive2object_node src/pick_and_place/drive2object.cpp)
-add_dependencies(drive2object_node armadillo2_msgs_generate_messages_cpp)
+add_dependencies(drive2object_node armadillo_msgs_generate_messages_cpp)
 add_dependencies(drive2object_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(drive2object_node ${catkin_LIBRARIES})
 
 add_executable(drive_and_pick src/pick_and_place/drive_and_pick.cpp)
-add_dependencies(drive_and_pick armadillo2_msgs_generate_messages_cpp)
+add_dependencies(drive_and_pick armadillo_msgs_generate_messages_cpp)
 add_dependencies(drive_and_pick ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(drive_and_pick ${catkin_LIBRARIES})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/armadillo2_demos.cpp
+#   src/${PROJECT_NAME}/armadillo_demos.cpp
 # )
 
 ## Add cmake target dependencies of the library

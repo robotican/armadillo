@@ -47,7 +47,7 @@
 #include "tf/message_filter.h"
 #include "message_filters/subscriber.h"
 #include <ar_track_alvar_msgs/AlvarMarkers.h>
-#include <armadillo2_msgs/SwitchCamTopic.h>
+#include <armadillo_msgs/SwitchCamTopic.h>
 
 using namespace cv;
 using namespace std;
@@ -304,7 +304,7 @@ void dynamicParamCallback(robotican_common::FindObjectDynParamConfig &config, ui
 
 void on_trackbar( int, void* ){}
 
-bool switch_pcl_topic(armadillo2_msgs::SwitchCamTopic::Request &req, armadillo2_msgs::SwitchCamTopic::Response &res) {
+bool switch_pcl_topic(armadillo_msgs::SwitchCamTopic::Request &req, armadillo_msgs::SwitchCamTopic::Response &res) {
 
     if (req.num==1) depth_topic=depth_topic1;
     else if (req.num==2) depth_topic=depth_topic2;

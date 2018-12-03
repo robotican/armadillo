@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-    <name>armadillo2_msgs</name>
+    <name>armadillo_msgs</name>
     <version>0.0.0</version>
     <description>The armadillo_msgs package contains msgs, srvs and actions</description>
     

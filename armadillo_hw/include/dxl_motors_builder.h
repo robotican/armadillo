@@ -30,8 +30,8 @@
 /* Author: Elchay Rauper*/
 
 
-#ifndef ARMADILLO2_HW_DXL_MOTORS_BUILDER_H
-#define ARMADILLO2_HW_DXL_MOTORS_BUILDER_H
+#ifndef ARMADILLO_HW_DXL_MOTORS_BUILDER_H
+#define ARMADILLO_HW_DXL_MOTORS_BUILDER_H
 
 #include <dxl_interface/dxl_interface.h>
 #include <std_srvs/SetBool.h>
@@ -54,7 +54,7 @@
 #define DXL_PORT_BAUD_PARAM "~dxl_port_baudrate"
 
 
-namespace armadillo2_hw
+namespace armadillo_hw
 {
 
     struct read_write_errs
@@ -131,4 +131,4 @@ namespace armadillo2_hw
         }
     };
 }
-#endif //ARMADILLO2_HW_DXL_MOTORS_BUILDER_H
+#endif //ARMADILLO_HW_DXL_MOTORS_BUILDER_H

@@ -29,8 +29,8 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#ifndef ARMADILLO2_HW_RICBOARD_PUB_H
-#define ARMADILLO2_HW_RICBOARD_PUB_H
+#ifndef ARMADILLO_HW_RICBOARD_PUB_H
+#define ARMADILLO_HW_RICBOARD_PUB_H
 
 #include <ric_interface/ric_interface.h>
 #include <ric_interface/ric_exception.h>
@@ -122,4 +122,4 @@ public:
 };
 
 
-#endif //ARMADILLO2_HW_RICBOARD_PUB_H
+#endif //ARMADILLO_HW_RICBOARD_PUB_H

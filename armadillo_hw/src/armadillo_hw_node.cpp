@@ -29,36 +29,40 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#ifndef ARMADILLO2_SERVICES_PAN_TILT_MOVER_H
-#define ARMADILLO2_SERVICES_PAN_TILT_MOVER_H
-
 #include <ros/ros.h>
-#include <trajectory_msgs/JointTrajectory.h>
-#include <std_msgs/Float64MultiArray.h>
-#include <std_msgs/Float32.h>
-#include <armadillo2_msgs/PanTilt.h>
+#include <controller_manager/controller_manager.h>
+#include "armadillo_hw.h"
 
-class PanTiltMover
+#define LOOP_HZ 100.0
+#define THREADS_NUM 2
+
+int main(int argc, char **argv)
 {
-private:
-    ros::Publisher traj_pub_,
-                   grp_pos_pub_;
-    ros::ServiceServer mover_srv_;
-    ros::NodeHandle *nh_;
+    ros::init(argc, argv, "armadillo_hw_node");
+    ros::NodeHandle nh;
 
-    double pan_goal = 0,
-           tilt_goal = 0;
+    armadillo_hw::ArmadilloHW armadillo_hw(nh);
+    controller_manager::ControllerManager controller_manager(&armadillo_hw);
 
-    bool moveHeadCB(armadillo2_msgs::PanTilt::Request &req,
-                    armadillo2_msgs::PanTilt::Response &res);
+    ros::AsyncSpinner asyncSpinner(THREADS_NUM);
+    asyncSpinner.start();
 
-public:
-    PanTiltMover(ros::NodeHandle &nh);
-    bool publishTrajectoryMsg(float pan, float tilt) const;
-    bool publishGroupPosMsg(float pan, float tilt) const;
-    bool centerHead() const;
+    ros::Time last_time = ros::Time::now();
 
-};
+    while (ros::ok())
+    {
+        armadillo_hw.read();
 
+        ros::Duration(1.0 / (2.0 * LOOP_HZ)).sleep();
 
-#endif //ARMADILLO2_SERVICES_PAN_TILT_MOVER_H
+        ros::Duration duration = ros::Time::now() - last_time;
+        controller_manager.update(ros::Time::now(), duration);
+        last_time = ros::Time::now();
+
+        armadillo_hw.write();
+
+        ros::Duration(1.0 / (2.0 * LOOP_HZ)).sleep();
+
+        ros::spinOnce;
+    }
+}

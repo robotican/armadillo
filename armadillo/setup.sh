@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# installation file for armadillo2 over ROS Kinetic and ubuntu 16.04 #
+# installation file for armadillo over ROS Kinetic and ubuntu 16.04 #
 
 GREEN_TXT='\e[0;32m'
 WHITE_TXT='\e[1;37m'
 RED_TXT='\e[31m'
 NO_COLOR='\033[0m'
 LOGS_FOLDER_PATH="${HOME}/catkin_ws/src/setup_logs"
-INSTALL_HW_COMPS=false #deremine if this script will install armadillo2 hardware drivers
+INSTALL_HW_COMPS=false #deremine if this script will install armadillo hardware drivers
 
 # get package folder path. this must be executed before other commands
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -24,7 +24,7 @@ ______  __    ___    __     ___  _____      ___   ___         ______
 \n${NO_COLOR}"
 
 
-printf "${WHITE_TXT}\n***Installing Armadillo2 ROS-Kinetic Package***\n${NO_COLOR}"
+printf "${WHITE_TXT}\n***Installing Armadillo ROS-Kinetic Package***\n${NO_COLOR}"
 
 # check for hardware argument, and determine installation type #
 if [ $# -eq 0 ]
@@ -34,7 +34,7 @@ elif [ $# -eq 1 ]
 then  
     if [ $1 = "hw" ]
     then
-        printf "${WHITE_TXT}\nGot hardware argument. Installing package for Armadillo2 hardware... ${NO_COLOR}\n"
+        printf "${WHITE_TXT}\nGot hardware argument. Installing package for Armadillo hardware... ${NO_COLOR}\n"
         INSTALL_HW_COMPS=true
     else
         printf "${RED_TXT}\nInvalid argument. Use 'hw' argument to install this package for Armadillo hardware, or use no arguments to install this package for a standalone PC ${NO_COLOR}\n"
@@ -128,7 +128,7 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     sudo apt-get -y install xserver-xorg-video-all-lts-utopic 
     sudo apt-get -y install xserver-xorg-input-all-lts-utopic
     sudo apt-get -y install dkms
-    cd $PKG_PATH/armadillo2/third_party_files/
+    cd $PKG_PATH/armadillo/third_party_files/
     chmod +x displaylink-driver-4.1.9.run
     sudo ./displaylink-driver-4.1.9.run
     cp .xprofile ~/
@@ -160,18 +160,18 @@ sudo apt-get -y install build-essential cmake pkg-config
 sudo apt-get -y install libusb-1.0-0-dev
 sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
 sudo apt-get -y install libglfw3-dev
-cd $PKG_PATH/armadillo2_utils/libfreenect2
+cd $PKG_PATH/armadillo_utils/libfreenect2
 mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
 make
 sudo make install
-cd $PKG_PATH/armadillo2_utils/iai_kinect2/iai_kinect2
+cd $PKG_PATH/armadillo_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
-# install armadillo2 ric interface #
+# install armadillo ric interface #
 printf "${WHITE_TXT}\nInstalling ric interface...\n${NO_COLOR}"
-cd $PKG_PATH/armadillo2/third_party_files/
+cd $PKG_PATH/armadillo/third_party_files/
 sudo dpkg -i ros-kinetic-ric-interface_0.0.0-0xenial_amd64.deb
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
@@ -179,19 +179,19 @@ printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 if [ "$INSTALL_HW_COMPS" = true ] ; then
     printf "${WHITE_TXT}\nInstalling USB rules...\n${NO_COLOR}"
     sudo apt -y install setserial #for setting port latency
-    sudo cp $PKG_PATH/armadillo2/rules/usb_to_dxl.rules /etc/udev/rules.d
-    sudo cp $PKG_PATH/armadillo2/rules/roboteq.rules /etc/udev/rules.d
-    sudo cp $PKG_PATH/armadillo2/rules/49-teensy.rules /etc/udev/rules.d
-    sudo cp $PKG_PATH/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
-    sudo cp $PKG_PATH/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
-    sudo cp $PKG_PATH/armadillo2_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
-    sudo cp $PKG_PATH/armadillo2/rules/99-realsense-libusb.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo/rules/usb_to_dxl.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo/rules/roboteq.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo/rules/49-teensy.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo/rules/bms_battery.rules /etc/udev/rules.d
+    sudo cp $PKG_PATH/armadillo/rules/hokuyo.rules /etc/udev/rules.d/
+    sudo cp $PKG_PATH/armadillo_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
+    sudo cp $PKG_PATH/armadillo/rules/99-realsense-libusb.rules /etc/udev/rules.d
     sudo udevadm control --reload-rules && udevadm trigger
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 fi
 
-# compiling armadillo2 #
-printf "${WHITE_TXT}Compiling armadillo2 package...\n${NO_COLOR}"
+# compiling armadillo #
+printf "${WHITE_TXT}Compiling armadillo package...\n${NO_COLOR}"
 cd ~/catkin_ws
 catkin_make
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"

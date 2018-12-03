@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>armadillo2_gazebo</name>
+  <name>armadillo_gazebo</name>
   <version>0.0.0</version>
   <description>The armadillo_gazebo package</description>
 

@@ -31,8 +31,8 @@
 
 
 
-#ifndef ARMADILLO2_HW_ARM_INTERFACE_H
-#define ARMADILLO2_HW_ARM_INTERFACE_H
+#ifndef ARMADILLO_HW_ARM_INTERFACE_H
+#define ARMADILLO_HW_ARM_INTERFACE_H
 
 #include <iostream>
 #include <stdint.h>
@@ -170,4 +170,4 @@ namespace dxl
 
 }
 
-#endif //ARMADILLO2_HW_ARM_INTERFACE_H
+#endif //ARMADILLO_HW_ARM_INTERFACE_H

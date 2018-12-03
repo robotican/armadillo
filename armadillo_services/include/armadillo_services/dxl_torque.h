@@ -29,40 +29,46 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
+#ifndef ARMADILLO_SERVICES_DXL_TORQUE_H
+#define ARMADILLO_SERVICES_DXL_TORQUE_H
+
 #include <ros/ros.h>
-#include <controller_manager/controller_manager.h>
-#include "armadillo2_hw.h"
+#include <std_srvs/SetBool.h>
+#include <trajectory_msgs/JointTrajectory.h>
+#include <sensor_msgs/JointState.h>
+#include <armadillo_services/lift_arm.h>
+#include <armadillo_services/pan_tilt_mover.h>
+#include <armadillo_services/joints_state_reader.h>
 
-#define LOOP_HZ 100.0
-#define THREADS_NUM 2
-
-int main(int argc, char **argv)
+struct head_state
 {
-    ros::init(argc, argv, "armadillo2_hw_node");
-    ros::NodeHandle nh;
+    double pan_pos_rad = 0;
+    double tilt_pos_rad = 0;
+    bool got_state = false;
+};
 
-    armadillo2_hw::ArmadilloHW armadillo_hw(nh);
-    controller_manager::ControllerManager controller_manager(&armadillo_hw);
+class DxlTorque
+{
+private:
+    ros::NodeHandle* nh_;
+    ros::Publisher dxl_traj_pub_;
+    ros::ServiceServer set_torque_srv_;
+    ros::ServiceClient set_torque_client_;
+    const JointStateReader* joint_states_;
 
-    ros::AsyncSpinner asyncSpinner(THREADS_NUM);
-    asyncSpinner.start();
 
-    ros::Time last_time = ros::Time::now();
+    const PanTiltMover *head_mover_;
 
-    while (ros::ok())
-    {
-        armadillo_hw.read();
+    bool setTorqueCB(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
+    void commandCurrentDxlPosition();
 
-        ros::Duration(1.0 / (2.0 * LOOP_HZ)).sleep();
+public:
+    DxlTorque(ros::NodeHandle& nh,
+              const PanTiltMover &head_mover,
+              const JointStateReader &joints_state);
+    bool setTorque(bool onoff);
 
-        ros::Duration duration = ros::Time::now() - last_time;
-        controller_manager.update(ros::Time::now(), duration);
-        last_time = ros::Time::now();
+};
 
-        armadillo_hw.write();
 
-        ros::Duration(1.0 / (2.0 * LOOP_HZ)).sleep();
-
-        ros::spinOnce;
-    }
-}
+#endif //ARMADILLO_SERVICES_DXL_TORQUE_H

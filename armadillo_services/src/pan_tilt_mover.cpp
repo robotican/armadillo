@@ -29,7 +29,7 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#include <armadillo2_services/pan_tilt_mover.h>
+#include <armadillo_services/pan_tilt_mover.h>
 
 PanTiltMover::PanTiltMover(ros::NodeHandle &nh)
 {
@@ -39,8 +39,8 @@ PanTiltMover::PanTiltMover(ros::NodeHandle &nh)
     mover_srv_ = nh_->advertiseService("services/pan_tilt_mover", &PanTiltMover::moveHeadCB, this);
 }
 
-bool PanTiltMover::moveHeadCB(armadillo2_msgs::PanTilt::Request &req,
-                              armadillo2_msgs::PanTilt::Response &res)
+bool PanTiltMover::moveHeadCB(armadillo_msgs::PanTilt::Request &req,
+                              armadillo_msgs::PanTilt::Response &res)
 {
     return publishTrajectoryMsg(req.pan, req.tilt);
     //return publishGroupPosMsg(req.pan, req.tilt);

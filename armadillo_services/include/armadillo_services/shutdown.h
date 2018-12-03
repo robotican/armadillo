@@ -30,59 +30,30 @@
 /* Author: Elchay Rauper*/
 
 
-#ifndef ARMADILLO2_SERVICES_JOINTS_STATE_READER_H
-#define ARMADILLO2_SERVICES_JOINTS_STATE_READER_H
+#ifndef ARMADILLO_SERVICES_SHUTDOWN_H
+#define ARMADILLO_SERVICES_SHUTDOWN_H
 
-#define INDX_JOINT_PAN 0
-#define INDX_JOINT_TILT 1
-#define INDX_JOINT_LEFT_FINGER 2
-#define INDX_JOINT_LEFT_WHEEL 3
-#define INDX_JOINT_RIGHT_FINGER 4
-#define INDX_JOINT_RIGHT_WHEEL 5
-#define INDX_JOINT_ROTATION1 6
-#define INDX_JOINT_ROTATION2 7
-#define INDX_JOINT_SHOULDER1 8
-#define INDX_JOINT_SHOULDER2 9
-#define INDX_JOINT_SHOULDER3 10
-#define INDX_JOINT_TORSO 11
-#define INDX_JOIN_WRIST 12
+#include <armadillo_services/dxl_torque.h>
+#include <armadillo_services/pan_tilt_mover.h>
+#include <std_srvs/Trigger.h>
+#include <std_msgs/String.h>
 
-#include <ros/ros.h>
-#include <sensor_msgs/JointState.h>
-
-struct armadillo2_state
-{
-    double rotation1 = 0; //rad
-    double rotation2 = 0; //rad
-    double shoulder1 = 0; //rad
-    double shoulder2 = 0; //rad
-    double shoulder3 = 0; //rad
-    double wrist = 0; //rad
-    double finger_left = 0; //rad
-    double finger_right = 0; //rad
-    double pan = 0; //rad
-    double tilt = 0; //rad
-    double torso = 0; //m
-    double wheel_left = 0; //rad
-    double wheel_right = 0; //rad
-
-};
-
-class JointStateReader
+class Shutdown
 {
 private:
     ros::NodeHandle *nh_;
-    ros::Subscriber joints_state_sub_;
-    armadillo2_state armadillo_state_;
-    bool got_state_ = false;
+    ros::ServiceServer shutdown_srv_;
+    ros::Publisher espeak_pub_;
+    const PanTiltMover* head_mover_;
+    DxlTorque* dxl_torque_;
 
-    void jointsUpdateCB(const sensor_msgs::JointState::ConstPtr& msg);
+    bool shutdownCB(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
 
 public:
-    JointStateReader(ros::NodeHandle nh);
-    armadillo2_state getJointsState() const { return armadillo_state_; }
-    bool gotState() const { return got_state_; }
+    Shutdown(ros::NodeHandle &nh,
+             const PanTiltMover &head_mover,
+             DxlTorque &dxl_torque);
 };
 
 
-#endif //ARMADILLO2_SERVICES_JOINTS_STATE_READER_H
+#endif //ARMADILLO_SERVICES_SHUTDOWN_H

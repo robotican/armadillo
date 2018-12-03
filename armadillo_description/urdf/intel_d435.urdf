@@ -26,7 +26,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://armadillo2_description/mesh/intel_d435.STL" />
+          filename="package://armadillo_description/mesh/intel_d435.STL" />
       </geometry>
       <material
         name="">
@@ -40,7 +40,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://armadillo2_description/mesh/intel_d435.STL" />
+          filename="package://armadillo_description/mesh/intel_d435.STL" />
       </geometry>
     </collision>
   </link>

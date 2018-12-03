@@ -34,7 +34,7 @@
 #include <ros/ros.h>
 #include <std_srvs/Trigger.h>
 #include <std_srvs/SetBool.h>
-#include <armadillo2_msgs/SwitchCamTopic.h>
+#include <armadillo_msgs/SwitchCamTopic.h>
 
 
 int main(int argc, char **argv) {
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
     ros::ServiceClient drive_client = n.serviceClient<std_srvs::Trigger>("drive2object_go");
     ros::ServiceClient pick_client = n.serviceClient<std_srvs::Trigger>("pick_go");
-    ros::ServiceClient sw_client = n.serviceClient<armadillo2_msgs::SwitchCamTopic>("switch_pcl_topic");
+    ros::ServiceClient sw_client = n.serviceClient<armadillo_msgs::SwitchCamTopic>("switch_pcl_topic");
    // ros::ServiceClient uc_client = n.serviceClient<std_srvs::SetBool>("update_collision_objects");
 
      ROS_INFO("Waiting for services...");
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     sw_client.waitForExistence();
   //  uc_client.waitForExistence();
 
-    armadillo2_msgs::SwitchCamTopic sw_srv;
+    armadillo_msgs::SwitchCamTopic sw_srv;
     sw_srv.request.num=1;
     sw_client.call(sw_srv);
 

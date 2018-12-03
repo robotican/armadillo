@@ -45,7 +45,7 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
         if (!ros::param::get(ROBOTEQ_PORT_PARAM, roboteq_port_))
         {
             ROS_ERROR(
-                    "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
+                    "[armadillo_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
                             "and that your launch includes this param file. shutting down...", ROBOTEQ_PORT_PARAM);
             ros::shutdown();
             exit(EXIT_FAILURE);
@@ -54,7 +54,7 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
         if (!ros::param::get(ROBOTEQ_BAUD_PARAM, roboteq_baud_))
         {
             ROS_ERROR(
-                    "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
+                    "[armadillo_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
                             "and that your launch includes this param file. shutting down...", ROBOTEQ_BAUD_PARAM);
             ros::shutdown();
             exit(EXIT_FAILURE);
@@ -63,7 +63,7 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
         if (!ros::param::get(RIGHT_WHEEL_JOINT_PARAM, right_wheel_joint_))
         {
             ROS_ERROR(
-                    "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
+                    "[armadillo_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
                             "and that your launch includes this param file. shutting down...", RIGHT_WHEEL_JOINT_PARAM);
             ros::shutdown();
             exit(EXIT_FAILURE);
@@ -72,7 +72,7 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
         if (!ros::param::get(LEFT_WHEEL_JOINT_PARAM, left_wheel_joint_))
         {
             ROS_ERROR(
-                    "[armadillo2_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
+                    "[armadillo_hw/roboteq_diff_drive]: %s param is missing on param server. make sure that this param exist in ricboard_config.yaml "
                             "and that your launch includes this param file. shutting down...", LEFT_WHEEL_JOINT_PARAM);
             ros::shutdown();
             exit(EXIT_FAILURE);
@@ -85,11 +85,11 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
         if (!start)
         {
             ROS_ERROR(
-                    "[armadillo2_hw/roboteq_diff_drive]: failed opening roboteq port. make sure roboteq is connected. shutting down...");
+                    "[armadillo_hw/roboteq_diff_drive]: failed opening roboteq port. make sure roboteq is connected. shutting down...");
             ros::shutdown();
             exit(1);
         }
-        ROS_INFO("[armadillo2_hw/roboteq_diff_drive]: roboteq port opened successfully \nport name: %s \nbaudrate: %d",
+        ROS_INFO("[armadillo_hw/roboteq_diff_drive]: roboteq port opened successfully \nport name: %s \nbaudrate: %d",
                  roboteq_port_.c_str(), roboteq_baud_);
         /* initialize roboteq controller */
         roboteq_ = new roboteq::Roboteq(nh, nh, roboteq_serial_);
@@ -97,12 +97,12 @@ RoboteqDiffDrive::RoboteqDiffDrive(ros::NodeHandle &nh)
         /* initialize the motor parameters */
         roboteq_->initialize();
 
-        ROS_INFO("[armadillo2_hw/roboteq_diff_drive]: roboteq is up");
+        ROS_INFO("[armadillo_hw/roboteq_diff_drive]: roboteq is up");
         espeak_pub_ = nh.advertise<std_msgs::String>("/espeak_node/speak_line", 10);
         /* speakMsg("robotek is up", 1); */
     }
     else
-        ROS_WARN("[armadillo2_hw/roboteq_diff_drive]: roboteq hardware is disabled");
+        ROS_WARN("[armadillo_hw/roboteq_diff_drive]: roboteq hardware is disabled");
 
 }
 

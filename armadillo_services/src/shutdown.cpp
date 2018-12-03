@@ -29,7 +29,7 @@
 *******************************************************************************/
 /* Author: Elchay Rauper*/
 
-#include <armadillo2_services/shutdown.h>
+#include <armadillo_services/shutdown.h>
 
 Shutdown::Shutdown(ros::NodeHandle &nh,
                    const PanTiltMover &head_mover,

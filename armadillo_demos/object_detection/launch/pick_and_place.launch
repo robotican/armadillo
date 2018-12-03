@@ -3,7 +3,7 @@
 
 <!--EXAMPLE
 
-roslaunch armadillo2 armadillo2.launch kinect:=true gazebo:=true moveit:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world" x:=0.3 y:=-0.35
+roslaunch armadillo armadillo.launch kinect:=true gazebo:=true moveit:=true world_name:="`rospack find armadillo_gazebo`/worlds/objects_on_table.world" x:=0.3 y:=-0.35
 
 roslaunch object_detection pick_and_place.launch  
 

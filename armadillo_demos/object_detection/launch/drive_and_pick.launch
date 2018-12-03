@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--EXAMPLE:
-roslaunch armadillo2 armadillo2.launch gazebo:=true kinect:=true lidar:=true move_base:=true gmapping:=true world_name:="`rospack find armadillo2_gazebo`/worlds/objects_on_table.world"
+roslaunch armadillo armadillo.launch gazebo:=true kinect:=true lidar:=true move_base:=true gmapping:=true world_name:="`rospack find armadillo_gazebo`/worlds/objects_on_table.world"
 
 roslaunch object_detection drive_and_pick.launch 	
 -->

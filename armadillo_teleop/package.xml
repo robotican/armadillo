@@ -2,7 +2,7 @@
 <package format="2">
     <name>armadillo_teleop</name>
     <version>0.0.0</version>
-    <description>The armadillo2_teleop package allow controlling robot with controller</description>
+    <description>The armadillo_teleop package allow controlling robot with controller</description>
     
     <maintainer email="support@robotican.net">RobotICan</maintainer>
     
