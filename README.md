@@ -1,6 +1,6 @@
-# Armadillo2
+# Armadillo
 
-Armadillo2 package connect between Armadillo2 robot hardware and ROS software, and provide easy tools to monitor and operate it.
+Armadillo package connect between Armadillo robot hardware and ROS software, and provide easy tools to monitor and operate it.
 
 # Getting Started
 
