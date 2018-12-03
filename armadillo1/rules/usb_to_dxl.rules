@@ -1,0 +1,1 @@
+SUBSYSTEMS=="usb",ATTRS{product}=="FT232R USB UART",ATTRS{serial}=="A103SPDG", SYMLINK+="armadillo1/USB2DYNAMIXEL", MODE="0666" , RUN+="/bin/setserial /dev/armadillo1/USB2DYNAMIXEL low_latency" # armadillo1 bgu

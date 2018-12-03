@@ -1,0 +1,164 @@
+#!/bin/bash
+
+# installation file for armadillo1 over ROS Kinetic and ubuntu 16.04 #
+
+GREEN_TXT='\e[0;32m'
+WHITE_TXT='\e[1;37m'
+RED_TXT='\e[31m'
+NO_COLOR='\033[0m'
+LOGS_FOLDER_PATH="${HOME}/catkin_ws/src/setup_logs"
+INSTALL_HW_COMPS=false #deremine if this script will install armadillo1 hardware drivers
+
+printf "${WHITE_TXT}\n***Installing Armadillo1 ROS-Kinetic Package***\n${NO_COLOR}"
+
+# check for hardware argument, and determine installation type #
+if [ $# -eq 0 ]
+then
+    printf "${WHITE_TXT}\nNo arguments supplied, installing package for standalone PC... ${NO_COLOR}\n"
+elif [ $# -eq 1 ]
+then  
+    if [ $1 = "hw" ]
+    then
+        printf "${WHITE_TXT}\nGot hardware argument. Installing package for Armadillo1 hardware... ${NO_COLOR}\n"
+        INSTALL_HW_COMPS=true
+    else
+        printf "${RED_TXT}\nInvalid argument. Use 'hw' argument to install this package for Armadillo hardware, or use no arguments to install this package for a standalone PC ${NO_COLOR}\n"
+        exit 1
+    fi
+else
+    printf "${RED_TXT}\nToo many arguments. Only one argument named hw is allowed ${NO_COLOR}\n"
+    exit 1
+fi
+
+
+
+#if [ "$INSTALL_HW_COMPS" = true ] ; then
+#    echo 'INSTALL_HW_COMPS is true'
+#fi
+
+# validate ros version #
+printf "${WHITE_TXT}\nChecking ROS Version...\n${NO_COLOR}"
+
+version=`rosversion -d`
+if [ "$version" == "kinetic" ]; then
+  printf "${GREEN_TXT}ROS version OK${NO_COLOR}\n"
+else
+  printf "${RED_TXT}Error: found ROS version ${version}, please install ROS Kinetic and try again${NO_COLOR}\n"
+  exit 1
+fi
+
+# validate catkin_ws/src folder exist #
+printf "${WHITE_TXT}\nChecking if catkin_ws/src folder exist...\n${NO_COLOR}"
+cd ~ 
+if [ ! -d "catkin_ws" ]; then
+  printf "${RED_TXT}~/catkin_ws folder does not exist. Create workspace named catkin_ws and try again ${NO_COLOR}\n"
+else
+cd catkin_ws 
+if [ ! -d "src" ]; then
+  printf "${RED_TXT}~/catkin_ws/src folder does not exist. Create workspace named catkin_ws with src directory inside ${NO_COLOR}\n"
+  exit 1
+fi
+
+fi
+printf "${GREEN_TXT}found catkin_ws/src folder${NO_COLOR}\n"
+
+printf "${WHITE_TXT}\nInstalling 3rd party packages...\n${NO_COLOR}"
+# third party packages #
+sudo apt-get update
+sudo apt-get dist-upgrade 
+sudo apt-get upgrade 
+sudo apt-get -y install ros-kinetic-controller-manager 
+sudo apt-get -y install ros-kinetic-control-toolbox  
+sudo apt-get -y install ros-kinetic-transmission-interface 
+sudo apt-get -y install ros-kinetic-joint-limits-interface 
+sudo apt-get -y install ros-kinetic-gazebo-ros-control 
+sudo apt-get -y install ros-kinetic-ros-controllers 
+sudo apt-get -y install ros-kinetic-ros-control 
+sudo apt-get -y install ros-kinetic-moveit
+sudo apt-get -y install ros-kinetic-moveit-ros-planning
+sudo apt-get -y install ros-kinetic-moveit-ros-planning-interface
+sudo apt-get -y install ros-kinetic-move-base
+sudo apt-get -y install ros-kinetic-navigation
+sudo apt-get -y install ros-kinetic-hector-slam
+sudo apt-get -y install ros-kinetic-gmapping
+sudo apt-get -y install ros-kinetic-twist-mux
+sudo apt-get -y install ros-kinetic-pid
+sudo apt-get -y install ros-kinetic-joy
+sudo apt-get -y install ros-kinetic-usb-cam 
+sudo apt-get -y install ros-kinetic-ar-track-alvar
+sudo apt-get -y install joystick
+sudo apt-get -y install ros-kinetic-hector-gazebo-plugins
+sudo apt-get -y install ros-kinetic-serial
+sudo apt-get -y install espeak espeak-data libespeak-dev
+sudo apt-get -y install ros-kinetic-robot-localization
+sudo apt-get -y install ros-kinetic-trac-ik ros-kinetic-moveit-kinematics 
+sudo apt-get -y install ros-kinetic-urg-node 
+sudo apt-get -y install ros-kinetic-rtabmap-ros
+sudo apt-get -y install jstest-gtk
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
+# install displaylink driver for mimo touch display, #
+# and place xprofile script to enforce resulotion    #
+if [ "$INSTALL_HW_COMPS" = true ] ; then
+    printf "${WHITE_TXT}\nInstalling displaylink driver...\n${NO_COLOR}"
+    sudo apt-get -y install linux-generic-lts-utopic xserver-xorg-lts-utopic 
+    sudo apt-get -y install libegl1-mesa-drivers-lts-utopic 
+    sudo apt-get -y install xserver-xorg-video-all-lts-utopic 
+    sudo apt-get -y install xserver-xorg-input-all-lts-utopic
+    sudo apt-get -y install dkms
+    cd ~/catkin_ws/src/armadillo1/armadillo1/third_party_files/
+    chmod +x displaylink-driver-4.1.9.run
+    sudo ./displaylink-driver-4.1.9.run
+    cp .xprofile ~/
+    printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+fi
+
+# install softkinetic drivers #
+printf "${WHITE_TXT}\nInstalling softkinetic driver...\n${NO_COLOR}"
+cd ~/catkin_ws/src/armadillo1/armadillo1/third_party_files/
+sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
+sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
+
+# install kinect drivers #
+printf "${WHITE_TXT}\nInstalling kinect driver...\n${NO_COLOR}"
+sudo apt-get -y install build-essential cmake pkg-config
+sudo apt-get -y install libusb-1.0-0-dev
+sudo apt-get -y install libturbojpeg libjpeg-turbo8-dev
+sudo apt-get -y install libglfw3-dev
+cd ~/catkin_ws/src/armadillo1/armadillo1_utils/libfreenect2
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/freenect2
+make
+sudo make install
+cd ~/catkin_ws/src/armadillo1/armadillo1_utils/iai_kinect2/iai_kinect2
+rosdep install -r --from-paths .
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
+# install armadillo1 ric interface #
+printf "${WHITE_TXT}\nInstalling ric interface...\n${NO_COLOR}"
+cd ~/catkin_ws/src/armadillo1/armadillo1/third_party_files/
+sudo dpkg -i ros-kinetic-ric-interface_0.0.0-0xenial_amd64.deb
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
+# usb rules #
+if [ "$INSTALL_HW_COMPS" = true ] ; then
+    printf "${WHITE_TXT}\nInstalling USB rules...\n${NO_COLOR}"
+    sudo apt -y install setserial #for setting port latency
+    sudo cp ~/catkin_ws/src/armadillo1/armadillo1/rules/usb_to_dxl.rules /etc/udev/rules.d
+    sudo cp ~/catkin_ws/src/armadillo1/armadillo1/rules/roboteq.rules /etc/udev/rules.d
+    sudo cp ~/catkin_ws/src/armadillo1/armadillo1/rules/49-teensy.rules /etc/udev/rules.d
+    sudo cp ~/catkin_ws/src/armadillo1/armadillo1/rules/hokuyo.rules /etc/udev/rules.d/
+    sudo cp ~/catkin_ws/src/armadillo1/armadillo1_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
+    sudo udevadm control --reload-rules && udevadm trigger
+    printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+fi
+
+# compiling armadillo1 #
+printf "${WHITE_TXT}Compiling armadillo1 package...\n${NO_COLOR}"
+cd ~/catkin_ws
+catkin_make -DCMAKE_BUILD_TYPE="Release"
+printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+
+printf "${GREEN_TXT}Installation process finished.\n\n${NO_COLOR}"
+printf "${GREEN_TXT}Please reboot to apply changes\n\n${NO_COLOR}"
+exit 0

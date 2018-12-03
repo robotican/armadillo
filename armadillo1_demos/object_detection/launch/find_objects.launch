@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<!--
+roslaunch armadillo1 armadillo1.launch gazebo:=true world_name:="`rospack find armadillo1_gazebo`/worlds/objects_on_table.world"
+
+roslaunch object_detection find_objects.launch  
+
+-->
+
+<launch>  
+    <node name="find_object_node" pkg="object_detection" type="find_objects_node" output="screen">
+        <param name="~object_id" value="1"/>
+        <param name="~depth_topic1" value="/kinect2/qhd/points"/>
+        <param name="~depth_topic2" value="/softkinetic/depth/points"/>  
+        <rosparam file="$(find object_detection)/config/red_object.yaml" command="load"/>
+    </node> 
+    
+    <node name="objects_handler" pkg="object_detection" type="objects_handler" output="screen">
+        <param name="~db_path" value=""/>
+    </node> 
+    
+    <node name="object_view" pkg="rqt_image_view" type="rqt_image_view" >
+        <remap from="image" to="find_object_node/result" />
+    </node>
+    
+</launch>
+
