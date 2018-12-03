@@ -32,7 +32,9 @@
 #define GPIOPICCONFIGURATOR_H
 
 #include <ros/ros.h>
+#include <dynamic_reconfigure/server.h>
 
+#include <roboteq_control/RoboteqPIDConfig.h>
 
 #include "roboteq/serial_controller.h"
 

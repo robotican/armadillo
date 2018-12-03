@@ -2,6 +2,8 @@
 
 # installation file for armadillo2 over ROS Kinetic and ubuntu 16.04 #
 
+
+
 GREEN_TXT='\e[0;32m'
 WHITE_TXT='\e[1;37m'
 RED_TXT='\e[31m'
@@ -73,6 +75,7 @@ sudo apt-get upgrade
 # from this point on, exit and notify immediately if a command exits with a non-zero status
 set -eb
 
+
 sudo apt-get -y install ros-kinetic-controller-manager 
 sudo apt-get -y install ros-kinetic-control-toolbox  
 sudo apt-get -y install ros-kinetic-transmission-interface 
@@ -125,24 +128,11 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 fi
 
-# realsense depth camera 
-if [ "$INSTALL_HW_COMPS" = true ] ; then
-    printf "${WHITE_TXT}\nInstalling depth camera...\n${NO_COLOR}"
-    cd ~/catkin_ws/src/
-    wget https://github.com/intel-ros/realsense/archive/2.0.3.tar.gz
-    tar -xvzf 2.0.3.tar.gz
-    rm 2.0.3.tar.gz     
-    wget https://github.com/IntelRealSense/librealsense/archive/v2.10.3.tar.gz
-    tar -xvzf v2.10.3.tar.gz
-    rm v2.10.3.tar.gz
-    sudo apt-get -y install libusb-1.0-0-dev pkg-config libgtk-3-dev
-    sudo apt-get -y install libglfw3-dev                                                                                                                                                
-    cd librealsense-2.10.3                                                                                                                                                               
-    mkdir build && cd build               
-    cmake ../  
-    sudo make uninstall && make clean && make -j8 && sudo make install
-    printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
-fi
+# install softkinetic drivers #
+printf "${WHITE_TXT}\nInstalling softkinetic driver...\n${NO_COLOR}"
+cd $PKG_PATH/armadillo2/third_party_files/
+sudo chmod +x ./DepthSenseSDK-1.9.0-5-amd64-deb.run
+sudo ./DepthSenseSDK-1.9.0-5-amd64-deb.run
 
 # install kinect drivers #
 printf "${WHITE_TXT}\nInstalling kinect driver...\n${NO_COLOR}"
@@ -175,7 +165,6 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     sudo cp $PKG_PATH/armadillo2/rules/bms_battery.rules /etc/udev/rules.d
     sudo cp $PKG_PATH/armadillo2/rules/hokuyo.rules /etc/udev/rules.d/
     sudo cp $PKG_PATH/armadillo2_utils/libfreenect2/platform/linux/udev/90-kinect2.rules /etc/udev/rules.d/
-    sudo cp $PKG_PATH/armadillo2/rules/99-realsense-libusb.rules /etc/udev/rules.d
     sudo udevadm control --reload-rules && udevadm trigger
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 fi

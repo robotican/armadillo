@@ -4,8 +4,8 @@
 
  <xacro:property name="M_PI" value="3.1415926535897931" />
  <xacro:property name="WHEEL_RADIUS" value="0.095" />
- 
- <xacro:include filename="$(find armadillo2_description)/urdf/intel_d435.urdf"/> 
+
+ <xacro:include filename="$(find softkinetic_camera)/urdf/sofkinetic_ds325.xacro"/> 
 
 <link name="base_footprint"/>
   
@@ -1108,50 +1108,34 @@
       velocity="0.1" /> 
 <dynamics damping="0.5" friction="0.5"/>
   </joint>
-
- <!-- <joint
-    name="intel_d435_joint"
-    type="fixed">
-    <origin
-      xyz="0 0.0143 -0.049"
-      rpy="-3.1416 0 1.5708" />
-    <parent
-      link="wrist_link" />
-    <child
-      link="intel_d435_link" />
-    <axis
-      xyz="0 0 0" />
-    </joint>-->
-    
-    
-  <!--<link
-    name="intel_d435_link">
+  <link
+    name="softkinetic_link">
     <inertial>
       <origin
-        xyz="0.00209672590490473 0.00107373429916791 -0.0124264025663287"
+        xyz="-1.1102E-16 -0.015598 0.034754"
         rpy="0 0 0" />
       <mass
-        value="0.0446256012085417" />
+        value="0.0000017" />
       <inertia
-        ixx="2.62358816469287E-05"
-        ixy="3.51148589025883E-07"
-        ixz="3.91275343984781E-11"
-        iyy="4.02618646244092E-06"
-        iyz="-6.05255657169474E-09"
-        izz="2.64982132448102E-05" />
+        ixx="1.4683E-05"
+        ixy="2.0869E-20"
+        ixz="-3.5787E-20"
+        iyy="1.7304E-05"
+        iyz="-9.2811E-07"
+        izz="4.5506E-06" />
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0.0125"
+        xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://armadillo2_description/mesh/intel_d435.STL" />
+          filename="package://armadillo2_description/mesh/softkinetic_link.STL" />
       </geometry>
       <material
         name="">
         <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+          rgba="0.25098 0.25098 0.25098 1" />
       </material>
     </visual>
     <collision>
@@ -1160,24 +1144,27 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://armadillo2_description/mesh/intel_d435.STL" />
+          filename="package://armadillo2_description/mesh/softkinetic_link.STL" />
       </geometry>
     </collision>
-  </link>-->
-      
-    <joint
-    name="intel_d435_joint"
+  </link>
+  <joint
+    name="softkinetic_joint"
     type="fixed">
     <origin
-      xyz="0 0.0143 -0.0495"
+      xyz="0 0.0143 -0.0598"
       rpy="-3.1416 6.1062E-16 1.5708" />
     <parent
       link="wrist_link" />
     <child
-      link="camera_link" />
+      link="softkinetic_link" />
     <axis
       xyz="0 0 0" />
   </joint>
  
+  
+<softkinetic_camera name="softkinetic" >
+    <origin xyz="-0.05905 0 0.0753" rpy="0.0 -${M_PI/2} 0.0"/>
+</softkinetic_camera>
 
 </robot>

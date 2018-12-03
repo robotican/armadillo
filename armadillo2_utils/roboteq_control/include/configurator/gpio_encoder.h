@@ -33,6 +33,8 @@
 
 #include <ros/ros.h>
 
+#include <roboteq_control/RoboteqEncoderConfig.h>
+#include <dynamic_reconfigure/server.h>
 
 #include "roboteq/serial_controller.h"
 

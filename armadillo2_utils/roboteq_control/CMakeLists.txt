@@ -63,15 +63,15 @@ add_service_files(
 )
 
 # dynamic reconfigure
-# generate_dynamic_reconfigure_options(
-#     cfg/RoboteqController.cfg
-#     cfg/RoboteqParameter.cfg
-#     cfg/RoboteqEncoder.cfg
-#     cfg/RoboteqPIDtype.cfg
-#     cfg/RoboteqPID.cfg
-#     cfg/RoboteqAnalogInput.cfg
-#     cfg/RoboteqPulseInput.cfg
-# )
+generate_dynamic_reconfigure_options(
+    cfg/RoboteqController.cfg
+    cfg/RoboteqParameter.cfg
+    cfg/RoboteqEncoder.cfg
+    cfg/RoboteqPIDtype.cfg
+    cfg/RoboteqPID.cfg
+    cfg/RoboteqAnalogInput.cfg
+    cfg/RoboteqPulseInput.cfg
+)
 
 ## Generate added messages and services
 generate_messages(DEPENDENCIES std_msgs)
