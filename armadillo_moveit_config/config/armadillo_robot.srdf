@@ -78,8 +78,6 @@
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="base_link" link2="caster_back_left_link" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="caster_back_right_link" reason="Adjacent" />
-    <disable_collisions link1="base_link" link2="caster_front_left_link" reason="Adjacent" />
-    <disable_collisions link1="base_link" link2="caster_front_right_link" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="caster_left_link" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="caster_right_link" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="head_pan_link" reason="Never" />
@@ -89,8 +87,6 @@
     <disable_collisions link1="base_link" link2="rotation1_link" reason="Never" />
     <disable_collisions link1="base_link" link2="torso_link" reason="Adjacent" />
     
-    <disable_collisions link1="caster_back_left_link" link2="caster_front_left_link" reason="Never" />
-    <disable_collisions link1="caster_back_left_link" link2="caster_front_right_link" reason="Never" />
     <disable_collisions link1="caster_back_left_link" link2="caster_left_link" reason="Never" />
     <disable_collisions link1="caster_back_left_link" link2="caster_right_link" reason="Never" />
     <disable_collisions link1="caster_back_left_link" link2="head_pan_link" reason="Never" />
@@ -108,8 +104,6 @@
     <disable_collisions link1="caster_back_left_link" link2="torso_link" reason="Never" />
     <disable_collisions link1="caster_back_left_link" link2="wrist_link" reason="Never" />
     
-    <disable_collisions link1="caster_back_right_link" link2="caster_front_left_link" reason="Never" />
-    <disable_collisions link1="caster_back_right_link" link2="caster_front_right_link" reason="Never" />
     <disable_collisions link1="caster_back_right_link" link2="caster_left_link" reason="Never" />
     <disable_collisions link1="caster_back_right_link" link2="caster_right_link" reason="Never" />
     <disable_collisions link1="caster_back_right_link" link2="head_pan_link" reason="Never" />
@@ -126,30 +120,6 @@
     <disable_collisions link1="caster_back_right_link" link2="camera_link" reason="Never" />
     <disable_collisions link1="caster_back_right_link" link2="torso_link" reason="Never" />
     <disable_collisions link1="caster_back_right_link" link2="wrist_link" reason="Never" />
-    
-    <disable_collisions link1="caster_front_left_link" link2="caster_left_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="caster_right_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="head_pan_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="head_tilt_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="left_wheel_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="right_wheel_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="rotation1_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="rotation2_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="shoulder1_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="shoulder2_link" reason="Never" />
-    <disable_collisions link1="caster_front_left_link" link2="torso_link" reason="Never" />
-    
-    <disable_collisions link1="caster_front_right_link" link2="caster_left_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="caster_right_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="head_pan_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="head_tilt_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="left_wheel_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="right_wheel_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="rotation1_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="rotation2_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="shoulder1_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="shoulder2_link" reason="Never" />
-    <disable_collisions link1="caster_front_right_link" link2="torso_link" reason="Never" />
     
     <disable_collisions link1="caster_left_link" link2="caster_right_link" reason="Never" />
     <disable_collisions link1="caster_left_link" link2="head_pan_link" reason="Never" />
