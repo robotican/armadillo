@@ -22,7 +22,7 @@
         xyz="-0.012353 0.000122 0.17716"
         rpy="0 0 0" />
        <mass
-        value="30" />
+        value="100" />
         <inertia
           ixx="0.31639"
           ixy="-9.1727E-05"
@@ -352,14 +352,14 @@
         xyz="-0.059733 -0.00037419 0.54938"
         rpy="0 0 0" />
      <mass
-        value="0.001" />
+        value="0.01" />
       <inertia
         ixx="0.09579"
         ixy="2.4285E-05"
         ixz="-0.0045097"
-        iyy="0.06807"
+        iyy="0.0001"
         iyz="-7.4938E-05"
-        izz="0.072852" />
+        izz="0.00032852" />
     </inertial> 
     <visual>
       <origin
@@ -390,7 +390,7 @@
         xyz="0 -0.03 0.9"
         rpy="0 0 0" />
       <geometry>
-        <box size="0.09 0.5 0.8"/>
+        <box size="0.09 0.5 0.6"/>
       </geometry>
     </collision>
     
@@ -412,7 +412,7 @@
       upper="0.40"
       effort="0.001"
       velocity="0.1" />
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
 
 
@@ -473,7 +473,7 @@
       lower="${-3.1415926535897/4.0}"
       effort="0.5"
       velocity="2" /> 
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
 
 
@@ -535,7 +535,7 @@
     lower="${-M_PI/6}"
       effort="0.5"
       velocity="2" /> 
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
 
 
@@ -667,7 +667,7 @@
       lower="-1.57"
       upper="1.57"
       velocity="2.0" /> 
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
   <link
     name="shoulder1_link">
@@ -726,7 +726,7 @@
       lower="-1.57"
       upper="1.95"
       velocity="2.0" />
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
   <link
     name="shoulder2_link">
@@ -785,7 +785,7 @@
       lower="-1.48"
       upper="2.3522"
       velocity="2.0" /> 
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
   <link
     name="rotation2_link">
@@ -844,7 +844,7 @@
       lower="-1.57"
       upper="1.57"
       velocity="2.0" /> 
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
   <link
     name="shoulder3_link">
@@ -903,7 +903,7 @@
       lower="-1.57"
       upper="1.57"
       velocity="2.0" /> 
-<dynamics damping="0.1" friction="0"/>
+<!--<dynamics damping="0.1" friction="0"/>-->
   </joint>
   <link
     name="wrist_link">
@@ -962,7 +962,7 @@
       lower="-3.14"
       upper="3.14"
       velocity="2.0" /> 
-<dynamics damping="0.5" friction="0.5"/>
+<!--<dynamics damping="0.5" friction="0.5"/>-->
   </joint>
 
   <link name="gripper_link"/>
@@ -1031,7 +1031,7 @@
       lower="-1.57"
       upper="1.57"
       velocity="0.1" /> 
-<dynamics damping="0.5" friction="0.5"/>
+<!--<dynamics damping="0.5" friction="0.5"/>-->
   </joint>
   <link
     name="right_finger_link">
@@ -1090,7 +1090,7 @@
       lower="-1.57"
       upper="1.57"
       velocity="0.1" /> 
-<dynamics damping="0.5" friction="0.5"/>
+<!--<dynamics damping="0.5" friction="0.5"/>-->
   </joint>
 
     <joint
