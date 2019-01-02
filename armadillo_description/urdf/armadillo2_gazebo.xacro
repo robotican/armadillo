@@ -191,8 +191,8 @@
         </actuator>
     </transmission>
 
-    <xacro:property name="mu1" value="2.0" />
-    <xacro:property name="mu2" value="2.0" />
+    <xacro:property name="mu1" value="1.5" />
+    <xacro:property name="mu2" value="1.5" />
             
     <gazebo reference="left_wheel_link">
         <!-- kp and kd for rubber -->
