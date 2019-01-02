@@ -65,7 +65,7 @@
     <!--load simulation stuff-->
     <group if="$(arg gazebo)">
          <env name="GAZEBO_MODEL_PATH" value="$(find armadillo_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
-         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo_description)/urdf/armadillo_gazebo.xacro' --inorder 
+         <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo_description)/urdf/armadillo2_gazebo.xacro' --inorder 
                 kinect2:=$(arg kinect)
                 kinect2_hz:=30.0
                 kinect2_hd:=false

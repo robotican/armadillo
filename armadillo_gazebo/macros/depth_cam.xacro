@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <xacro:macro name="DepthCam" params="name 
+               link 
+               optical_frame
+               horizontal_fov 
+               img_width 
+               img_height 
+               img_format 
+               clip_near 
+               clip_far 
+               update_rate 
+               image_topic 
+               depth_topic 
+               cloud_topic 
+               info_topic 
+               depth_info_topic 
+               pointcloud_cuttoff">
+
+  <gazebo reference="${link}">
+    <sensor type="depth" name="${name}">
+        <always_on>1</always_on>
+        <visualize>true</visualize>             
+        <camera>
+            <horizontal_fov>${horizontal_fov}</horizontal_fov>  
+            <image>
+                <width>${img_width}</width>
+                <height>${img_height}</height>
+                <format>${img_format}</format>
+            </image>
+            <depth_camera>
+
+            </depth_camera>
+            <clip>
+                <near>${clip_near}</near>
+                <far>${clip_far}</far>
+            </clip>
+        </camera>
+             <plugin name="${name}_controller" filename="libgazebo_ros_openni_kinect.so">
+             <alwaysOn>true</alwaysOn>
+                <updateRate>${update_rate}</updateRate>
+                <cameraName>${name}</cameraName>
+                <frameName>${optical_frame}</frameName>                   
+            <imageTopicName>${image_topic}</imageTopicName>
+            <depthImageTopicName>${depth_topic}</depthImageTopicName>
+            <pointCloudTopicName>${cloud_topic}</pointCloudTopicName>
+            <cameraInfoTopicName>${info_topic}</cameraInfoTopicName>              
+            <depthImageCameraInfoTopicName>${depth_info_topic}</depthImageCameraInfoTopicName>            
+            <pointCloudCutoff>${pointcloud_cuttoff}</pointCloudCutoff>                
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>
+            <CxPrime>0.0</CxPrime>
+            <Cx>0.0</Cx>
+            <Cy>0.0</Cy>
+            <focalLength>0.0</focalLength>
+            </plugin>
+    </sensor>
+  </gazebo>
+  </xacro:macro>
+
+</robot>

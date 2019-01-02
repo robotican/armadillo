@@ -1,10 +1,23 @@
+<?xml version="1.0"?>
+
+
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="Camera" description="Camera sensor">
-	<xacro:macro name="Camera" params="name link image_width image_height image_format clip_near clip_far">
+	<xacro:macro name="Camera" params="name 
+              link 
+              image_width 
+              image_height 
+              image_format 
+              clip_near 
+              clip_far 
+              image_topic 
+              info_topic 
+              update_rate 
+              horizontal_fov">
 		<gazebo reference="${link}">
 			<sensor type="camera" name="${name}">
-				<update_rate>30.0</update_rate>
+				<update_rate>${update_rate}</update_rate>
 				<camera name="${name}">
-					<horizontal_fov>1.3962634</horizontal_fov>
+					<horizontal_fov>${horizontal_fov}</horizontal_fov>
 					<image>
 						<width>${image_width}</width>
 						<height>${image_height}</height>
@@ -24,8 +37,8 @@
 					<alwaysOn>true</alwaysOn>
 					<updateRate>0.0</updateRate>
 					<cameraName>${name}</cameraName>
-					<imageTopicName>image_raw</imageTopicName>
-					<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+					<imageTopicName>${image_topic}</imageTopicName>
+					<cameraInfoTopicName>${info_topic}</cameraInfoTopicName>
 					<frameName>${link}</frameName>
 					<hackBaseline>0.07</hackBaseline>
 					<distortionK1>0.0</distortionK1>

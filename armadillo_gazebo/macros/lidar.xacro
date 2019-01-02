@@ -1,10 +1,13 @@
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="hokuyo" description="hokuyo">
-	<xacro:macro name="lidar" params="link topic samples resolution min_angle max_angle range_min range_max range_resolution">
+<?xml version="1.0"?>
+
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="lidar" description="LIDAR sensor">
+	<xacro:macro name="lidar" params="name link topic update_rate samples resolution min_angle max_angle range_min range_max range_resolution">
 		<gazebo reference="${link}">
-			<sensor type="ray" name="head_hokuyo_sensor">
+			<sensor type="ray" name="${name}">
 				<pose>0 0 0 0 0 0</pose>
 				<visualize>false</visualize>
-				<update_rate>10</update_rate>
+				<update_rate>${update_rate}</update_rate>
 				<ray>
 					<scan>
 						<horizontal>

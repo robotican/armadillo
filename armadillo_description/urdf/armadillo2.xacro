@@ -3,7 +3,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo_robot" description="armadillo robot">
 
  <xacro:property name="M_PI" value="3.1415926535897931" />
- <xacro:property name="WHEEL_RADIUS" value="0.095" />
+ <xacro:property name="WHEEL_RADIUS" value="0.1016" />
  
  <xacro:include filename="$(find armadillo_description)/urdf/intel_d435.urdf"/> 
 
@@ -21,16 +21,16 @@
       <origin
         xyz="-0.012353 0.000122 0.17716"
         rpy="0 0 0" />
-       <mass value="50.0"/>
-       <inertia
-        ixx="0.31639"
-        ixy="-9.1727E-05"
-        ixz="-0.093044"
-        iyy="0.0000010997"
-        iyz="5.3231E-05"
-        izz="0.000010693" />
-
-    </inertial>
+       <mass
+        value="5" />
+        <inertia
+          ixx="0.31639"
+          ixy="-9.1727E-05"
+          ixz="-0.093044"
+          iyy="0.017997"
+          iyz="5.3231E-05"
+          izz="0.16693" />
+        </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -75,7 +75,6 @@
                  iyy="0.001" iyz="0.0"
                  izz="0.001" />
       </inertial>
-
     </link>
 
     <joint name="caster_back_right_joint" type="fixed">
@@ -106,15 +105,15 @@
       <origin
         xyz="9.16610941069373E-06 4.59070539915452E-09 8.0609835912647E-06"
         rpy="0 0 0" />
-   <mass
-        value="0.2024" />
+    <mass
+        value="1.8524" />
       <inertia
         ixx="0.0069046"
         ixy="-3.8717E-08"
         ixz="2.0707E-07"
-        iyy="0.0013153"
+        iyy="0.013153"
         iyz="-1.0124E-07"
-        izz="0.1069054" />
+        izz="0.0069054" />
 
       </inertial>
     <visual>
@@ -139,7 +138,6 @@
       <cylinder  length="0.07" radius="${WHEEL_RADIUS}"/> 
       </geometry>
     </collision>
-
   </link>
 
 
@@ -166,15 +164,15 @@
       <origin
         xyz="9.16610941069373E-06 -4.99540929455033E-06 8.06098359126817E-06"
         rpy="0 0 0" />
-        <mass
-        value="0.2024" />
+       <mass
+        value="1.8524" />
       <inertia
         ixx="0.0069046"
         ixy="-3.8717E-08"
         ixz="-2.0707E-07"
-        iyy="0.0013153"
+        iyy="0.013153"
         iyz="1.0124E-07"
-        izz="0.1069054" />
+        izz="0.0069054" />
     </inertial>
     <visual>
       <origin
@@ -198,7 +196,6 @@
       <cylinder  length="0.07" radius="${WHEEL_RADIUS}"/> 
       </geometry>
     </collision>
-
   </link>
 
   <joint
@@ -327,14 +324,14 @@
         xyz="-0.059733 -0.00037419 0.54938"
         rpy="0 0 0" />
      <mass
-        value="0.01" />
+        value="0.001" />
       <inertia
         ixx="0.09579"
         ixy="2.4285E-05"
         ixz="-0.0045097"
-        iyy="0.0006807"
+        iyy="0.06807"
         iyz="-7.4938E-05"
-        izz="0.00072852" />
+        izz="0.072852" />
     </inertial> 
     <visual>
       <origin
@@ -365,7 +362,7 @@
         xyz="0 -0.03 0.9"
         rpy="0 0 0" />
       <geometry>
-        <box size="0.09 0.5 0.6"/>
+        <box size="0.09 0.5 0.8"/>
       </geometry>
     </collision>
     
@@ -398,7 +395,7 @@
         xyz="0.0044497 -0.00020474 0.02363"
         rpy="0 0 0" />
       <mass
-        value="0.01" />
+        value="0.001" />
       <inertia
         ixx="3.6365E-05"
         ixy="-2.125E-07"
@@ -460,7 +457,7 @@
         xyz="0.014321 0.00038338 0.064622"
         rpy="0 0 0" />
       <mass
-        value="0.01" />
+        value="0.001" />
       <inertia
         ixx="0.00056403"
         ixy="-2.0419E-05"
@@ -521,7 +518,7 @@
         xyz="0.014321 0.00038338 0.064622"
         rpy="0 0 0" />
       <mass
-        value="0.1" />
+        value="0.001" />
       <inertia
         ixx="0.00056403"
         ixy="-2.0419E-05"
@@ -591,14 +588,14 @@
         xyz="-3.5316E-10 0.0073117 0.032399"
         rpy="0 0 0" />
       <mass
-        value="0.1" />
+        value="0.001" />
       <inertia
-        ixx="0.0043595"
-        ixy="-3.1405E-06"
-        ixz="0.00053636"
-        iyy="0.0041046"
-        iyz="-5.2275E-05"
-        izz="0.00081871" />
+        ixx="0.00055596"
+        ixy="9.2522E-12"
+        ixz="9.2226E-12"
+        iyy="0.00016945"
+        iyz="6.1918E-06"
+        izz="0.00055286" />
     </inertial>
     <visual>
       <origin
@@ -651,7 +648,7 @@
         xyz="0.01628 -0.03243 0.20044"
         rpy="0 0 0" />
       <mass
-        value="0.1" />
+        value="0.001" />
       <inertia
         ixx="0.0043595"
         ixy="-3.1405E-06"
@@ -710,7 +707,7 @@
         xyz="0.068154 -0.020691 0.11032"
         rpy="0 0 0" />
       <mass
-        value="0.1" />
+        value="0.001" />
       <inertia
         ixx="0.00093237"
         ixy="-1.0052E-05"
@@ -768,8 +765,8 @@
       <origin
         xyz="5.0638E-06 -0.0012262 0.056857"
         rpy="0 0 0" />
-       <mass
-        value="0.1" />
+      <mass
+        value="0.001" />
       <inertia
         ixx="0.00014092"
         ixy="1.0984E-09"
@@ -828,7 +825,7 @@
         xyz="3.9875E-11 -0.044252 0.069689"
         rpy="0 0 0" />
       <mass
-        value="0.1" />
+        value="0.001" />
       <inertia
         ixx="0.00018198"
         ixy="2.1351E-13"
@@ -887,7 +884,7 @@
         xyz="-8.1889E-11 0.02077 -0.0027746"
         rpy="0 0 0" />
       <mass
-        value="0.1" />
+        value="0.001" />
       <inertia
         ixx="4.4099E-05"
         ixy="-1.2434E-13"
@@ -955,8 +952,8 @@
       <origin
         xyz="5.5511E-17 0.015598 0.034754"
         rpy="0 0 0" />
-       <mass
-        value="0.1" />
+      <mass
+        value="0.001" />
       <inertia
         ixx="1.4683E-05"
         ixy="-1.0482E-21"
@@ -1015,7 +1012,7 @@
         xyz="-1.1102E-16 -0.015598 0.034754"
         rpy="0 0 0" />
       <mass
-        value="0.1" />
+        value="0.001" />
       <inertia
         ixx="1.4683E-05"
         ixy="2.0869E-20"
@@ -1068,62 +1065,6 @@
 <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
- <!-- <joint
-    name="intel_d435_joint"
-    type="fixed">
-    <origin
-      xyz="0 0.0143 -0.049"
-      rpy="-3.1416 0 1.5708" />
-    <parent
-      link="wrist_link" />
-    <child
-      link="intel_d435_link" />
-    <axis
-      xyz="0 0 0" />
-    </joint>-->
-    
-    
-  <!--<link
-    name="intel_d435_link">
-    <inertial>
-      <origin
-        xyz="0.00209672590490473 0.00107373429916791 -0.0124264025663287"
-        rpy="0 0 0" />
-      <mass
-        value="0.0446256012085417" />
-      <inertia
-        ixx="2.62358816469287E-05"
-        ixy="3.51148589025883E-07"
-        ixz="3.91275343984781E-11"
-        iyy="4.02618646244092E-06"
-        iyz="-6.05255657169474E-09"
-        izz="2.64982132448102E-05" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0.0125"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://armadillo_description/mesh/intel_d435.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://armadillo_description/mesh/intel_d435.STL" />
-      </geometry>
-    </collision>
-  </link>-->
-      
     <joint
     name="intel_d435_joint"
     type="fixed">

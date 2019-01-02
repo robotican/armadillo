@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+
+<robot
+  name="intel_d435">
+<!-- camera depth joints and links -->
+   <link
+    name="camera_link">
+    <inertial>
+      <origin
+        xyz="0.00209672590490473 0.00107373429916791 -0.0124264025663287"
+        rpy="0 0 0" />
+      <mass
+        value="0.0446256012085417" />
+      <inertia
+        ixx="2.62358816469287E-05"
+        ixy="3.51148589025883E-07"
+        ixz="3.91275343984781E-11"
+        iyy="4.02618646244092E-06"
+        iyz="-6.05255657169474E-09"
+        izz="2.64982132448102E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.0125"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobilican_description/armadillo_2/mesh/intel_d435.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobilican_description/armadillo_2/mesh/intel_d435.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+    
+   
+    <!-- camera depth joints and links -->
+    <joint name="camera_depth_joint" type="fixed">
+      <origin xyz="0 -0.0122 0" rpy="0 0 0"/>
+      <parent link="camera_link"/>
+      <child link="camera_depth_frame" />
+    </joint>
+    <link name="camera_depth_frame"/>
+
+    <joint name="camera_depth_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_depth_frame" />
+      <child link="camera_depth_optical_frame" />
+    </joint>
+    <link name="camera_depth_optical_frame"/>
+      
+    <!-- camera left IR joints and links -->
+    <joint name="camera_left_ir_joint" type="fixed">
+      <origin xyz="0 -0.0322 0" rpy="0 0 0" />
+      <parent link="camera_link" />
+      <child link="camera_left_ir_frame" />
+    </joint>
+    <link name="camera_left_ir_frame"/>
+
+    <joint name="camera_left_ir_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_left_ir_frame" />
+      <child link="camera_left_ir_optical_frame" />
+    </joint>
+    <link name="camera_left_ir_optical_frame"/>
+
+    <!-- camera right IR joints and links -->
+    <joint name="camera_right_ir_joint" type="fixed">
+      <origin xyz="0 0.0178 0" rpy="0 0 0" />
+      <parent link="camera_link" />
+      <child link="camera_right_ir_frame" />
+    </joint>
+    <link name="camera_right_ir_frame"/>
+
+    <joint name="camera_right_ir_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_right_ir_frame" />
+      <child link="camera_right_ir_optical_frame" />
+    </joint>
+    <link name="camera_right_ir_optical_frame"/>
+
+    <!-- camera fisheye joints and links -->
+    <joint name="camera_fisheye_joint" type="fixed">
+      <origin xyz="0 0.0322 0" rpy="0 0 0" />
+      <parent link="camera_link" />
+      <child link="camera_fisheye_frame" />
+    </joint>
+    <link name="camera_fisheye_frame"/>
+
+    <joint name="camera_fisheye_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="camera_fisheye_frame" />
+      <child link="camera_fisheye_optical_frame" />
+    </joint>
+    <link name="camera_fisheye_optical_frame"/>
+</robot>

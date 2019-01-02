@@ -2,9 +2,7 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo_robot" description="armadillo robot">
     
-    <xacro:include filename="$(find armadillo_description)/urdf/armadillo.xacro" />
-    <xacro:include filename="$(find armadillo_gazebo)/macros/intel_cam.xacro" />
-    
+    <xacro:include filename="$(find armadillo_description)/urdf/armadillo2.xacro" />    
     
     <xacro:arg name="kinect2" default="true"/>
     <xacro:arg name="kinect2_hz" default="30.0"/>
@@ -19,11 +17,24 @@
     
     <!-- intel_cam -->
     <xacro:if value="$(arg intel_cam)">        
-        <xacro:include filename="$(find armadillo_gazebo)/macros/intel_cam.xacro" />
-        <xacro:intel_d435_gazebo name="camera" ros_topic="intel_cam"/> 
+        <xacro:include filename="$(find armadillo_gazebo)/macros/depth_cam.xacro" />
+        <xacro:DepthCam name="intel_cam" 
+                        link="camera_link" 
+                        optical_frame="camera_depth_optical_frame"
+                        horizontal_fov="1.592" 
+                        img_width="1280"
+                        img_height="800" 
+                        img_format="B8G8R8" 
+                        clip_near="0.1" 
+                        clip_far="100" 
+                        update_rate="10.0" 
+                        image_topic="color/image_raw" 
+                        depth_topic="depth/color/image_raw" 
+                        cloud_topic="depth/color/points" 
+                        info_topic="color/camera_info" 
+                        depth_info_topic="depth/camera_info" 
+                        pointcloud_cuttoff="0.2" /> 
     </xacro:if>
-    
-    
     
     <!-- kinect 2 -->
     <xacro:if value="$(arg kinect2)">
@@ -34,19 +45,27 @@
         <xacro:include filename="$(find armadillo_gazebo)/macros/kinect2.xacro" />
     </xacro:if>
     
-    
-    
     <!-- Sonars -->
     <xacro:if value="$(arg urf)">
         <xacro:include filename="$(find armadillo_gazebo)/macros/urf.xacro" />
-        <xacro:urf name="front" link="front_urf_link" topic="URF/front" fov="${10.0*M_PI/180.0}" min="0.2" max="5.0"/>
+        <xacro:urf name="front" link="front_urf_link" topic="urf/front" fov="${10.0*M_PI/180.0}" min="0.3" max="5.0" update_rate="10"/>
     </xacro:if>
     
     
     <!-- hokuyo  utm-30lx -->
     <xacro:if value="$(arg lidar)">
-        <xacro:include filename="$(find armadillo_gazebo)/macros/hokuyo.xacro" />
-        <xacro:lidar link="laser_link" topic="scan" samples="720" resolution="1" min_angle="-1.5707963" max_angle="1.5707963" range_min="0.1" range_max="30" range_resolution="0.03" />
+        <xacro:include filename="$(find armadillo_gazebo)/macros/lidar.xacro" />
+        <xacro:lidar name="lidar" 
+                     link="laser_link" 
+                     topic="scan" 
+                     update_rate="10" 
+                     samples="720" 
+                     resolution="1" 
+                     min_angle="-1.5707" 
+                     max_angle="1.5707" 
+                     range_min="0.1" 
+                     range_max="30.0" 
+                     range_resolution="0.01" />
     </xacro:if>
     
     
@@ -67,8 +86,6 @@
             <robotSimType>gazebo_ros_control/ArmadilloRobotHWSim</robotSimType> 
         </plugin>
     </gazebo>
-    
-    
     
     <gazebo>
         <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
@@ -96,7 +113,7 @@
         <mu2>1.0</mu2>
         <fdir1>0 0 1</fdir1>
         <maxVel>1.0</maxVel>
-        <minDepth>0.001</minDepth>
+        <minDepth>0.00</minDepth>
     </gazebo>
     <gazebo reference="left_finger_joint">
         <implicitSpringDamper>1</implicitSpringDamper>
@@ -112,7 +129,7 @@
         <mu2>1.0</mu2>
         <fdir1>0 0 1</fdir1>
         <maxVel>1.0</maxVel>
-        <minDepth>0.001</minDepth>
+        <minDepth>0.00</minDepth>
     </gazebo>
     <gazebo reference="right_finger_joint">
         <implicitSpringDamper>1</implicitSpringDamper>
@@ -173,68 +190,61 @@
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
-    
-    
+
+    <xacro:property name="mu1" value="2.0" />
+    <xacro:property name="mu2" value="2.0" />
+            
     <gazebo reference="left_wheel_link">
-        <mu1>3.0</mu1>
-        <mu2>3.0</mu2>
+        <!-- kp and kd for rubber -->
         <kp>1000000.0</kp>
         <kd>100.0</kd>
-        <minDepth>0.001</minDepth>
+        <mu1>${mu1}</mu1>
+        <mu2>${mu2}</mu2>
+        <fdir1>1 0 0</fdir1>
         <maxVel>1.0</maxVel>
+        <minDepth>0.00</minDepth>
+        <material>Gazebo/DarkGrey</material>
     </gazebo>
     
     <gazebo reference="right_wheel_link">
-        <mu1>3.0</mu1>
-        <mu2>3.0</mu2>
+        <!-- kp and kd for rubber -->
         <kp>1000000.0</kp>
         <kd>100.0</kd>
-        <minDepth>0.001</minDepth>
+        <mu1>${mu1}</mu1>
+        <mu2>${mu2}</mu2>
+        <fdir1>1 0 0</fdir1>
         <maxVel>1.0</maxVel>
-    </gazebo>
-    
-    
-    <gazebo reference="caster_front_right_link">
-        <mu1>0.0</mu1>
-        <mu2>0.0</mu2>
-        <kp>1000000.0</kp>
-        <kd>100.0</kd>
-        <minDepth>0.001</minDepth>
-        <maxVel>1.0</maxVel>
-    </gazebo>
-    
-    <gazebo reference="caster_back_right_link">
-        <mu1>0.0</mu1>
-        <mu2>0.0</mu2>
-        <kp>1000000.0</kp>
-        <kd>100.0</kd>
-        <minDepth>0.001</minDepth>
-        <maxVel>1.0</maxVel>
-    </gazebo>
-    
-        <gazebo reference="caster_front_left_link">
-        <mu1>0.0</mu1>
-        <mu2>0.0</mu2>
-        <kp>1000000.0</kp>
-        <kd>100.0</kd>
-        <minDepth>0.001</minDepth>
-        <maxVel>1.0</maxVel>
+        <minDepth>0.00</minDepth>
+        <material>Gazebo/DarkGrey</material>
     </gazebo>
     
     <gazebo reference="caster_back_left_link">
-        <mu1>0.0</mu1>
-        <mu2>0.0</mu2>
+        <!-- kp and kd for rubber -->
         <kp>1000000.0</kp>
         <kd>100.0</kd>
-        <minDepth>0.001</minDepth>
+        <mu1>0.0</mu1>
+        <mu2>0.0</mu2>
+        <fdir1>1 0 0</fdir1>
         <maxVel>1.0</maxVel>
+        <minDepth>0.00</minDepth>
+        <material>Gazebo/DarkGrey</material>
     </gazebo>
     
+    <gazebo reference="caster_back_right_link">
+    <!-- kp and kd for rubber -->
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <mu1>0.0</mu1>
+        <mu2>0.0</mu2>
+        <fdir1>1 0 0</fdir1>
+        <maxVel>1.0</maxVel>
+        <minDepth>0.00</minDepth>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
     <gazebo reference="base_link">
-        <mu1>0.3</mu1>
-        <mu2>0.3</mu2>
+        <material>Gazebo/Grey</material>
     </gazebo>
-    
     
     <transmission name="rotation1_joint_trans">
         <type>transmission_interface/SimpleTransmission</type>
