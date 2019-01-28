@@ -270,9 +270,9 @@ void RicboardPub::registerHandles(hardware_interface::JointStateInterface &joint
 uint16_t RicboardPub::wrapPotentioCmd(uint16_t value)
 {
 
-    if (value > 1900) return 1900;
-    if (value < 1100) return 1100;
-    if (value >= 1400 && value <= 1600) return 1500;
+    if (value > 200) return 2000;
+    if (value < 1000) return 1000;
+
     return value;
 }
 
@@ -287,9 +287,27 @@ void RicboardPub::write(const ros::Duration elapsed)
         /* add 1500 offset because torso limits in */
         /* armadillo1 xacro are b/w -500 - 500,    */
         /* and ric servo get value b/w 1000-2000   */
+        
         uint16_t raw_cmd = torso_.command_effort + SERVO_NEUTRAL;
         torso_pkg.cmd = wrapPotentioCmd(raw_cmd);
-        if (fabs(torso_pos_err_) < 0.04) torso_pkg.cmd = SERVO_NEUTRAL;
+        
+        if(!in_window_)
+        {
+            if (fabs(torso_pos_err_) < 0.015) 
+            {
+                in_window_ = true;
+                torso_pkg.cmd = SERVO_NEUTRAL;
+            }
+        }
+        else
+        {
+            torso_pkg.cmd = SERVO_NEUTRAL;
+            if (fabs(torso_pos_err_) > 0.02) 
+            {
+                in_window_ = false;
+            }
+        }
+                
         //ROS_WARN("torso_.command_effort: %f, Raw CMD: %d, RIC CMD: %d ", torso_.command_effort, raw_cmd, torso_pkg.cmd);
         ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric::protocol::Type::SERVO);
     }

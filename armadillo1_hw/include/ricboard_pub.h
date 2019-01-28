@@ -74,6 +74,7 @@ class RicboardPub
 private:
 
     bool  load_ric_hw_ = true;
+    bool  in_window_ = false;
     double torso_pos_err_ = 0;
     int ric_disconnections_counter_ = 0;
     std::string ric_port_;
