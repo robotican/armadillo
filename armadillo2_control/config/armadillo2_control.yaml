@@ -9,7 +9,7 @@ torso_position_controller:
 
 robot_state_controller:
     type: joint_state_controller/JointStateController
-    publish_rate: 50  
+    publish_rate: 50
 
 #control pan tilt with simple Float64 msgs
 pan_tilt_controller:
@@ -21,9 +21,9 @@ pan_tilt_controller:
 pan_tilt_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints: ['head_pan_joint', 'head_tilt_joint']
-  
+
 pan_tilt_posvel_trajectory_controller:
-  type: pos_vel_controllers/JointTrajectoryController
+  type: position_controllers/JointTrajectoryController
   joints: ['head_pan_joint', 'head_tilt_joint']
 
 mobile_base_controller:
@@ -39,7 +39,7 @@ mobile_base_controller:
   # URDF if not specified as a parameter
   wheel_separation : 0.3284
   wheel_radius : 0.09
-  # slip_factor: 1.0
+  slip_factor: 1.0
 
   # Wheel separation and radius multipliers
   wheel_separation_multiplier: 1.0 # default: 1.0
@@ -74,15 +74,15 @@ arm_trajectory_controller:
   type: pos_vel_controllers/JointTrajectoryController
   joints:
      - rotation1_joint
-     - shoulder1_joint 
-     - shoulder2_joint 
-     - rotation2_joint 
-     - shoulder3_joint 
-     - wrist_joint 
+     - shoulder1_joint
+     - shoulder2_joint
+     - rotation2_joint
+     - shoulder3_joint
+     - wrist_joint
   publish_rate: 50
   constraints:
-    goal_time: 2.5                  
-    stopped_velocity_tolerance: 0.05 
+    goal_time: 2.5
+    stopped_velocity_tolerance: 0.05
     rotation1_joint: {trajectory: 1.2, goal: 0.8}
     shoulder1_joint: {trajectory: 1.2, goal: 0.8}
     shoulder2_joint: {trajectory: 1.2, goal: 0.8}
@@ -90,9 +90,9 @@ arm_trajectory_controller:
     shoulder3_joint: {trajectory: 1.2, goal: 0.8}
     wrist_joint: {trajectory: 1.2, goal: 0.8}
 
-
+#
 gripper_controller:
- type: pos_vel_controllers/GripperActionController 
+ type: pos_vel_controllers/GripperActionController
  left_finger_joint: 'left_finger_joint'
  right_finger_joint: 'right_finger_joint'
  goal_tolerance: 0.005
@@ -100,11 +100,3 @@ gripper_controller:
  stall_timeout: 1.0
  joints_vel: 1.0
  action_monitor_rate: 50
-      
-#gazebo_ros_control:
-# pid_gains:
-#   left_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
-#   right_finger_joint: {p: 50.0, i: 0.01, d: 10.0}
-#  head_pan_joint: {p: 150.0, i: 0.02, d: 10.0}
-#  head_tilt_joint: {p: 150.0, i: 0.02, d: 10.0}
-

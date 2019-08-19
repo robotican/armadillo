@@ -42,8 +42,6 @@
 #include <diagnostic_updater/publisher.h>
 #include <hardware_interface/robot_hw.h>
 
-#include <roboteq_control/RoboteqControllerConfig.h>
-
 #include "configurator/gpio_analog.h"
 #include "configurator/gpio_pulse.h"
 #include "configurator/gpio_encoder.h"

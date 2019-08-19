@@ -59,7 +59,7 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         try{
             ric_.connect(ric_port_);
             ROS_INFO("[armadillo2_hw/ricboard_pub]: ricboard port opened successfully \nport name: %s \nbaudrate: 115200", ric_port_.c_str());
-        }catch (ric::ConnectionExeption e) {
+        }catch (ric_interface::ConnectionExeption e) {
             ROS_ERROR("[armadillo2_hw/ricboard_pub]: can't open ricboard port. make sure that ricboard is connected. shutting down...");
             ros::shutdown();
             exit(1);
@@ -70,9 +70,10 @@ RicboardPub::RicboardPub(ros::NodeHandle &nh)
         // torso_lpf_.setDeltaTime(0.1);
 
         /* ric publishers */
-        ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("GPS/fix", 10);
-        ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("URF/front", 10);
-        ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("IMU", 10);
+        ric_gps_pub_ = nh.advertise<sensor_msgs::NavSatFix>("gps/fix", 10);
+        ric_ultrasonic_pub_ = nh.advertise<sensor_msgs::Range>("urf/front", 10);
+        ric_imu_pub_ = nh.advertise<sensor_msgs::Imu>("imu/data", 10);
+        ric_mag_pub_ = nh.advertise<sensor_msgs::MagneticField>("imu/magnetic", 10);
 
         ric_pub_timer_ = nh.createTimer(ros::Duration(RIC_PUB_INTERVAL), &RicboardPub::pubTimerCB, this);
         ric_dead_timer_ = nh.createTimer(ros::Duration(RIC_DEAD_TIMEOUT), &RicboardPub::ricDeadTimerCB, this);
@@ -107,7 +108,7 @@ void RicboardPub::loop()
         ric_.loop();
         if (ric_.isBoardAlive())
         {
-            ric::protocol::error err_msg;
+            ric_interface::protocol::error err_msg;
             std::string logger_msg;
             int32_t logger_val;
             ric_disconnections_counter_ = 0;
@@ -126,9 +127,9 @@ void RicboardPub::loop()
                 ROS_INFO("[armadillo2_hw/ricboard_pub]: ric logger is saying: '%s', value: %i", logger_msg.c_str(), logger_val);
             if (ric_.readErrorMsg(err_msg))
             {
-                std::string comp_name = ric::RicInterface::compType2String((ric::protocol::Type)err_msg.comp_type);
-                std::string err_desc = ric::RicInterface::errCode2String((ric::protocol::ErrCode)err_msg.code);
-                if (err_msg.code != (uint8_t)ric::protocol::ErrCode::CALIB)
+                std::string comp_name = ric_interface::RicInterface::compType2String((ric_interface::protocol::Type)err_msg.comp_type);
+                std::string err_desc = ric_interface::RicInterface::errCode2String((ric_interface::protocol::ErrCode)err_msg.code);
+                if (err_msg.code != (uint8_t)ric_interface::protocol::ErrCode::CALIB)
                 {
                     ROS_ERROR("[armadillo2_hw/ricboard_pub]: ric detected critical '%s' error in %s. shutting down...",
                               err_desc.c_str(), comp_name.c_str());
@@ -144,6 +145,7 @@ void RicboardPub::loop()
             ric_dead_timer_.start();
             ric_pub_timer_.stop();
         }
+	ros::Duration(0.0066).sleep(); //150hz
     }
 }
 
@@ -166,7 +168,7 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     if (!load_ric_hw_ || !ric_.isBoardAlive())
         return;
 
-    ric::sensors_state sensors = ric_.getSensorsState();
+    ric_interface::sensors_state sensors = ric_.getSensorsState();
 
     /* publish ultrasonic */
     sensor_msgs::Range range_msg;
@@ -183,21 +185,45 @@ void RicboardPub::pubTimerCB(const ros::TimerEvent &event)
     sensor_msgs::Imu imu_msg;
     imu_msg.header.stamp = ros::Time::now();
     imu_msg.header.frame_id = "base_link";
-    tf::Quaternion orientation_q = tf::createQuaternionFromRPY(sensors.imu.roll_rad,
-                                                               sensors.imu.pitch_rad,
-                                                               sensors.imu.yaw_rad);
-    imu_msg.orientation.x = orientation_q.x();
-    imu_msg.orientation.y = orientation_q.y();
-    imu_msg.orientation.z = orientation_q.z();
-    imu_msg.orientation.w = orientation_q.w();
-    imu_msg.angular_velocity.x = sensors.imu.gyro_x_rad;
-    imu_msg.angular_velocity.y = sensors.imu.gyro_y_rad;
-    imu_msg.angular_velocity.z = sensors.imu.gyro_z_rad;
-    imu_msg.linear_acceleration.x = sensors.imu.accl_x_rad;
-    imu_msg.linear_acceleration.y = sensors.imu.accl_y_rad;
-    imu_msg.linear_acceleration.z = sensors.imu.accl_z_rad;
-    imu_msg.header.stamp = ros::Time::now();
+
+    double roll, pitch, yaw;
+    pitch = 0;//-sensors.imu.roll_rad;//YAIR
+    roll = 0;//-sensors.imu.pitch_rad;//YAIR
+    yaw = 0;//sensors.imu.yaw_rad - M_PI / 2;//YAIR
+
+    //wrap to PI
+    /*if (yaw > M_PI ) //YAIR
+        yaw -= 2 * M_PI;
+    else if (yaw < -M_PI)
+        yaw += 2 * M_PI;*/ //YAIR
+
+    /*ROS_INFO("ROLL %f, PITCH %f, YAW %f", roll * 180 / M_PI,
+             pitch * 180 / M_PI,
+             yaw * 180 / M_PI);*/
+
+    /*tf::Quaternion orientation_q = tf::createQuaternionFromRPY(roll, //YAIR
+                                                               pitch,
+                                                               yaw);*/ //YAIR
+
+    imu_msg.orientation.x = 0;//orientation_q.x(); //YAIR
+    imu_msg.orientation.y = 0;//orientation_q.y(); //YAIR
+    imu_msg.orientation.z = 0;//orientation_q.z(); //YAIR
+    imu_msg.orientation.w = 1;//orientation_q.w(); //YAIR
+    imu_msg.angular_velocity.x = -1 * sensors.imu.gyro_y_rad;
+    imu_msg.angular_velocity.y = -1 * sensors.imu.gyro_x_rad;
+    imu_msg.angular_velocity.z = -1 * sensors.imu.gyro_z_rad;
+    imu_msg.linear_acceleration.x = 0;//sensors.imu.accl_y_rad * G_FORCE; //YAIR
+    imu_msg.linear_acceleration.y = 0;//sensors.imu.accl_x_rad * G_FORCE; //YAIR
+    imu_msg.linear_acceleration.z = 0;//sensors.imu.accl_z_rad * G_FORCE; //YAIR
     ric_imu_pub_.publish(imu_msg);
+
+    sensor_msgs::MagneticField mag_msg;
+    mag_msg.header.stamp = ros::Time::now();
+    mag_msg.header.frame_id = "base_link";
+    mag_msg.magnetic_field.x = 0;//sensors.imu.mag_x_rad; //YAIR
+    mag_msg.magnetic_field.y = 0;//sensors.imu.mag_y_rad; //YAIR
+    mag_msg.magnetic_field.z = 0;//sensors.imu.mag_z_rad; //YAIR
+    ric_mag_pub_.publish(mag_msg);
 
     /* publish gps if data is available */
     if (sensors.gps.satellites > 0)
@@ -245,13 +271,13 @@ void RicboardPub::write(const ros::Duration elapsed)
 
     if (elapsed >= ros::Duration(RIC_WRITE_INTERVAL))
     {
-        ric::protocol::servo torso_pkg;
+        ric_interface::protocol::servo torso_pkg;
         /* add 1500 offset because torso limits in */
         /* armadillo2 xacro are b/w -500 - 500,    */
         /* and ric servo get value b/w 1000-2000   */
         torso_pkg.cmd = torso_.command_effort + SERVO_NEUTRAL;
         //ROS_WARN("torso_.command_effort: %f, RIC CMD: %d ", torso_.command_effort, torso_pkg.cmd);
-        ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric::protocol::Type::SERVO);
+        //ric_.writeCmd(torso_pkg, sizeof(torso_pkg), ric_interface::protocol::Type::SERVO);
     }
 }
 
@@ -261,10 +287,11 @@ void RicboardPub::read(const ros::Duration elapsed)
         return;
 
     /* update robot state according to ric sensor for controller use */
-    ric::sensors_state sensors = ric_.getSensorsState();
+    ric_interface::sensors_state sensors = ric_.getSensorsState();
     double torso_pos = sensors.laser.distance_mm / 1000.0;
     //double lpf_pos = torso_lpf_.update(torso_pos); //apply low pass filter
     //ROS_INFO("real: %f, lpf: %f", torso_pos, lpf_pos);
+    ROS_INFO("real: %f", torso_pos);
     torso_.pos = torso_pos;
     torso_.vel = (torso_.pos - torso_.prev_pos) / elapsed.sec;
     torso_.effort = torso_.command_effort;

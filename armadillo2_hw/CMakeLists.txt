@@ -12,7 +12,7 @@ find_package(
     bms_interface
     dxl_interface
     ric_interface
-    roboteq_control
+    #roboteq_control
     filters
 )
 
@@ -21,7 +21,7 @@ catkin_package(
   LIBRARIES armadillo2_hw
   CATKIN_DEPENDS bms_interface
         dxl_interface
-        roboteq_control
+       # roboteq_control
         filters
 DEPENDS
     Boost
@@ -43,8 +43,9 @@ include_directories(
          include/battery_pub.h
          src/ricboard_pub.cpp
          include/ricboard_pub.h
-         src/roboteq_diff_drive.cpp
-         include/roboteq_diff_drive.h)
+         #src/roboteq_diff_drive.cpp
+         #include/roboteq_diff_drive.h
+         )
 
 add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 

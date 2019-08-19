@@ -34,22 +34,48 @@
 
 #include "dxl_motors_builder.h"
 #include "battery_pub.h"
-#include "ricboard_pub.h"
-#include "roboteq_diff_drive.h"
+//#include "ricboard_pub.h"
+//#include "roboteq_diff_drive.h"
 #include <hardware_interface/robot_hw.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/posvel_command_interface.h>
 #include <std_msgs/String.h>
+#include <std_msgs/UInt16.h>
+#include <std_msgs/Float32.h>
+#include <std_msgs/Bool.h>
 
 
 namespace armadillo2_hw
 {
+
+    struct torso_joint
+    {
+        double pos = 0;
+        double vel = 0;
+        double prev_pos = 0;
+        double effort = 0; /* effort stub - not used */
+        double command_effort = 0;
+        std::string joint_name;
+    };
+
+
     class ArmadilloHW : public hardware_interface::RobotHW
     {
     private:
 
+        /* handles */
+        std::vector<hardware_interface::JointStateHandle> joint_state_handles_;
+        std::vector<hardware_interface::JointHandle> pos_handles_;
+        torso_joint torso_;
+
+        ros::Publisher servo_pub_;
+        ros::Subscriber servo_sub_;
+        ros::Subscriber emergency_sub_;
+
         ros::Time prev_time_;
+        ros::Time servo_pub_prev_time_,servo_sub_prev_time_;
+
         ros::NodeHandle *node_handle_;
 
         /* interfaces */
@@ -62,10 +88,13 @@ namespace armadillo2_hw
         /* robot close loop components */
         DxlMotorsBuilder dxl_motors_;
         BatteryPub battery_;
-        RicboardPub ric_;
-        RoboteqDiffDrive roboteq_;
+       // RicboardPub ric_;
+       // RoboteqDiffDrive roboteq_;
 
         ros::Publisher espeak_pub_;
+
+        void torsoCallback(const std_msgs::Float32::ConstPtr& msg);
+        void emergencyCallback(const std_msgs::Bool::ConstPtr &msg);
 
         void registerInterfaces();
         void straighHead();

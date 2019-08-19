@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="armadillo2_robot" description="ARMadillo2 Robot">
+
+    <xacro:include filename="$(find armadillo2_description)/urdf/armadillo2.xacro" />
+    <xacro:include filename="$(find armadillo2_gazebo)/macros/intel_cam.xacro" />
+
+    <xacro:arg name="kinect2" default="true"/>
+    <xacro:arg name="kinect2_hz" default="30.0"/>
+    <xacro:arg name="kinect2_hd" default="false"/>
+    <xacro:arg name="kinect2_qhd" default="true"/>
+    <xacro:arg name="kinect2_sd" default="false"/>
+    <xacro:arg name="urf" default="true"/>
+    <xacro:arg name="imu" default="true"/>
+    <xacro:arg name="gps" default="true"/>
+    <xacro:arg name="lidar" default="false"/>
+    <xacro:arg name="intel_cam" default="false"/>
+
+    <!-- intel_cam -->
+    <xacro:if value="$(arg intel_cam)">
+        <xacro:include filename="$(find armadillo2_gazebo)/macros/intel_cam.xacro" />
+        <xacro:intel_d435_gazebo name="camera" ros_topic="intel_cam"/>
+    </xacro:if>
+
+
+
+    <!-- kinect 2 -->
+    <xacro:if value="$(arg kinect2)">
+        <xacro:property name="kinect2_hz" value="$(arg kinect2_hz)"/>
+        <xacro:property name="kinect2_hd" value="$(arg kinect2_hd)"/>
+        <xacro:property name="kinect2_qhd" value="$(arg kinect2_qhd)"/>
+        <xacro:property name="kinect2_sd" value="$(arg kinect2_sd)"/>
+        <xacro:include filename="$(find armadillo2_gazebo)/macros/kinect2.xacro" />
+    </xacro:if>
+
+
+
+    <!-- Sonars -->
+    <xacro:if value="$(arg urf)">
+        <xacro:include filename="$(find armadillo2_gazebo)/macros/urf.xacro" />
+        <xacro:urf name="front" link="front_urf_link" topic="URF/front" fov="${10.0*M_PI/180.0}" min="0.2" max="5.0"/>
+    </xacro:if>
+
+
+    <!-- hokuyo  utm-30lx -->
+    <xacro:if value="$(arg lidar)">
+        <xacro:include filename="$(find armadillo2_gazebo)/macros/hokuyo.xacro" />
+        <xacro:lidar link="laser_link" topic="scan" samples="720" resolution="1" min_angle="-1.5707963" max_angle="1.5707963" range_min="0.1" range_max="30" range_resolution="0.03" />
+    </xacro:if>
+
+
+    <!-- GPS   -->
+    <xacro:if value="$(arg gps)">
+        <xacro:include filename="$(find armadillo2_gazebo)/macros/gps.xacro" />
+        <xacro:gps link="base_link" hz="5" topic="GPS" lat="31.262218" long="34.80146100" alt="298"/>
+    </xacro:if>
+
+    <!-- IMU   -->
+    <xacro:if value="$(arg imu)">
+        <xacro:include filename="$(find armadillo2_gazebo)/macros/imu.xacro" />
+        <xacro:imu link="base_link" hz="50" topic="IMU" />
+    </xacro:if>
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotSimType>gazebo_ros_control/Armadillo2RobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
+
+
+
+    <gazebo>
+        <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
+            <arm>
+                <arm_name>arm</arm_name>
+                <palm_link> wrist_link  </palm_link>
+                <gripper_link> left_finger_link </gripper_link>
+                <gripper_link> right_finger_link </gripper_link>
+            </arm>
+            <forces_angle_tolerance>100</forces_angle_tolerance>
+            <update_rate>50</update_rate>
+            <grip_count_threshold>4</grip_count_threshold>
+            <max_grip_count>8</max_grip_count>
+            <release_tolerance>0.005</release_tolerance>
+            <disable_collisions_on_attach>false</disable_collisions_on_attach>
+            <contact_topic>__default_topic__</contact_topic>
+        </plugin>
+    </gazebo>
+
+
+    <gazebo reference="left_finger_link">
+        <kp>1000000.0</kp>
+        <kd>1.0</kd>
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <fdir1>0 0 1</fdir1>
+        <maxVel>1.0</maxVel>
+        <minDepth>0.001</minDepth>
+    </gazebo>
+    <gazebo reference="left_finger_joint">
+        <implicitSpringDamper>1</implicitSpringDamper>
+        <provideFeedback>1</provideFeedback>
+    </gazebo>
+
+
+
+    <gazebo reference="right_finger_link">
+        <kp>1000000.0</kp>
+        <kd>1.0</kd>
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <fdir1>0 0 1</fdir1>
+        <maxVel>1.0</maxVel>
+        <minDepth>0.001</minDepth>
+    </gazebo>
+    <gazebo reference="right_finger_joint">
+        <implicitSpringDamper>1</implicitSpringDamper>
+        <provideFeedback>1</provideFeedback>
+    </gazebo>
+
+
+    <transmission name="left_wheel_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_wheel_joint">
+            <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="left_wheel_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="right_wheel_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="right_wheel_joint">
+            <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_wheel_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="torso_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="torso_joint">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="torso_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+
+
+    <transmission name="head_pan_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="head_pan_joint">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="head_pan_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+
+
+    <transmission name="head_tilt_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="head_tilt_joint">
+            <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="head_tilt_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+
+    <gazebo reference="left_wheel_link">
+        <mu1>2.0</mu1>
+        <mu2>2.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+    </gazebo>
+
+    <gazebo reference="right_wheel_link">
+        <mu1>2.0</mu1>
+        <mu2>2.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+    </gazebo>
+
+
+    <gazebo reference="caster_front_right_link">
+        <mu1>0.0</mu1>
+        <mu2>0.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+    </gazebo>
+
+    <gazebo reference="caster_back_right_link">
+        <mu1>0.0</mu1>
+        <mu2>0.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+    </gazebo>
+
+        <gazebo reference="caster_front_left_link">
+        <mu1>0.0</mu1>
+        <mu2>0.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+    </gazebo>
+
+    <gazebo reference="caster_back_left_link">
+        <mu1>0.0</mu1>
+        <mu2>0.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+    </gazebo>
+
+    <gazebo reference="base_link">
+        <mu1>0.3</mu1>
+        <mu2>0.3</mu2>
+    </gazebo>
+
+
+    <transmission name="rotation1_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="rotation1_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="rotation1_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="shoulder1_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="shoulder1_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="shoulder1_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="shoulder2_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="shoulder2_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="shoulder2_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="rotation2_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="rotation2_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="rotation2_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="shoulder3_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="shoulder3_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="shoulder3_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="wrist_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="wrist_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="wrist_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="left_finger_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_finger_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="left_finger_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="right_finger_joint_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="right_finger_joint">
+            <hardwareInterface>PosVelJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_finger_joint_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+</robot>

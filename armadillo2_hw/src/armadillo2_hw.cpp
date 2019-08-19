@@ -31,22 +31,37 @@
 
 #include "armadillo2_hw.h"
 
-namespace armadillo2_hw
-{
+namespace armadillo2_hw {
 
-    ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :
-            dxl_motors_(nh), battery_(nh), ric_(nh), roboteq_(nh)
-    {
+    //ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :dxl_motors_(nh), battery_(nh), roboteq_(nh)
+    ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) : dxl_motors_(nh), battery_(nh) {
         node_handle_ = &nh;
 
+        servo_pub_ = nh.advertise<std_msgs::UInt16>("/ric/torso/command", 1);
+        servo_sub_ = nh.subscribe("ric/torso/feedback", 1, &ArmadilloHW::torsoCallback, this);
+        emergency_sub_ = nh.subscribe("ric/emergency", 1, &ArmadilloHW::emergencyCallback, this);
         /* register handles */
         dxl_motors_.registerHandles(joint_state_interface_,
                                     position_interface_,
                                     posvel_interface_);
-        ric_.registerHandles(joint_state_interface_,
-                             effort_interface_);
-        roboteq_.registerHandles(joint_state_interface_,
-                                 velocity_interface_);
+        // ric_.registerHandles(joint_state_interface_,effort_interface_);
+
+
+
+        //ric
+        /* joint state registration */
+        joint_state_handles_.push_back(hardware_interface::JointStateHandle(torso_.joint_name,
+                                                                            &torso_.pos,
+                                                                            &torso_.vel,
+                                                                            &torso_.effort));
+        joint_state_interface_.registerHandle(joint_state_handles_.back());
+        /* joint command registration */
+        pos_handles_.push_back(hardware_interface::JointHandle(joint_state_interface_.getHandle(torso_.joint_name),
+                                                               &torso_.command_effort));
+        effort_interface_.registerHandle(pos_handles_.back());
+
+
+        //roboteq_.registerHandles(joint_state_interface_,velocity_interface_);
 
         /* register interfaces */
         registerInterface(&joint_state_interface_);
@@ -55,29 +70,58 @@ namespace armadillo2_hw
         registerInterface(&velocity_interface_);
         registerInterface(&effort_interface_);
 
-        prev_time_ = ros::Time::now();
+        prev_time_ = servo_pub_prev_time_ = servo_sub_prev_time_ = ros::Time::now();
 
-        ric_.startLoop();
+        // ric_.startLoop();
 
         ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
         espeak_pub_ = node_handle_->advertise<std_msgs::String>("/espeak_node/speak_line", 10);
         speakMsg("i am ready", 1);
     }
 
-    void ArmadilloHW::read()
-    {
-        ros::Duration period = ros::Time::now() - prev_time_;
-        dxl_motors_.read();
-        roboteq_.read(period);
-        ric_.read(period);
+    void ArmadilloHW::emergencyCallback(const std_msgs::Bool::ConstPtr &msg) {
+
+        if (msg->data) {
+            speakMsg("emergency, shutting down", 1);
+            ROS_ERROR("[armadillo2_hw/ricboard_pub]: EMERGENCY PIN DISCONNECTED, shutting down...");
+            ros::shutdown();
+            exit(EXIT_FAILURE);
+        }
     }
 
-    void ArmadilloHW::write()
-    {
-        ros::Duration period = ros::Time::now() - prev_time_;
-        dxl_motors_.write();
-        roboteq_.write(period);
-        ric_.write(period);
-        prev_time_ = ros::Time::now();
+    void ArmadilloHW::torsoCallback(const std_msgs::Float32::ConstPtr &msg) {
+        ros::Time now = ros::Time::now();
+        torso_.pos = msg->data;
+        torso_.vel = (torso_.pos - torso_.prev_pos) / (now - servo_sub_prev_time_).toSec();
+        torso_.effort = torso_.command_effort;
+        torso_.prev_pos = torso_.pos;
+        servo_sub_prev_time_ = now;
     }
+
+    void ArmadilloHW::read() {
+        ros::Duration period = ros::Time::now() - prev_time_;
+        dxl_motors_.read();
+        // roboteq_.read(period);
+
+        // ric_.read(period);
+    }
+
+    void ArmadilloHW::write() {
+        ros::Time now = ros::Time::now();
+        ros::Duration period = now - prev_time_;
+        dxl_motors_.write();
+        //roboteq_.write(period);
+
+        // ric_.write(period);
+        if ((now - servo_pub_prev_time_).toSec() > 0.05) //20hz
+        {
+            std_msgs::UInt16 msg;
+            msg.data = torso_.command_effort + 1500;
+            servo_pub_.publish(msg);
+            servo_pub_prev_time_ = now;
+        }
+        prev_time_ = now;
+    }
+
+
 }
