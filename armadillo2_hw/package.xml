@@ -16,7 +16,6 @@
     <build_depend>controller_manager</build_depend>
     <build_depend>bms_interface</build_depend>
     <build_depend>dxl_interface</build_depend>
-    <build_depend>ric_interface</build_depend>
     <build_depend>roboteq_control</build_depend>
     <build_depend>filters</build_depend>
     
@@ -28,7 +27,6 @@
     <run_depend>controller_manager</run_depend>
     <run_depend>bms_interface</run_depend>
     <run_depend>dxl_interface</run_depend>
-    <run_depend>ric_interface</run_depend>
     <run_depend>roboteq_control</run_depend>
     <run_depend>filters</run_depend>
     

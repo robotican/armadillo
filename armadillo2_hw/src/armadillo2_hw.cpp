@@ -33,8 +33,8 @@
 
 namespace armadillo2_hw {
 
-    //ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :dxl_motors_(nh), battery_(nh), roboteq_(nh)
-    ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) : dxl_motors_(nh), battery_(nh) {
+    ArmadilloHW::ArmadilloHW(ros::NodeHandle &nh) :dxl_motors_(nh), battery_(nh), roboteq_(nh)
+    {
         node_handle_ = &nh;
 
         servo_pub_ = nh.advertise<std_msgs::UInt16>("/ric/torso/command", 1);
@@ -44,11 +44,9 @@ namespace armadillo2_hw {
         dxl_motors_.registerHandles(joint_state_interface_,
                                     position_interface_,
                                     posvel_interface_);
-        // ric_.registerHandles(joint_state_interface_,effort_interface_);
 
 
 
-        //ric
         /* joint state registration */
         joint_state_handles_.push_back(hardware_interface::JointStateHandle(torso_.joint_name,
                                                                             &torso_.pos,
@@ -61,7 +59,7 @@ namespace armadillo2_hw {
         effort_interface_.registerHandle(pos_handles_.back());
 
 
-        //roboteq_.registerHandles(joint_state_interface_,velocity_interface_);
+        roboteq_.registerHandles(joint_state_interface_,velocity_interface_);
 
         /* register interfaces */
         registerInterface(&joint_state_interface_);
@@ -72,7 +70,6 @@ namespace armadillo2_hw {
 
         prev_time_ = servo_pub_prev_time_ = servo_sub_prev_time_ = ros::Time::now();
 
-        // ric_.startLoop();
 
         ROS_INFO("[armadillo2_hw]: armadillo hardware interface loaded successfully");
         espeak_pub_ = node_handle_->advertise<std_msgs::String>("/espeak_node/speak_line", 10);
@@ -110,9 +107,9 @@ namespace armadillo2_hw {
         ros::Time now = ros::Time::now();
         ros::Duration period = now - prev_time_;
         dxl_motors_.write();
-        //roboteq_.write(period);
+        roboteq_.write(period);
 
-        // ric_.write(period);
+        
         if ((now - servo_pub_prev_time_).toSec() > 0.05) //20hz
         {
             std_msgs::UInt16 msg;
