@@ -37,6 +37,16 @@ namespace armadillo2_hw {
     {
         node_handle_ = &nh;
 
+
+if (!ros::param::get(TORSO_JOINT_PARAM, torso_.joint_name))
+        {
+            ROS_ERROR("[armadillo2_hw/armadillo2_hw]: %s param is missing on param server. make sure that this param exist in controllers.yaml "
+                              "and that your launch includes this param file. shutting down...", TORSO_JOINT_PARAM);
+            ros::shutdown();
+            exit (EXIT_FAILURE);
+        }
+
+
         servo_pub_ = nh.advertise<std_msgs::UInt16>("/ric/torso/command", 1);
         servo_sub_ = nh.subscribe("ric/torso/feedback", 1, &ArmadilloHW::torsoCallback, this);
         emergency_sub_ = nh.subscribe("ric/emergency", 1, &ArmadilloHW::emergencyCallback, this);
@@ -88,10 +98,13 @@ namespace armadillo2_hw {
 
     void ArmadilloHW::torsoCallback(const std_msgs::Float32::ConstPtr &msg) {
         ros::Time now = ros::Time::now();
-        torso_.pos = msg->data;
-        torso_.vel = (torso_.pos - torso_.prev_pos) / (now - servo_sub_prev_time_).toSec();
-        torso_.effort = torso_.command_effort;
-        torso_.prev_pos = torso_.pos;
+        if(msg->data != -1.0)
+        {
+            torso_.pos = msg->data;
+            torso_.vel = (torso_.pos - torso_.prev_pos) / (now - servo_sub_prev_time_).toSec();
+            torso_.effort = torso_.command_effort;
+            torso_.prev_pos = torso_.pos;
+        }
         servo_sub_prev_time_ = now;
     }
 

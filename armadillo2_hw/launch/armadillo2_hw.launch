@@ -5,6 +5,10 @@
     <!--<node name="rqt_robot_monitor" pkg="rqt_robot_monitor" type="rqt_robot_monitor" />-->
     <!--<node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" />-->
         
+    <arg name="load_ricboard_hw" default="true"/>
+
+    <node if="$(arg load_ricboard_hw)" name="ric_interface" pkg="rosserial_python" type="serial_node.py" args="/dev/armadillo2/RICBOARD" output="screen" />
+
     <node name="armadillo2_hw_node" pkg="armadillo2_hw" type="armadillo2_hw_node" respawn="false" output="screen">
         
         <!--roboteq-->
@@ -15,9 +19,9 @@
         <param name="roboteq_baud" value="115200" />
         
         <!--ricboard-->
-        <param name="load_ric_hw" value="true" />
+        <param name="load_ric_hw" value="load_ricboard_hw" />
         <param name="torso_joint" value="torso_joint" />
-        <param name="ric_port" value="/dev/armadillo2/RICBOARD" />
+        <!-- <param name="ric_port" value="/dev/armadillo2/RICBOARD" /> -->
         
         <!--battery management system-->
         <param name="load_battery_hw" value="true" />
@@ -33,7 +37,7 @@
 
     </node>
     
-  
+
     <rosparam file="$(find armadillo2_hw)/config/dxl_joints_config.yaml" command="load"/>
     
     <rosparam file="$(find armadillo2_hw)/config/dxl_spec_config.yaml" command="load"/>

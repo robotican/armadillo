@@ -44,6 +44,7 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/Bool.h>
 
+#define TORSO_JOINT_PARAM "~torso_joint"
 
 namespace armadillo2_hw
 {
