@@ -12,6 +12,5 @@
     output="screen"
     args="robot_state_controller mobile_base_controller torso_effort_controller pan_tilt_trajectory_controller arm_trajectory_controller gripper_controller" 
   />
-   <!-- args="robot_state_controller mobile_base_controller pan_tilt_trajectory_controller arm_trajectory_controller gripper_controller"-->
-      <!-- YAMYAIR -->
+
 </launch>
