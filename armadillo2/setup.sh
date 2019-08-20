@@ -100,7 +100,6 @@ sudo apt-get -y install ros-kinetic-trac-ik ros-kinetic-moveit-kinematics
 sudo apt-get -y install ros-kinetic-urg-node
 sudo apt-get -y install ros-kinetic-rtabmap-ros
 sudo apt-get -y install ros-kinetic-rgbd-launch
-# YAMYAIR
 sudo apt-get -y install jstest-gtk
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
@@ -115,13 +114,13 @@ printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 # and place xprofile script to enforce resulotion    #
 if [ "$INSTALL_HW_COMPS" = true ] ; then
     printf "${WHITE_TXT}\nInstalling displaylink driver...\n${NO_COLOR}"
-    sudo apt-get -y install linux-generic-lts-utopic xserver-xorg-lts-utopic
-    sudo apt-get -y install libegl1-mesa-drivers-lts-utopic
-    sudo apt-get -y install xserver-xorg-video-all-lts-utopic
-    sudo apt-get -y install xserver-xorg-input-all-lts-utopic
-    sudo apt-get -y install dkms
-    cd $PKG_PATH/armadillo2/third_party_files/
-    chmod +x displaylink-driver-4.1.9.run
+    #sudo apt-get -y install linux-generic-lts-utopic xserver-xorg-lts-utopic
+    #sudo apt-get -y install libegl1-mesa-drivers-lts-utopic
+    #sudo apt-get -y install xserver-xorg-video-all-lts-utopic
+    #sudo apt-get -y install xserver-xorg-input-all-lts-utopic
+    #sudo apt-get -y install dkms
+    #cd $PKG_PATH/armadillo2/third_party_files/
+    #chmod +x displaylink-driver-4.1.9.run
     #sudo ./displaylink-driver-4.1.9.run
     #cp .xprofile ~/
     printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
@@ -159,12 +158,6 @@ make
 sudo make install
 cd $PKG_PATH/armadillo2_utils/iai_kinect2/iai_kinect2
 rosdep install -r --from-paths .
-printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
-
-# install armadillo2 ric interface #
-printf "${WHITE_TXT}\nInstalling ric interface...\n${NO_COLOR}"
-cd $PKG_PATH/armadillo2/third_party_files/
-sudo dpkg -i ros-kinetic-ric-interface_0.0.0-0xenial_amd64.deb
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # usb rules #
