@@ -111,7 +111,7 @@ if (!ros::param::get(TORSO_JOINT_PARAM, torso_.joint_name))
     void ArmadilloHW::read() {
         ros::Duration period = ros::Time::now() - prev_time_;
         dxl_motors_.read();
-        // roboteq_.read(period);
+        roboteq_.read(period);
 
         // ric_.read(period);
     }
