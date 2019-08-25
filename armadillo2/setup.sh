@@ -97,7 +97,6 @@ sudo apt-get -y install ros-kinetic-serial
 sudo apt-get -y install espeak espeak-data libespeak-dev
 sudo apt-get -y install ros-kinetic-robot-localization
 sudo apt-get -y install ros-kinetic-trac-ik ros-kinetic-moveit-kinematics
-sudo apt-get -y install ros-kinetic-urg-node
 sudo apt-get -y install ros-kinetic-rtabmap-ros
 sudo apt-get -y install ros-kinetic-rgbd-launch
 sudo apt-get -y install jstest-gtk

@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <launch>
 
 <!-- A simple launch file for the urg_node package. -->
@@ -12,7 +14,7 @@
     <param name="serial_baud" value="115200"/>
     <param name="frame_id" value="laser_link"/>
     <param name="calibrate_time" value="true"/>
-    <param name="publish_intensity" value="false"/>
+    <param name="publish_intensity" value="true"/>
     <param name="publish_multiecho" value="false"/>
     <param name="angle_min" value="-1.5707963"/>
     <param name="angle_max" value="1.5707963"/>
