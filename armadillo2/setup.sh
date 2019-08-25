@@ -101,6 +101,8 @@ sudo apt-get -y install ros-kinetic-urg-node
 sudo apt-get -y install ros-kinetic-rtabmap-ros
 sudo apt-get -y install ros-kinetic-rgbd-launch
 sudo apt-get -y install jstest-gtk
+sudo apt-get -y install ros-kinetic-rosserial-python 
+
 printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install xbox controller drivers #
@@ -112,8 +114,8 @@ printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
 
 # install displaylink driver for mimo touch display, #
 # and place xprofile script to enforce resulotion    #
-if [ "$INSTALL_HW_COMPS" = true ] ; then
-    printf "${WHITE_TXT}\nInstalling displaylink driver...\n${NO_COLOR}"
+#if [ "$INSTALL_HW_COMPS" = true ] ; then
+ #   printf "${WHITE_TXT}\nInstalling displaylink driver...\n${NO_COLOR}"
     #sudo apt-get -y install linux-generic-lts-utopic xserver-xorg-lts-utopic
     #sudo apt-get -y install libegl1-mesa-drivers-lts-utopic
     #sudo apt-get -y install xserver-xorg-video-all-lts-utopic
@@ -123,8 +125,8 @@ if [ "$INSTALL_HW_COMPS" = true ] ; then
     #chmod +x displaylink-driver-4.1.9.run
     #sudo ./displaylink-driver-4.1.9.run
     #cp .xprofile ~/
-    printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
-fi
+  #  printf "${GREEN_TXT}Done.\n\n${NO_COLOR}"
+#fi
 
 # realsense depth camera
 if [ "$INSTALL_HW_COMPS" = true ] ; then
