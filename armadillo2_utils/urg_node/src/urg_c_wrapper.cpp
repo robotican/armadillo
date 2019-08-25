@@ -251,7 +251,7 @@ bool URGCWrapper::grabScan(const sensor_msgs::LaserScanPtr& msg)
   for (int i = 0; i < num_beams; i++)
   {
     float range = static_cast<float>(data_[i]) / 1000.0;
-    if (data_[(i) + 0] != 0 && range > 0.13)
+    if (data_[(i) + 0] != 0 && range > 0.15)
     {
       msg->ranges[i] = range;
       if (use_intensity_)
