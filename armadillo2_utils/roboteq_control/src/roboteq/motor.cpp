@@ -380,7 +380,8 @@ void Motor::readVector(std::vector<std::string> fields) {
         msg_control.reference = (cmd / ratio);
 
         // reference command F <-> _FEEDBK [pag. 244]
-        double vel = boost::lexical_cast<double>(fields[2]) * max_rpm / 1000.0;
+        double vel = boost::lexical_cast<double>(fields[2]) * M_PI/30.0;
+        //double vel = boost::lexical_cast<double>(fields[2]) * max_rpm / 1000.0;
         msg_control.feedback = (vel / ratio);
         // Update velocity motor
         velocity = (vel / ratio);

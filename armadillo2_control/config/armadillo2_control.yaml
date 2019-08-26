@@ -37,7 +37,7 @@ mobile_base_controller:
   # Wheel separation and diameter. These are both optional.
   # diff_drive_controller will attempt to read either one or both from the
   # URDF if not specified as a parameter
-  wheel_separation : 0.3284
+  wheel_separation : 0.324
   wheel_radius : 0.0918
   slip_factor: 1.0
 
