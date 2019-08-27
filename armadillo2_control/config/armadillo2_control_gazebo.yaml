@@ -97,10 +97,11 @@ gripper_controller:
  left_finger_joint: 'left_finger_joint'
  right_finger_joint: 'right_finger_joint'
  goal_tolerance: 0.005
- stalled_velocity_threshold: 0.01
- stall_timeout: 1.0
+ stalled_velocity_threshold: 2
+ stall_timeout: 3.0
  joints_vel: 1.0
  action_monitor_rate: 50
+ gazebo: true
 
 gazebo_ros_control: ## This is required for setting PID gains inside gazebo_ros_control
   pid_gains:

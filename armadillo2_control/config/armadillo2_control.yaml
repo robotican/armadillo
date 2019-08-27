@@ -100,3 +100,4 @@ gripper_controller:
  stall_timeout: 1.0
  joints_vel: 1.0
  action_monitor_rate: 50
+ gazebo: false

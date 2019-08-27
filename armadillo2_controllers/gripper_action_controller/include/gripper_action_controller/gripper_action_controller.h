@@ -135,6 +135,7 @@ public:
 
 private:
 
+    bool gazebo_;
   typedef actionlib::ActionServer<control_msgs::GripperCommandAction>                         ActionServer;
   typedef boost::shared_ptr<ActionServer>                                                     ActionServerPtr;
   typedef ActionServer::GoalHandle                                                            GoalHandle;

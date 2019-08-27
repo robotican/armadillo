@@ -77,8 +77,9 @@ ros::ServiceClient *uc_client_ptr;
 ros::Publisher pub_controller_command;
 ros::Publisher grp_pos_pub;
 Point_t point;
-  std::string startPositionName ;
+std::string startPositionName ;
 moveit::planning_interface::MoveGroupInterface *group_ptr;
+float gripper_effort;
   
   
 int main(int argc, char **argv) {
@@ -97,6 +98,7 @@ int main(int argc, char **argv) {
     pn.param<std::string>("start_position_name", startPositionName, "pre_grasp2");
     pn.param<std::string>("object_name", object_name, "can");
     pn.param<std::string>("table_name", table_name, "table");
+    pn.param<float>("gripper_effort", gripper_effort, 11.0);
 
     ros::ServiceServer pickAndPlace = n.advertiseService("pick_go", &pickAndPlaceCallBack);
     ROS_INFO("Hello");
@@ -232,7 +234,7 @@ moveit_msgs::PickupGoal BuildPickGoal(const std::string &objectName) {
     g.grasp_posture.points[0].positions.resize(g.grasp_posture.joint_names.size());
     g.grasp_posture.points[0].positions[0] = 0.01;
     g.grasp_posture.points[0].effort.resize(g.grasp_posture.joint_names.size());
-    g.grasp_posture.points[0].effort[0] = 6.0;
+    g.grasp_posture.points[0].effort[0] = gripper_effort;
     goal.possible_grasps.push_back(g);
     return goal;
 }

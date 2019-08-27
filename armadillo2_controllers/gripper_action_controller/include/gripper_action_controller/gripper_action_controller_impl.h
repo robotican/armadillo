@@ -220,8 +220,10 @@ namespace internal
     controller_nh_.param<double>("max_effort", default_max_effort_, 0.0);
     default_max_effort_ = fabs(default_max_effort_);
     // Stall - stall velocity threshold, stall timeout
-    controller_nh_.param<double>("stall_velocity_threshold", stall_velocity_threshold_, 0.001);
-    controller_nh_.param<double>("stall_timeout", stall_timeout_, 1.0);
+    controller_nh_.param<double>("stall_velocity_threshold", stall_velocity_threshold_, 2);
+    controller_nh_.param<double>("stall_timeout", stall_timeout_, 3.0);
+    
+     controller_nh_.param<bool>("gazebo", gazebo_, false);
 
     // Hardware interface adapter
     right_finger_hw_iface_adapter_.init(right_finger_joint_, controller_nh_);
@@ -306,7 +308,13 @@ namespace internal
     // This is the non-realtime command_struct
     // We use command_ for sharing
     command_struct_.position_ = gh.getGoal()->command.position;
-    command_struct_.max_effort_ = gh.getGoal()->command.max_effort;
+    if (!gazebo_) 
+        command_struct_.max_effort_ = gh.getGoal()->command.max_effort;
+    else 
+        command_struct_.max_effort_=15;
+    
+    
+    
     command_.writeFromNonRT(command_struct_);
 
     pre_alloc_result_->reached_goal = false;
@@ -365,7 +373,7 @@ namespace internal
     if(rt_active_goal_->gh_.getGoalStatus().status != actionlib_msgs::GoalStatus::ACTIVE)
       return;
 
-//ROS_INFO("max_effort: %f",max_effort);
+  // ROS_INFO("current_effort: %f     max_effort: %f",current_effort, max_effort);
     if(fabs(error_position) < goal_tolerance_)
     {
       pre_alloc_result_->effort = current_effort;
@@ -398,10 +406,10 @@ namespace internal
       }
 
       if(fabs(current_velocity) > stall_velocity_threshold_) {
-//ROS_INFO("current_velocity: %f",fabs(current_velocity));
-        last_movement_time_ = time;
+
+        last_movement_time_ = ros::Time::now();
       }
-      else if( (time - last_movement_time_).toSec() > stall_timeout_)
+      else if( (ros::Time::now() - last_movement_time_).toSec() > stall_timeout_)
       {
         ROS_WARN("GRIPPER: STALLED");
         pre_alloc_result_->effort = current_effort;

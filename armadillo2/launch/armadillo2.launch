@@ -64,6 +64,7 @@
 
     <!--load simulation stuff-->
     <group if="$(arg gazebo)">
+                
          <env name="GAZEBO_MODEL_PATH" value="$(find armadillo2_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
          <param name="robot_description" command="$(find xacro)/xacro '$(find armadillo2_description)/urdf/armadillo2_gazebo.xacro' --inorder
                 torso_effort_limit:=100
